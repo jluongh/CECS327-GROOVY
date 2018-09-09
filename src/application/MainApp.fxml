@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="634.0" prefWidth="965.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane prefHeight="633.0" prefWidth="269.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" height="634.0" stroke="BLACK" strokeType="INSIDE" width="269.0">
+               <fill>
+                  <RadialGradient centerX="0.5277777777777777" centerY="0.5571428571428572" radius="0.7674418604651163">
+                     <stops>
+                        <Stop color="#d0d8f8" />
+                        <Stop color="#dacacd" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+            </Rectangle>
+            <Label layoutX="20.0" layoutY="41.0" prefHeight="35.0" prefWidth="107.0" text="Playlist:" textFill="#0a0a0a" underline="true">
+               <font>
+                  <Font name="Arial Bold Italic" size="24.0" />
+               </font>
+            </Label>
+            <ListView fx:id="playlistScreen" layoutX="14.0" layoutY="79.0" prefHeight="479.0" prefWidth="246.0" />
+            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="228.0" layoutY="50.0" pickOnBounds="true">
+               <image>
+                  <Image url="@ALL/icons8-add.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="201.0" layoutY="50.0" pickOnBounds="true">
+               <image>
+                  <Image url="@ALL/icons8-delete-2.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="269.0" layoutY="558.0" prefHeight="67.0" prefWidth="696.0">
+         <children>
+            <ImageView fitHeight="150.0" fitWidth="43.0" pickOnBounds="true" preserveRatio="true" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f5fbfc" height="76.0" stroke="BLACK" strokeType="INSIDE" width="696.0" />
+            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="379.0" layoutY="25.0" pickOnBounds="true">
+               <image>
+                  <Image url="@ALL/icons8-video-playback.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="348.0" layoutY="25.0" pickOnBounds="true">
+               <image>
+                  <Image url="@ALL/icons8-simple-arrow.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="406.0" layoutY="25.0" pickOnBounds="true">
+               <image>
+                  <Image url="@ALL/icons8-right-pointing-arrow.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="321.0" layoutY="25.0" pickOnBounds="true">
+               <image>
+                  <Image url="@ALL/icons8-shuffle.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="466.0" layoutY="25.0" pickOnBounds="true">
+               <image>
+                  <Image url="@ALL/icons8-stop.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="655.0" layoutY="25.0" pickOnBounds="true">
+               <image>
+                  <Image url="@ALL/icons8-noise-free.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="433.0" layoutY="25.0" pickOnBounds="true">
+               <image>
+                  <Image url="@ALL/icons8-repeat.png" />
+               </image>
+            </ImageView>
+            <Slider layoutX="525.0" layoutY="31.0" prefHeight="14.0" prefWidth="119.0" />
+            <ImageView fitHeight="58.0" fitWidth="165.0" layoutX="6.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@musicbars_desktop.gif" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="269.0" prefHeight="85.0" prefWidth="696.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" height="83.0" stroke="BLACK" strokeType="INSIDE" width="696.0">
+               <fill>
+                  <RadialGradient centerY="0.5" radius="1.0">
+                     <stops>
+                        <Stop color="WHITE" />
+                        <Stop color="#d1f8fc" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill></Rectangle>
+            <Label fx:id="userNameText" layoutX="115.0" layoutY="25.0" prefHeight="35.0" prefWidth="165.0" text="Username" textFill="#111111" underline="true">
+               <font>
+                  <Font name="Arial Black" size="18.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="655.0" layoutY="14.0" pickOnBounds="true">
+               <image>
+                  <Image url="@ALL/icons8-exit.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="619.0" layoutY="14.0" pickOnBounds="true">
+               <image>
+                  <Image url="@ALL/icons8-fit-to-screen.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="585.0" layoutY="14.0" pickOnBounds="true">
+               <image>
+                  <Image url="@ALL/icons8-slider.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="76.0" fitWidth="107.0" layoutX="23.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@teacher-user-icon.gif" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="269.0" layoutY="85.0" prefHeight="473.0" prefWidth="696.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" height="479.0" layoutY="-6.0" stroke="BLACK" strokeType="INSIDE" width="696.0">
+               <fill>
+                  <RadialGradient centerX="0.5277777777777777" centerY="0.17142857142857143" focusDistance="-0.5348837209302325" radius="1.0">
+                     <stops>
+                        <Stop color="WHITE" />
+                        <Stop color="WHITE" offset="0.007662835249042145" />
+                        <Stop color="#e4ccd1" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+            </Rectangle>
+            <Label layoutX="14.0" prefHeight="48.0" prefWidth="107.0" text="Result:" underline="true">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="636.0" layoutY="24.0" pickOnBounds="true">
+               <image>
+                  <Image url="@ALL/icons8-add-to-favorites.png" />
+               </image>
+            </ImageView>
+            <TableView layoutX="22.0" layoutY="50.0" prefHeight="397.0" prefWidth="653.0">
+              <columns>
+                <TableColumn prefWidth="119.0" text="Name" />
+                <TableColumn prefWidth="106.0" text="C2" />
+                  <TableColumn prefWidth="119.0" text="C1" />
+                  <TableColumn prefWidth="119.0" text="C1" />
+              </columns>
+            </TableView>
+         </children>
+      </AnchorPane>
+   </children>
+</Pane>

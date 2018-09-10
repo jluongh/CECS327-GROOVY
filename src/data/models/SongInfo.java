@@ -15,5 +15,21 @@ public class SongInfo {
 		this.song = song;
 		this.addedDate = addedDate;
 	}
+
+	public Song getSong() {
+		return song;
+	}
+
+	public void setSong(Song song) {
+		this.song = song;
+	}
+
+	public Date getAddedDate() {
+		return addedDate;
+	}
+
+	public void setAddedDate(Date addedDate) {
+		this.addedDate = addedDate;
+	}
 	
 }

@@ -2,8 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/Users/jenniferluong/Desktop/gson-2.8.5.jar"/>
-	<classpathentry kind="lib" path="/Users/jenniferluong/Downloads/gst1-java-core-0.9.3.jar"/>
-	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/lokic/Downloads/gson-2.8.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lokic/Downloads/jar_files/gst1-java-core-0.9.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

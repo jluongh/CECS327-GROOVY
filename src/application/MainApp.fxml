@@ -13,8 +13,9 @@
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="634.0" prefWidth="965.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="634.0" prefWidth="965.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainAppController">
    <children>
       <AnchorPane prefHeight="633.0" prefWidth="269.0">
          <children>
@@ -34,12 +35,12 @@
                </font>
             </Label>
             <ListView fx:id="playlistScreen" layoutX="14.0" layoutY="79.0" prefHeight="479.0" prefWidth="246.0" />
-            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="228.0" layoutY="50.0" pickOnBounds="true">
+            <ImageView fx:id="addPlaylist" fitHeight="26.0" fitWidth="27.0" layoutX="228.0" layoutY="50.0" onMouseClicked="#addPlaylistClicked" pickOnBounds="true">
                <image>
                   <Image url="@ALL/icons8-add.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="201.0" layoutY="50.0" pickOnBounds="true">
+            <ImageView fx:id="deletePlaylist" fitHeight="26.0" fitWidth="27.0" layoutX="201.0" layoutY="50.0" onMouseClicked="#deletePlaylistClicked" pickOnBounds="true">
                <image>
                   <Image url="@ALL/icons8-delete-2.png" />
                </image>
@@ -50,17 +51,17 @@
          <children>
             <ImageView fitHeight="150.0" fitWidth="43.0" pickOnBounds="true" preserveRatio="true" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f5fbfc" height="76.0" stroke="BLACK" strokeType="INSIDE" width="696.0" />
-            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="379.0" layoutY="25.0" pickOnBounds="true">
+            <ImageView fx:id="playMusic" fitHeight="26.0" fitWidth="27.0" layoutX="379.0" layoutY="25.0" onMouseClicked="#playMusicClicked" pickOnBounds="true">
                <image>
                   <Image url="@ALL/icons8-video-playback.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="348.0" layoutY="25.0" pickOnBounds="true">
+            <ImageView fx:id="previousMusic" fitHeight="26.0" fitWidth="27.0" layoutX="348.0" layoutY="25.0" onMouseClicked="#previousIsClicked" pickOnBounds="true">
                <image>
                   <Image url="@ALL/icons8-simple-arrow.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="406.0" layoutY="25.0" pickOnBounds="true">
+            <ImageView fx:id="nextMusic" fitHeight="26.0" fitWidth="27.0" layoutX="406.0" layoutY="25.0" onMouseClicked="#nextIsClicked" pickOnBounds="true">
                <image>
                   <Image url="@ALL/icons8-right-pointing-arrow.png" />
                </image>
@@ -70,12 +71,12 @@
                   <Image url="@ALL/icons8-shuffle.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="466.0" layoutY="25.0" pickOnBounds="true">
+            <ImageView fx:id="stopMusic" fitHeight="26.0" fitWidth="27.0" layoutX="466.0" layoutY="25.0" onMouseClicked="#musicStopClicked" pickOnBounds="true">
                <image>
                   <Image url="@ALL/icons8-stop.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="655.0" layoutY="25.0" pickOnBounds="true">
+            <ImageView fx:id="Mute" fitHeight="26.0" fitWidth="27.0" layoutX="655.0" layoutY="25.0" onMouseClicked="#muteIsClicked" pickOnBounds="true">
                <image>
                   <Image url="@ALL/icons8-noise-free.png" />
                </image>
@@ -86,11 +87,16 @@
                </image>
             </ImageView>
             <Slider layoutX="525.0" layoutY="31.0" prefHeight="14.0" prefWidth="119.0" />
-            <ImageView fitHeight="58.0" fitWidth="165.0" layoutX="6.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@musicbars_desktop.gif" />
-               </image>
-            </ImageView>
+            <Text fx:id="songName" layoutX="12.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Song Name">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <Text fx:id="songName1" layoutX="12.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Artist Name">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Text>
          </children>
       </AnchorPane>
       <AnchorPane layoutX="269.0" prefHeight="85.0" prefWidth="696.0">
@@ -109,7 +115,7 @@
                   <Font name="Arial Black" size="18.0" />
                </font>
             </Label>
-            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="655.0" layoutY="14.0" pickOnBounds="true">
+            <ImageView fx:id="exit" fitHeight="26.0" fitWidth="27.0" layoutX="655.0" layoutY="14.0" onMouseClicked="#exitIsClicked" pickOnBounds="true">
                <image>
                   <Image url="@ALL/icons8-exit.png" />
                </image>
@@ -154,12 +160,13 @@
                   <Image url="@ALL/icons8-add-to-favorites.png" />
                </image>
             </ImageView>
-            <TableView layoutX="22.0" layoutY="50.0" prefHeight="397.0" prefWidth="653.0">
+            <TableView fx:id="Result" layoutX="22.0" layoutY="50.0" prefHeight="397.0" prefWidth="653.0">
               <columns>
-                <TableColumn prefWidth="119.0" text="Name" />
-                <TableColumn prefWidth="106.0" text="C2" />
-                  <TableColumn prefWidth="119.0" text="C1" />
-                  <TableColumn prefWidth="119.0" text="C1" />
+                <TableColumn fx:id="col1" prefWidth="119.0" text="C1" />
+                <TableColumn fx:id="col2" prefWidth="130.0" text="C2" />
+                  <TableColumn fx:id="col3" prefWidth="134.0" text="C3" />
+                  <TableColumn fx:id="col4" prefWidth="122.0" text="C4" />
+                  <TableColumn fx:id="col5" prefWidth="147.0" text="C5" />
               </columns>
             </TableView>
          </children>

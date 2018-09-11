@@ -51,7 +51,7 @@
          <children>
             <ImageView fitHeight="150.0" fitWidth="43.0" pickOnBounds="true" preserveRatio="true" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f5fbfc" height="76.0" stroke="BLACK" strokeType="INSIDE" width="696.0" />
-            <ImageView fx:id="playMusic" fitHeight="26.0" fitWidth="27.0" layoutX="379.0" layoutY="25.0" onMouseClicked="#playMusicClicked" pickOnBounds="true">
+            <ImageView fx:id="playMusic" fitHeight="26.0" fitWidth="27.0" layoutX="395.0" layoutY="25.0" onMouseClicked="#playMusicClicked" pickOnBounds="true">
                <image>
                   <Image url="@ALL/icons8-video-playback.png" />
                </image>
@@ -61,17 +61,12 @@
                   <Image url="@ALL/icons8-simple-arrow.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="nextMusic" fitHeight="26.0" fitWidth="27.0" layoutX="406.0" layoutY="25.0" onMouseClicked="#nextIsClicked" pickOnBounds="true">
+            <ImageView fx:id="nextMusic" fitHeight="26.0" fitWidth="27.0" layoutX="476.0" layoutY="25.0" onMouseClicked="#nextIsClicked" pickOnBounds="true">
                <image>
                   <Image url="@ALL/icons8-right-pointing-arrow.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="321.0" layoutY="25.0" pickOnBounds="true">
-               <image>
-                  <Image url="@ALL/icons8-shuffle.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="stopMusic" fitHeight="26.0" fitWidth="27.0" layoutX="466.0" layoutY="25.0" onMouseClicked="#musicStopClicked" pickOnBounds="true">
+            <ImageView fx:id="stopMusic" fitHeight="26.0" fitWidth="27.0" layoutX="433.0" layoutY="25.0" onMouseClicked="#musicStopClicked" pickOnBounds="true">
                <image>
                   <Image url="@ALL/icons8-stop.png" />
                </image>
@@ -79,11 +74,6 @@
             <ImageView fx:id="Mute" fitHeight="26.0" fitWidth="27.0" layoutX="655.0" layoutY="25.0" onMouseClicked="#muteIsClicked" pickOnBounds="true">
                <image>
                   <Image url="@ALL/icons8-noise-free.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="433.0" layoutY="25.0" pickOnBounds="true">
-               <image>
-                  <Image url="@ALL/icons8-repeat.png" />
                </image>
             </ImageView>
             <Slider layoutX="525.0" layoutY="31.0" prefHeight="14.0" prefWidth="119.0" />
@@ -115,21 +105,6 @@
                   <Font name="Arial Black" size="18.0" />
                </font>
             </Label>
-            <ImageView fx:id="exit" fitHeight="26.0" fitWidth="27.0" layoutX="655.0" layoutY="14.0" onMouseClicked="#exitIsClicked" pickOnBounds="true">
-               <image>
-                  <Image url="@ALL/icons8-exit.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="619.0" layoutY="14.0" pickOnBounds="true">
-               <image>
-                  <Image url="@ALL/icons8-fit-to-screen.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="585.0" layoutY="14.0" pickOnBounds="true">
-               <image>
-                  <Image url="@ALL/icons8-slider.png" />
-               </image>
-            </ImageView>
             <ImageView fitHeight="76.0" fitWidth="107.0" layoutX="23.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@image.png" />

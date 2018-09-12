@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import api.UserValidator;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -47,8 +49,10 @@ public class MainController implements Initializable
 	@FXML
 	public void handleButtonEnter(ActionEvent event) throws IOException 
 	{
+		UserValidator uv = new UserValidator();
+		
 		// if user enter nothing on the username, display error message 
-		if(userID.getText().equals(""))
+		if(!uv.isValid(userID.getText()))
 		{
 			Alert error = new Alert(Alert.AlertType.ERROR);
 			error.setTitle("invalid input");
@@ -56,7 +60,7 @@ public class MainController implements Initializable
             error.setContentText("Please enter the username");
 		}
 		// if user enter nothing on the username, display error message
-		else if(password.getText().equals(""))
+		else if(!uv.isValid(password.getText()))
 		{
 			Alert error = new Alert(Alert.AlertType.ERROR);
 			error.setTitle("invalid input");
@@ -64,7 +68,7 @@ public class MainController implements Initializable
             error.setContentText("Please enter the password");
 		}
 		//TODO: check credential using "database"
-		else
+		else if(uv.isValidCredentials(userID.getText(), password.getText()))
 		{
 			Parent Parent = FXMLLoader.load(getClass().getResource("MainApp.fxml"));
             Scene nextScene = new Scene(Parent);

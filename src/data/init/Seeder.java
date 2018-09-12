@@ -43,7 +43,7 @@ public class Seeder {
 		try {
 			Gson gson = new Gson();
 		
-			FileOutputStream out = new FileOutputStream(UNIX_PATH + "store.txt");
+			FileOutputStream out = new FileOutputStream(UNIX_PATH + "store.json");
 			out.write(gson.toJson(store).getBytes());
 			out.close();
 		

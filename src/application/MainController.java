@@ -2,14 +2,11 @@ package application;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
+import api.UserValidator;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -20,7 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.Node;
 
-public class MainController implements Initializable 
+public class MainController 
 {
 	@FXML
 	private TextField userID;
@@ -35,36 +32,36 @@ public class MainController implements Initializable
 	@FXML
 	private Button btnEnter;
 
-	//TODO: initialize images etc.
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) 
-	{
-		
-		
-	}
 	
 	// Event Listener on Button[#btnEnter].onAction
 	@FXML
 	public void handleButtonEnter(ActionEvent event) throws IOException 
 	{
+		UserValidator uv = new UserValidator();
+		
 		// if user enter nothing on the username, display error message 
-		if(userID.getText().equals(""))
+		if(!uv.isValid(userID.getText()))
 		{
 			Alert error = new Alert(Alert.AlertType.ERROR);
 			error.setTitle("invalid input");
 			error.setHeaderText("The username cannot be empty");
             error.setContentText("Please enter the username");
+            Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
+            error.showAndWait();
+            
 		}
 		// if user enter nothing on the username, display error message
-		else if(password.getText().equals(""))
+		else if(!uv.isValid(password.getText()))
 		{
 			Alert error = new Alert(Alert.AlertType.ERROR);
 			error.setTitle("invalid input");
 			error.setHeaderText("The password cannot be empty");
             error.setContentText("Please enter the password");
+            Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
+            error.showAndWait();
 		}
-		//TODO: check credential using "database"
-		else
+		//if the user enter the corrent credential, transit into new stage: the main application
+		else if(uv.isValidCredentials(userID.getText(), password.getText()))
 		{
 			Parent Parent = FXMLLoader.load(getClass().getResource("MainApp.fxml"));
             Scene nextScene = new Scene(Parent);
@@ -74,14 +71,24 @@ public class MainController implements Initializable
             window.setTitle("Groovy");
             window.show();
 		}
+		else
+		{
+			Alert error = new Alert(Alert.AlertType.ERROR);
+			error.setTitle("invalid credential");
+			error.setHeaderText("You have inputted invalid credential");
+            error.setContentText("Please enter the correct username and/or password");
+            Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
+            error.showAndWait();
+		}
 	}
 	
 	// Event Listener on Button[#btnExit].onAction
 	@FXML
 	public void handleButtonExit(ActionEvent event)
 	{
-
-			
+		//get the current stage of the application
+		Stage stage = (Stage) btnExit.getScene().getWindow();
+		stage.close();
 	}
 		
 

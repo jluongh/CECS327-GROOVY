@@ -41,32 +41,28 @@ public class AccountService {
 				
 			}
 			
-			// Identify token type for deserialization
-			Type listType = new TypeToken<List<User>>() {}.getType();
-			Gson gson = new Gson();
-			
-			List<User> users = gson.fromJson(json, listType);
-			
-			// Check if inputs equal store information
-			for (User user : users) {
-				if (inUsername.equals(user.getUsername())) {
-					if (inPassword.equals(user.getPassword())) {
-						response = "Successful";
-						break; // TODO: Improve logic... maybe use while loop
-					} else {
-						response = "Error";
-					}
-				} else {
-					response = "Error";
-				}
-			}
-			
-			return response;
-			
-		} catch(Exception e) {
-			
-			System.out.print(e);
-			return response;
+			// Identify token type for deserialization 
+						Type listType = new TypeToken<List<User>>() {}.getType();
+						Gson gson = new Gson();
+						
+						List<User> users = gson.fromJson(json, listType);
+						
+						// Check if inputs equal store information
+						for (User user : users) {			
+							if (inUsername.equals(user.getUsername()) && inPassword.equals(user.getPassword())) {
+								response = user.getUsername() + " is valid";
+								break; 
+							} 
+							else {
+								response = "Username or password is invalid";
+								}
+						}
+						return response;
+						
+					} catch(Exception e) {
+						
+						System.out.print(e);
+						return response;
 			
 		}
 	}

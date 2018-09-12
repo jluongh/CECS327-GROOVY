@@ -9,19 +9,19 @@ import data.models.*;
 public class AudioPlayer {
 
 	public Song currentSong;
+	private Clip clip;
 	ListIterator<Song> iterator;
 
 	public void LoadSongs(List<Song> songs) {
-		this.iterator = songs.listIterator(); 
+		this.iterator = songs.listIterator();
 	}
 	
-	public Clip Load(int id) {
-		String filename = "music/" + id + ".wav";
-		
+	public void Load(Song song) {
+		currentSong = song;
+		String filename = "music/" + currentSong.getSongID() + ".wav";
 		try {
-			Clip clip = AudioSystem.getClip();
+			clip = AudioSystem.getClip();
 			clip.open( AudioSystem.getAudioInputStream(new File(filename)));
-			return clip;
 		} catch(LineUnavailableException e) {
             System.out.println("Audio Error");
 		} catch(IOException e) {
@@ -29,32 +29,58 @@ public class AudioPlayer {
 		} catch(UnsupportedAudioFileException e) {
 			System.out.println("Wrong File Type");
 		}
-        return null;
 	}
 	
-	public void Play(Clip clip) {
+	private void Reset() {
+		clip.stop();
+		clip.setMicrosecondPosition(0);
+	}
+	
+	public void Play() {
+		System.out.println("Play");
 		clip.start();
 	}
 	
-	public void Pause(Clip clip) {
+	public void Pause() {
+		System.out.println("Pause");
 		clip.stop();
+	}
+	
+	public boolean HasNext() {
+		return iterator.hasNext();
 	}
 	
 	public void Next() {
 		if (iterator.hasNext()) {
-			currentSong = iterator.next();
-			int songID = currentSong.getSongID();
-			Clip clip = Load(songID);
-			Play(clip);
+			System.out.println("Next");
+			Reset();
+			Load(iterator.next());
+			Play();
 		}
+	}
+	
+	public boolean HasPrevious() {
+		return iterator.hasPrevious();
 	}
 	
 	public void Previous() {
 		if (iterator.hasPrevious()) {
-			currentSong = iterator.previous();
-			int songID = currentSong.getSongID();
-			Clip clip = Load(songID);
-			Play(clip);
+			System.out.println("Previous");
+			Reset();
+			Load(iterator.previous());
+			Play();
 		}
+	}
+	
+	public float getVolume() {
+	    FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);        
+	    return (float) Math.pow(10f, gainControl.getValue() / 20f);
+	}
+
+	public void setVolume(float volume) {
+	    if (volume < 0f || volume > 1f)
+	        throw new IllegalArgumentException("Volume not valid: " + volume);
+	    FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);        
+	    gainControl.setValue(20f * (float) Math.log10(volume));
 	}
 }

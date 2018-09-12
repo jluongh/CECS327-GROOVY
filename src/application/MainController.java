@@ -58,6 +58,9 @@ public class MainController implements Initializable
 			error.setTitle("invalid input");
 			error.setHeaderText("The username cannot be empty");
             error.setContentText("Please enter the username");
+            Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
+            error.showAndWait();
+            
 		}
 		// if user enter nothing on the username, display error message
 		else if(!uv.isValid(password.getText()))
@@ -66,6 +69,8 @@ public class MainController implements Initializable
 			error.setTitle("invalid input");
 			error.setHeaderText("The password cannot be empty");
             error.setContentText("Please enter the password");
+            Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
+            error.showAndWait();
 		}
 		//TODO: check credential using "database"
 		else if(uv.isValidCredentials(userID.getText(), password.getText()))
@@ -77,6 +82,15 @@ public class MainController implements Initializable
             window.setScene(nextScene);
             window.setTitle("Groovy");
             window.show();
+		}
+		else
+		{
+			Alert error = new Alert(Alert.AlertType.ERROR);
+			error.setTitle("invalid credential");
+			error.setHeaderText("You have inputted invalid credential");
+            error.setContentText("Please enter the correct username and/or password");
+            Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
+            error.showAndWait();
 		}
 	}
 	

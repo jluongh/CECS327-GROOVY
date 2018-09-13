@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -15,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="634.0" prefWidth="965.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainAppController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="634.0" prefWidth="965.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainAppController">
    <children>
       <AnchorPane prefHeight="633.0" prefWidth="269.0">
          <children>
@@ -45,6 +46,12 @@
                   <Image url="@ALL/icons8-delete-2.png" />
                </image>
             </ImageView>
+            <TableView fx:id="playlistTable" layoutX="14.0" layoutY="76.0" prefHeight="485.0" prefWidth="246.0">
+              <columns>
+                <TableColumn fx:id="delete" prefWidth="52.0" text="Delete" />
+                <TableColumn fx:id="playlistName" prefWidth="193.0" text="Playlist" />
+              </columns>
+            </TableView>
          </children>
       </AnchorPane>
       <AnchorPane layoutX="269.0" layoutY="558.0" prefHeight="67.0" prefWidth="696.0">
@@ -110,6 +117,23 @@
                   <Image url="@image.png" />
                </image>
             </ImageView>
+            <ImageView fx:id="btnArtist" fitHeight="29.0" fitWidth="35.0" layoutX="630.0" layoutY="44.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@icons8-dj-64.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="btnSong" fitHeight="29.0" fitWidth="24.0" layoutX="567.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@icons8-musical-notes-64.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="btnAlbum" fitHeight="40.0" fitWidth="24.0" layoutX="497.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@icons8-photo-gallery-64.png" />
+               </image>
+            </ImageView>
+            <TextField fx:id="txtSearch" layoutX="495.0" layoutY="12.0" promptText="search..." />
+            <Label layoutX="413.0" layoutY="48.0" text="Search by: " />
          </children>
       </AnchorPane>
       <AnchorPane layoutX="269.0" layoutY="85.0" prefHeight="473.0" prefWidth="696.0">

@@ -61,13 +61,27 @@ public class Seeder {
 		//TODO : Auto generate song name, id based on what's in arraylist
 		//TODO : Auto generate name and duration based on title and length of .wav file properties
 		// Create songs
-		Song song1 = new Song(1, "Everybody Wants To Rule The World", "4 min 12 sec");
-		Song song2 = new Song(2, "September", "3 min 34 sec");
-		Song song3 = new Song(3, "Dancing Queen", "3 min 51 sec");
-		Song song4 = new Song(4, "Bohemian Rhapsody", "6 min 6 sec");
-		Song song5 = new Song(5, "Mamma Mia", "3 min 30 sec");
-		Song song6 = new Song(6, "Let's Groove", "3 min 55 sec");
+		Song song1 = new Song(1, "Everybody Wants To Rule The World", 252000000);
+		Song song2 = new Song(2, "September", 200400000);
+		Song song3 = new Song(3, "Dancing Queen", 210600000);
+		Song song4 = new Song(4, "Bohemian Rhapsody", 363600000);
+		Song song5 = new Song(5, "Mamma Mia", 198000000);
+		Song song6 = new Song(6, "Let's Groove", 213000000);
 		
+//		Given file: 
+//		File file = ...;
+//		AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+//		AudioFormat format = audioInputStream.getFormat();
+//		long frames = audioInputStream.getFrameLength();
+//		double durationInSeconds = (frames+0.0) / format.getFrameRate(); 
+	
+// Getting file property duration (length) and converting to seconds		
+//		AudioFileFormat baseFileFormat = null;
+//        AudioFormat baseFormat = null;
+//        baseFileFormat = AudioSystem.getAudioFileFormat(file);
+//        Map<String, Object> properties = baseFileFormat.properties(); 
+//       Long minutes = ((Long) properties.get("length"))/60000000.0; 
+
 		List<Song> GreatestHits = new ArrayList<Song>();
 		GreatestHits.add(song2);
 		GreatestHits.add(song6);

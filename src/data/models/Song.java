@@ -6,13 +6,13 @@ public class Song {
 	private String title;
 //	private String artist;
 //	private String album;
-	private String duration;
+	private long duration;
 	
 	public Song() {
 		//
 	}
 	
-	public Song(int songID, String title, String duration) { // constructors- String artist, String album aren't used
+	public Song(int songID, String title, long duration) { // constructors- String artist, String album aren't used
 		this.songID = songID;
 		this.title = title;
 //		this.artist = artist;
@@ -52,11 +52,11 @@ public class Song {
 //		this.album = album;
 //	}
 
-	public String getDuration() {
+	public long getDuration() {
 		return duration;
 	}
 
-	public void setDuration(String duration) {
+	public void setDuration(long duration) {		
 		this.duration = duration;
 	}
 }

@@ -14,7 +14,7 @@ import data.models.*;
  */
 public class UserService {
 
-	private String fPath = "./src/data/store.txt";
+	private String fPath = "./src/data/store.json";
 	
 	/**
 	 * 
@@ -28,8 +28,6 @@ public class UserService {
 	 * @return
 	 */
 	public List<User> getUsers() {
-		
-		List<User> users;
 		
 		// Create file object from store
 		File file = new File(fPath);
@@ -47,12 +45,10 @@ public class UserService {
 			}
 			
 			// Identify token type for deserialization
-			Type listType = new TypeToken<List<User>>() {}.getType();
 			Gson gson = new Gson();
+			Store store = gson.fromJson(json, new TypeToken<Store>() {}.getType());
 			
-			users = gson.fromJson(json, listType);
-			
-			return users;
+			return store.getUsers();
 			
 		} catch(Exception e) {
 			

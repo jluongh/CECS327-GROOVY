@@ -65,7 +65,6 @@ public class MainController
 		//if the user enter the corrent credential, transit into new stage: the main application
 		else if(uv.isValidCredentials(userID.getText(), password.getText()))
 		{
-
 			Parent Parent = FXMLLoader.load(getClass().getResource("MainApp.fxml"));
             Scene nextScene = new Scene(Parent);
             Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();

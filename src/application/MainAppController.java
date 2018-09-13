@@ -64,13 +64,14 @@ public class MainAppController implements Initializable {
 	@FXML
 	private ImageView btnArtist;
 	
-	// search bar 
-	
+	// Search bar 
 	@FXML
 	private TextField txtSearch;
 	
-
+	// Audio player
+	AudioPlayer player = new AudioPlayer();
 	
+
 	// we need a search function to update the result page !
 	// make if song button is clicked then 
 		
@@ -97,19 +98,33 @@ public class MainAppController implements Initializable {
 		if(type == "song") {
 			//update result page to search for that song
 			
+			// #1 use the search function from "Trisha"
+			
+			
+			// #2 update the result page from "Xinyi"
+			
+			
 		} else if(type == "album") {
 			//update result page to search for that album
 			
+			// #1 use the search function from "Trisha"
+			
+			
+			// #2 update the result page from "Xinyi"
+			
 		} else if(type == "artist") {
 			//update result page to search for that artist
+			
+			// #1 use the search function from "Trisha"
+			
+			
+			// #2 update the result page from "Xinyi"
 			
 		}
 		
 	}
 
-	// audio player
 	
-	AudioPlayer player = new AudioPlayer();
 	
 	
 	@Override

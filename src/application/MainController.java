@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import java.io.IOException;
 import api.UserValidator;
+import data.models.User;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -31,6 +32,7 @@ public class MainController
 	private Button btnExit;
 	@FXML
 	private Button btnEnter;
+	
 
 	
 	// Event Listener on Button[#btnEnter].onAction
@@ -63,6 +65,7 @@ public class MainController
 		//if the user enter the corrent credential, transit into new stage: the main application
 		else if(uv.isValidCredentials(userID.getText(), password.getText()))
 		{
+
 			Parent Parent = FXMLLoader.load(getClass().getResource("MainApp.fxml"));
             Scene nextScene = new Scene(Parent);
             Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -81,6 +84,8 @@ public class MainController
             error.showAndWait();
 		}
 	}
+	
+
 	
 	// Event Listener on Button[#btnExit].onAction
 	@FXML

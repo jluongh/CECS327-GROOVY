@@ -9,8 +9,7 @@ import data.models.*;
 public class Seeder {
 	private static final String UNIX_PATH = "src/data/"; 
 	
-	public static void main(String[] args) {
-		
+	public static void main(String[] args) {		
 		// Create Date object
 		Calendar today = Calendar.getInstance();
 		today.clear(Calendar.HOUR); 
@@ -19,8 +18,8 @@ public class Seeder {
 		Date todayDate = today.getTime();
 		
 		// Create playlists
-		Playlist playlist1 = new Playlist(1, "80s love songs", Collections.emptyList(), 16, "1 hr 2 min", todayDate);
-		Playlist playlist2 = new Playlist(2, "Bangerz", Collections.emptyList(), 11, "45 min", todayDate);
+		Playlist playlist1 = new Playlist(1, "80s pop", Collections.emptyList(), 1, "00:04:11", todayDate);
+		Playlist playlist2 = new Playlist(2, "Bangerz", Collections.emptyList(), 2, "00:07:45", todayDate);
 		
 		List<Playlist> playlists = new ArrayList<Playlist>();
 		playlists.add(playlist1);
@@ -50,6 +49,5 @@ public class Seeder {
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-			
 	}
 }

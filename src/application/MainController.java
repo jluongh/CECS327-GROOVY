@@ -6,6 +6,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import java.io.IOException;
+
+import api.ConnectUser;
 import api.UserValidator;
 import data.models.User;
 import javafx.event.ActionEvent;
@@ -32,15 +34,14 @@ public class MainController
 	private Button btnExit;
 	@FXML
 	private Button btnEnter;
-	
-
+	private static User currentUser;
 	
 	// Event Listener on Button[#btnEnter].onAction
 	@FXML
 	public void handleButtonEnter(ActionEvent event) throws IOException 
 	{
 		UserValidator uv = new UserValidator();
-		
+		ConnectUser cu = new ConnectUser();
 		// if user enter nothing on the username, display error message 
 		if(!uv.isValid(userID.getText()))
 		{
@@ -65,6 +66,8 @@ public class MainController
 		//if the user enter the corrent credential, transit into new stage: the main application
 		else if(uv.isValidCredentials(userID.getText(), password.getText()))
 		{
+
+			currentUser = cu.getUser(userID.getText());
 			Parent Parent = FXMLLoader.load(getClass().getResource("MainApp.fxml"));
             Scene nextScene = new Scene(Parent);
             Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -84,8 +87,10 @@ public class MainController
 		}
 	}
 	
-
-	
+	public static User getUser()
+	{
+		return currentUser;
+	}
 	// Event Listener on Button[#btnExit].onAction
 	@FXML
 	public void handleButtonExit(ActionEvent event)

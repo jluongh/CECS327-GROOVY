@@ -1,23 +1,26 @@
 package data.models;
 
-import java.util.List;
-
-public class User {
+public class User implements Comparable {
 	
+	private int userID;
 	private String username;
 	private String password;
-	private List<Playlist> playlists;
 	
 	public User() {
 		//
 	}
 	
-	public User(String username, String password, List<Playlist> playlists) {
+	public User(String username, String password) {
 		this.username = username;
 		this.password = password;
-		this.playlists = playlists;
 	}
 
+	public int getUserID() {
+		return userID;
+	}
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
 	public String getUsername() {
 		return username;
 	}
@@ -34,13 +37,13 @@ public class User {
 		this.password = password;
 	}
 
-	public List<Playlist> getPlaylists() {
-		return playlists;
+	@Override
+	public int compareTo(Object o) {
+		User user = (User) o;
+		return this.userID - user.userID;
 	}
-
-	public void setPlaylists(List<Playlist> playlists) {
-		this.playlists = playlists;
-	}
+	
+	
 	
 }
 

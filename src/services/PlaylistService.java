@@ -1,47 +1,118 @@
 package services;
 
 import java.io.*;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import data.models.Playlist;
 import data.models.User;
+import data.models.UserProfile;
 
 public class PlaylistService {
 
-	private UserService us = new UserService();
-	private String fPath = "./src/data/user.json";
+	// Get UserProfile file path
+	String profileFilePath;
+	private UserProfileService ups = new UserProfileService();
+	UserProfile userProfile;
+	
+	/**
+	 * Functions to manipulate playlist data
+	 * @param userID
+	 */
+	public PlaylistService(int userID) {
+		profileFilePath = "./src/data/userprofile/" + userID + ".json";
+		userProfile = ups.GetUserProfile(userID);
 
-	public void CreatePlaylist(String username, Playlist playlist) {
-		List<User> users = us.getUsers();
-		User user = users.stream().filter(u -> u.getUsername().equals(username)).findFirst().get();
-		int index = users.indexOf(user);
-		List<Playlist> playlists = user.getPlaylists();
+	}
+
+	/**
+	 * Get all playlists for a given user
+	 * @return	List of playlists
+	 */
+	public List<Playlist> GetPlaylists() {
+		// Get user's playlists
+		List<Playlist> playlists = userProfile.getPlaylists();
 		
+		// If there are no playlists, initialize the list
+		if (playlists == null) {
+			playlists = new ArrayList<Playlist>();
+		}
+		return playlists;
+	}
+	
+	/**
+	 * Create a playlist
+	 * @param name	Name of the playlist to create
+	 */
+	public void CreatePlaylist(String name) {
+		Playlist playlist = new Playlist(name);
+		// Get new playlist ID
+		int playlistID = GetLatestPlaylistID() + 1;
 		
+		// Set new playlist to new ID
+		playlist.setPlaylistID(playlistID);
+		
+		// Get user's playlists
+		List<Playlist> playlists = GetPlaylists();
+		
+		// Add playlist to list
 		playlists.add(playlist);
-		user.setPlaylists(playlists);
-		users.set(index, user);
+		userProfile.setPlaylists(playlists);
 		
-		
-		try (Writer writer = new FileWriter(fPath)) {
+		// Write to userprofile.json
+		try (Writer writer = new FileWriter(profileFilePath)) {
 		    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		    gson.toJson(users, writer);
-		    
+		    gson.toJson(userProfile, writer);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 	}
 	
-//	public User DeletePlaylist(User user, Playlist playlist) {
-//		List<Playlist> playlists = user.getPlaylists();
-//		// Remove playlist from list for the given playlist ID
-//		playlists.removeIf(p -> p.getPlaylistID() == playlist.getPlaylistID());
-//		user.setPlaylists(playlists);
-//		return user;
-//	}
+	/**
+	 * Delete a playlist 
+	 * @param playlistID	ID of playlist to delete
+	 */
+	public void DeletePlaylist(int playlistID) {
+		// Get user's playlists
+		List<Playlist> playlists = GetPlaylists();
+		
+		// Removes playlist if found in userprofile.json
+		if (playlists.removeIf(p -> p.getPlaylistID() == playlistID)) {
+			userProfile.setPlaylists(playlists);
+			
+			// Write to userprofile.json
+			try (Writer writer = new FileWriter(profileFilePath)) {
+			    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			    gson.toJson(userProfile, writer);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	private int GetLatestPlaylistID() {
+		int id;
+	
+		List<Playlist> playlists = userProfile.getPlaylists();
+		
+		if (playlists != null && !playlists.isEmpty()) {
+			id = Collections.max(playlists).getPlaylistID();
+		}
+		else {
+			id = -1;
+		}
+
+		System.out.println("Last Playlist ID: " + id);
+		return id;
+	}
+	
 }
 

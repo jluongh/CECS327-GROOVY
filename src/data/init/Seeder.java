@@ -15,25 +15,19 @@ public class Seeder {
 	}
 	
 	private static void seedStore() {
-		// Create Date object
-		Calendar today = Calendar.getInstance();
-		today.clear(Calendar.HOUR); 
-		today.clear(Calendar.MINUTE); 
-		today.clear(Calendar.SECOND);
-		Date todayDate = today.getTime();
 		
 		// Create playlists
-		Playlist playlist1 = new Playlist(1, "80s love songs", Collections.emptyList(), 16, "1 hr 2 min", todayDate);
-		Playlist playlist2 = new Playlist(2, "Bangerz", Collections.emptyList(), 11, "45 min", todayDate);
+		Playlist playlist1 = new Playlist("80s love songs");
+		Playlist playlist2 = new Playlist("Bangerz");
 		
 		List<Playlist> playlists = new ArrayList<Playlist>();
 		playlists.add(playlist1);
 		playlists.add(playlist2);
 		
 		// Create users
-		User user1 = new User("user1", "cecs327", playlists);
-		User user2 = new User("user2", "cecs327", playlists);
-		User user3 = new User("user3", "cecs327", Collections.emptyList());
+		User user1 = new User("user1", "cecs327");
+		User user2 = new User("user2", "cecs327");
+		User user3 = new User("user3", "cecs327");
 		
 		List<User> users = new ArrayList<User>();
 		users.add(user1);

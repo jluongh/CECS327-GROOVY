@@ -1,4 +1,11 @@
 {
   "userID": 0,
-  "playlists": []
+  "playlists": [
+    {
+      "playlistID": 0,
+      "name": "Sample",
+      "songCount": 0,
+      "creationDate": "Sep 13, 2018 7:35:47 PM"
+    }
+  ]
 }

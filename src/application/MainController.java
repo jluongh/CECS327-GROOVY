@@ -40,6 +40,8 @@ public class MainController
 	@FXML
 	public void handleButtonEnter(ActionEvent event) throws IOException 
 	{
+		
+			
 		UserValidator uv = new UserValidator();
 		ConnectUser cu = new ConnectUser();
 		// if user enter nothing on the username, display error message 

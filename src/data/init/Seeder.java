@@ -61,20 +61,6 @@ public class Seeder {
 		Song song4 = new Song(4, "Bohemian Rhapsody", 363600000);
 		Song song5 = new Song(5, "Mamma Mia", 198000000);
 		Song song6 = new Song(6, "Let's Groove", 213000000);
-		
-//		Given file: 
-//		File file = ...;
-//		AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
-//		AudioFormat format = audioInputStream.getFormat();
-//		long frames = audioInputStream.getFrameLength();
-//		double durationInSeconds = (frames+0.0) / format.getFrameRate(); 
-	
-// Getting file property duration (length) and converting to seconds		
-//		AudioFileFormat baseFileFormat = null;
-//        AudioFormat baseFormat = null;
-//        baseFileFormat = AudioSystem.getAudioFileFormat(file);
-//        Map<String, Object> properties = baseFileFormat.properties(); 
-//       Long minutes = ((Long) properties.get("length"))/60000000.0; 
 
 		List<Song> GreatestHits = new ArrayList<Song>();
 		GreatestHits.add(song2);

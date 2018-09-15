@@ -2,12 +2,14 @@ package application;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 import api.AudioPlayer;
 import api.PlaylistController;
 import api.UserProfileController;
+import data.models.Playlist;
 import data.models.User;
 import data.models.UserProfile;
 import javafx.event.ActionEvent;
@@ -31,6 +33,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class MainAppController implements Initializable {
 	@FXML
@@ -91,7 +95,8 @@ public class MainAppController implements Initializable {
 	private UserProfileController uc = new UserProfileController();
 	private UserProfile up= uc.GetUserProfile(currentUser.getUserID());;
 	private PlaylistController pc = new PlaylistController(currentUser.getUserID());
-	
+	private List<Playlist> playlist = pc.GetPlaylists();
+	private ObservableList<Playlist> playlists = FXCollections.observableArrayList();
 	// Audio player
 	AudioPlayer player = new AudioPlayer();
 
@@ -106,7 +111,9 @@ public class MainAppController implements Initializable {
 		// Change the label to the username
 		userNameText.setText(currentUser.getUsername());
 		setTablePlaylist();
-		
+		playlistTable.setItems(playlists);
+		playlistName.setCellValueFactory(new PropertyValueFactory<Playlist, String>("name"));
+
 	}
 
 	@FXML

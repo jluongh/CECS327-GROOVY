@@ -154,7 +154,7 @@
                   <Image url="@ALL/icons8-add-to-favorites.png" />
                </image>
             </ImageView>
-            <TableView fx:id="Result" layoutX="22.0" layoutY="50.0" prefHeight="397.0" prefWidth="653.0">
+            <TableView fx:id="Result" layoutX="22.0" layoutY="50.0" onMouseClicked="#playSong" prefHeight="397.0" prefWidth="653.0">
               <columns>
                 <TableColumn fx:id="col1" prefWidth="119.0" text="C1" />
                 <TableColumn fx:id="col2" prefWidth="130.0" text="C2" />

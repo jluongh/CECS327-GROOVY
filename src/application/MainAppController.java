@@ -13,11 +13,13 @@ import data.models.Playlist;
 import data.models.User;
 import data.models.UserProfile;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.text.Text;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TableCell;
@@ -29,12 +31,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
-
-
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.Callback;
+import com.sun.prism.impl.Disposer;
 
 public class MainAppController implements Initializable {
 	@FXML
@@ -72,11 +77,11 @@ public class MainAppController implements Initializable {
 	@FXML
 	private TableColumn col5;
 	@FXML 
-	private TableView playlistTable;
+	private TableView<Playlist> playlistTable;
 	@FXML 
-	private TableColumn delete;
+	private TableColumn<Disposer.Record,Boolean> delete;
 	@FXML
-	private TableColumn playlistName;
+	private TableColumn<Playlist,String> playlistName;
 	
 
 	// search buttons
@@ -97,48 +102,73 @@ public class MainAppController implements Initializable {
 	private PlaylistController pc = new PlaylistController(currentUser.getUserID());
 	private List<Playlist> playlist = pc.GetPlaylists();
 	private ObservableList<Playlist> playlists = FXCollections.observableArrayList();
+	
 	// Audio player
 	AudioPlayer player = new AudioPlayer();
 
-	// we need a search function to update the result page !
-	// make if song button is clicked then 
-	
-	
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) 
 	{
 		// Change the label to the username
 		userNameText.setText(currentUser.getUsername());
-		setTablePlaylist();
-		playlistTable.setItems(playlists);
-		playlistName.setCellValueFactory(new PropertyValueFactory<Playlist, String>("name"));
+		setTabletoPlaylist();
+		for (int i = 0; i< playlist.size();i++)
+		{
+			playlists.add(playlist.get(i));
+		}
+		//display playlist name
+		playlistName.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getName()));
 
+        //Insert Button
+		delete.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
+
+            @Override
+            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Disposer.Record, Boolean> p) 
+            {
+                return new SimpleBooleanProperty(p.getValue() != null);
+            }
+            
+		});
+		//display delete button
+		delete.setCellFactory(new Callback<TableColumn<Disposer.Record, Boolean>, TableCell<Disposer.Record, Boolean>>() {
+
+            @Override
+            public TableCell<Disposer.Record, Boolean> call(TableColumn<Disposer.Record, Boolean> p) {
+                return new ButtonCelldeletePlaylist();
+            }
+        
+        });
+		playlistTable.setItems(playlists);
+		
+		
+		
 	}
 
+	
 	@FXML
 	public void btnSong(MouseEvent event) 
 	{
-		setTableSearch();
 		search(txtSearch.getText(), "song");
 		
 	}
 	// make if album button is clicked then 
 	@FXML
-	public void btnAlbum(MouseEvent event) throws IOException {
-		setTableSearch();
+	public void btnAlbum(MouseEvent event) throws IOException 
+	{
 		search(txtSearch.getText(), "album");
 	}
 	
 	// make if artist button is clicked then 
 	@FXML
-	public void btnArtist(MouseEvent event) throws IOException {
-		setTableSearch();
+	public void btnArtist(MouseEvent event) throws IOException 
+	{
 		search(txtSearch.getText(), "artist");
 	}
 	
 	
 	private void search(String text, String type) {
+		setTableSearch();
 		if(type == "song") {
 			//update result page to search for that song
 			
@@ -167,7 +197,7 @@ public class MainAppController implements Initializable {
 		}
 	}
 
-	public void setTablePlaylist()
+	public void setTabletoPlaylist()
 	{
 		col1.setText("Name");
 		col2.setText("Artist");
@@ -184,6 +214,7 @@ public class MainAppController implements Initializable {
 		col4.setText("DateAdded");
 		col5.setText("Add");
 	}
+	
 
 	// Event Listener on ImageView[#addPlaylist].onMouseClicked
 	@FXML
@@ -243,6 +274,37 @@ public class MainAppController implements Initializable {
 	// Event Listener on ImageView[#exit].onMouseClicked
 
 	
+	private class ButtonCelldeletePlaylist extends TableCell<Disposer.Record, Boolean> {
+        Button cellButton = new Button("Delete");
+        
+        ButtonCelldeletePlaylist()
+        {
+            
+        	//Action when the button is pressed
+            cellButton.setOnAction(new EventHandler<ActionEvent>()
+            {
+                @Override
+                public void handle(ActionEvent t) 
+                {
+                    //TODO:handle delete action
+                	Playlist currentPlaylist = (Playlist) ButtonCelldeletePlaylist.this.getTableView().getItems().get(ButtonCelldeletePlaylist.this.getIndex());
+
+                	//remove selected item from the table list
+                }
+            });
+            
+        }
+        @Override
+        protected void updateItem(Boolean t, boolean empty) {
+            super.updateItem(t, empty);
+            if(!empty){
+                setGraphic(cellButton);
+            }else {
+        setText(null);
+        setGraphic(null);
+            }
+        }
+	}
 	public void updateInfo() {
 		
 		// Have not tested this!

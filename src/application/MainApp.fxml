@@ -43,8 +43,8 @@
             </ImageView>
             <TableView fx:id="playlistTable" layoutX="14.0" layoutY="76.0" prefHeight="485.0" prefWidth="246.0">
               <columns>
-                <TableColumn fx:id="delete" prefWidth="52.0" text="Delete" />
-                <TableColumn fx:id="playlistName" prefWidth="193.0" text="Playlist" />
+                <TableColumn fx:id="delete" prefWidth="93.0" text="Delete" />
+                <TableColumn fx:id="playlistName" prefWidth="152.0" text="Playlist" />
               </columns>
             </TableView>
          </children>

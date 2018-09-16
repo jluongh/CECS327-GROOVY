@@ -23,7 +23,7 @@ public class Searcher {
 		LibraryService ls = new LibraryService();
 		
 		List<Artist> artists = new ArrayList<Artist>();
-		artists = ls.getArtists();
+		artists = ls.getAllArtists();
 		
 		Collections.sort(artists, new Comparator<Artist>() {
 	        

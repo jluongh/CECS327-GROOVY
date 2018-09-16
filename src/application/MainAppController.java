@@ -2,14 +2,19 @@ package application;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 import api.AudioPlayer;
 import api.PlaylistController;
+import api.Searcher;
 import api.UserProfileController;
+import data.models.Album;
+import data.models.Artist;
 import data.models.Playlist;
+import data.models.Song;
 import data.models.User;
 import data.models.UserProfile;
 import javafx.event.ActionEvent;
@@ -31,6 +36,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -65,17 +71,17 @@ public class MainAppController implements Initializable {
 	@FXML
 	private Slider sldVolume;
 	@FXML
-	private TableView Result;
+	private TableView<?> Result;
 	@FXML
-	private TableColumn col1;
+	private TableColumn<?,String> col1;
 	@FXML
-	private TableColumn col2;
+	private TableColumn<?,String> col2;
 	@FXML
-	private TableColumn col3;
+	private TableColumn<?,String> col3;
 	@FXML
-	private TableColumn col4;
+	private TableColumn<?, Double> col4;
 	@FXML
-	private TableColumn col5;
+	private TableColumn<Disposer.Record,Boolean> col5;
 	@FXML 
 	private TableView<Playlist> playlistTable;
 	@FXML 
@@ -102,10 +108,14 @@ public class MainAppController implements Initializable {
 	private PlaylistController pc = new PlaylistController(currentUser.getUserID());
 	private List<Playlist> playlist = pc.GetPlaylists();
 	private ObservableList<Playlist> playlists = FXCollections.observableArrayList();
+	private ObservableList<Song> songs = FXCollections.observableArrayList();
+	private ObservableList<Artist> artists = FXCollections.observableArrayList();
+	private ObservableList<Album> albums = FXCollections.observableArrayList();
+	private List<Song> playlistSong = new ArrayList<Song>();
 	
 	// Audio player
 	AudioPlayer player = new AudioPlayer();
-
+	Searcher search = new Searcher();
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) 
@@ -117,12 +127,13 @@ public class MainAppController implements Initializable {
 		{
 			playlists.add(playlist.get(i));
 		}
-		//display playlist name
+		
+		//display playlist name on sidebar
 		playlistName.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getName()));
-
+		
         //Insert Button
 		delete.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
-
+		
             @Override
             public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Disposer.Record, Boolean> p) 
             {
@@ -141,62 +152,139 @@ public class MainAppController implements Initializable {
         });
 		playlistTable.setItems(playlists);
 		
+		playlistTable.getSelectionModel().getSelectedCells().toString();
 		
+		Result = new TableView<Song>();
+		col1 = new TableColumn<Song,String>();
+		col2 = new TableColumn<Song,String>();
+		col3 = new TableColumn<Song,String>();
+		col4 = new TableColumn<Song,Double>();
 		
 	}
 
-	
 	@FXML
-	public void btnSong(MouseEvent event) 
+	public void btnSongClick(MouseEvent event) 
 	{
 		search(txtSearch.getText(), "song");
 		
 	}
 	// make if album button is clicked then 
 	@FXML
-	public void btnAlbum(MouseEvent event) throws IOException 
+	public void btnAlbumClick(MouseEvent event) throws IOException 
 	{
 		search(txtSearch.getText(), "album");
 	}
 	
 	// make if artist button is clicked then 
 	@FXML
-	public void btnArtist(MouseEvent event) throws IOException 
+	public void btnArtistClick(MouseEvent event) throws IOException 
 	{
 		search(txtSearch.getText(), "artist");
 	}
 	
 	
 	private void search(String text, String type) {
-		setTableSearch();
+		
 		if(type == "song") {
 			//update result page to search for that song
 			
-			// #1 use the search function from "Trisha"
-			
-			
+			List<Song> song=search.findFromSongs(text);
 			// #2 update the result page from "Xinyi"
+			for(int i = 0; i< song.size();i++)
+			{
+				System.out.println(song);
+			}
 			
+			//setSearchSong(song);
 			
 		} else if(type == "album") {
 			//update result page to search for that album
 			
 			// #1 use the search function from "Trisha"
 			
-			
+			List<Album> album=search.findFromAlbums(text);;
 			// #2 update the result page from "Xinyi"
-			
+			setSearchAlbum(album);
 		} else if(type == "artist") {
 			//update result page to search for that artist
 			
 			// #1 use the search function from "Trisha"
 			
-			
+			List<Artist> artist=search.findFromArtists(text);
 			// #2 update the result page from "Xinyi"
-			
+			setSearchArtist(artist);
 		}
 	}
-
+	
+	public void setSearchSong(List<Song> song)
+	{
+		for (int i = 0; i< song.size();i++)
+		{
+			songs.add(song.get(i));
+		}
+		Result = new TableView<Song>();
+		Result = new TableView<Song>();
+		col1 = new TableColumn<Song,String>();
+		col2 = new TableColumn<Song,String>();
+		col3 = new TableColumn<Song,String>();
+		col4 = new TableColumn<Song,Double>();
+		col1.setText("Song");
+		col2.setText("Artist");
+		col3.setText("Album");
+		col4.setText("Duration");
+		col5.setText("Add");
+//
+//		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
+//		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getArtist()));
+//		col3.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getAlbum()));
+//		col4.setCellValueFactory(cellData ->  new ReadOnlyDoubleWrapper(((Song) cellData.getValue()).getDuration()).asObject());
+		
+	}
+	
+	public void setSearchAlbum(List<Album> album)
+	{
+		for (int i = 0; i< album.size();i++)
+		{
+			albums.add(album.get(i));
+		}
+		Result = new TableView<Album>();
+		initializeSearchColumn();
+		col1.setText("Album");
+		col2.setText("Song");
+		col3.setText("Artist");
+		col4.setText("Duration");
+		col5.setText("Add");
+		
+		//List<Song> albumSong = album.get(i).getSong();
+//		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Album) cellData.getValue()).getName()));
+//		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Album) cellData.getValue()).getSong()));
+//		col3.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Album) cellData.getValue()).getArtist()));
+//		col4.setCellValueFactory(cellData ->  new ReadOnlyDoubleWrapper(((Song) cellData.getValue()).getDuration()).asObject());
+	}
+	
+	public void setSearchArtist(List<Artist> artist)
+	{
+		for (int i = 0; i< artist.size();i++)
+		{
+			artists.add(artist.get(i));
+		}
+		Result = new TableView<Artist>();
+		initializeSearchColumn();
+		col1.setText("Artist");
+		col2.setText("Song");
+		col3.setText("Album");
+		col4.setText("Duration");
+		col5.setText("Add");
+		
+		//List<Song> albumSong = album.get(i).getSong();
+//		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Artist) cellData.getValue()).getName()));
+//		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Album) cellData.getValue()).getSong()));
+//		col3.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Artist) cellData.getValue()).getAlbums()));
+//		col4.setCellValueFactory(cellData ->  new ReadOnlyDoubleWrapper(((Song) cellData.getValue()).getDuration()).asObject());
+		
+	}
+	
+	//set center panel to be playlist panel
 	public void setTabletoPlaylist()
 	{
 		col1.setText("Name");
@@ -206,15 +294,14 @@ public class MainAppController implements Initializable {
 		col5.setText("Delete");
 	}
 	
-	public void setTableSearch()
+	public void initializeSearchColumn()
 	{
-		col1.setText("Name");
-		col2.setText("Artist");
-		col3.setText("Album");
-		col4.setText("DateAdded");
-		col5.setText("Add");
+		Result = new TableView<Song>();
+		col1 = new TableColumn<Song,String>();
+		col2 = new TableColumn<Song,String>();
+		col3 = new TableColumn<Song,String>();
+		col4 = new TableColumn<Song,Double>();
 	}
-	
 
 	// Event Listener on ImageView[#addPlaylist].onMouseClicked
 	@FXML
@@ -235,8 +322,14 @@ public class MainAppController implements Initializable {
 		if(result.isPresent())
 		{
 			String playlistName = result.get();
+			playlists.removeAll(playlists);
 			pc.CreatePlaylist(playlistName);
-			//maybe do a refresh here to show new playlist on the sidebar
+			playlist=pc.GetPlaylists();
+			for(int i = 0; i<playlist.size();i++)
+			{
+				playlists.add(playlist.get(i));
+			}
+			playlistTable.refresh();
 		}
 	}
 	
@@ -288,8 +381,59 @@ public class MainAppController implements Initializable {
                 {
                     //TODO:handle delete action
                 	Playlist currentPlaylist = (Playlist) ButtonCelldeletePlaylist.this.getTableView().getItems().get(ButtonCelldeletePlaylist.this.getIndex());
-
-                	//remove selected item from the table list
+                	pc.DeletePlaylist(currentPlaylist.getPlaylistID());
+                	playlists.remove(currentPlaylist);
+                	playlistTable.refresh();
+                }
+            });
+            
+        }
+        @Override
+        protected void updateItem(Boolean t, boolean empty) {
+            super.updateItem(t, empty);
+            if(!empty){
+                setGraphic(cellButton);
+            }else {
+        setText(null);
+        setGraphic(null);
+            }
+        }
+	}
+	
+	private class ButtonCelladdSong extends TableCell<Disposer.Record, Boolean> {
+        Button cellButton = new Button("Delete");
+        
+        ButtonCelladdSong()
+        {
+            
+        	//Action when the button is pressed
+            cellButton.setOnAction(new EventHandler<ActionEvent>()
+            {
+                @Override
+                public void handle(ActionEvent t) 
+                {
+                    //TODO:handle add action
+                	Song currentSong = (Song) ButtonCelladdSong.this.getTableView().getItems().get(ButtonCelladdSong.this.getIndex());
+                	//prompt user to enter playlist name they wish to add to
+                	TextInputDialog dialog = new TextInputDialog("");
+           		 
+            		dialog.setTitle("Enter Playlist Name");
+            		dialog.setHeaderText("Enter the playlist name:");
+            		dialog.setContentText("Name:");
+            		Optional<String> result = dialog.showAndWait();
+            		//create new playlist
+            		if(result.isPresent())
+            		{
+            			String playlistName = result.get();
+            			for(int i = 0; i<playlist.size();i++)
+            			{
+            				if(playlist.get(i).getName().equals(playlistName))
+            				{
+            					playlistSong.add(currentSong);
+            				}
+            			}
+            		}
+                	
                 }
             });
             

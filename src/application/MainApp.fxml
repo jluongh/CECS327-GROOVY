@@ -112,19 +112,19 @@
                   <Image url="@image.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="btnArtist" fitHeight="29.0" fitWidth="35.0" layoutX="630.0" layoutY="44.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="btnArtist" fitHeight="29.0" fitWidth="35.0" layoutX="630.0" layoutY="44.0" onMouseClicked="#btnArtistClick" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@icons8-dj-64.png" />
+                  <Image url="@ALL/icons8-dj-64.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="btnSong" fitHeight="29.0" fitWidth="24.0" layoutX="567.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="btnSong" fitHeight="29.0" fitWidth="24.0" layoutX="567.0" layoutY="47.0" onMouseClicked="#btnSongClick" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@icons8-musical-notes-64.png" />
+                  <Image url="@ALL/icons8-musical-notes-64.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="btnAlbum" fitHeight="40.0" fitWidth="24.0" layoutX="497.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="btnAlbum" fitHeight="40.0" fitWidth="24.0" layoutX="497.0" layoutY="47.0" onMouseClicked="#btnAlbumClick" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@icons8-photo-gallery-64.png" />
+                  <Image url="@ALL/icons8-photo-gallery-64.png" />
                </image>
             </ImageView>
             <TextField fx:id="txtSearch" layoutX="495.0" layoutY="12.0" promptText="search..." />

@@ -41,7 +41,7 @@
                   <Image url="@ALL/icons8-add.png" />
                </image>
             </ImageView>
-            <TableView fx:id="playlistTable" layoutX="14.0" layoutY="76.0" prefHeight="485.0" prefWidth="246.0">
+            <TableView fx:id="playlistTable" layoutX="14.0" layoutY="76.0" onMouseClicked="#clickItem" prefHeight="485.0" prefWidth="246.0">
               <columns>
                 <TableColumn fx:id="delete" prefWidth="93.0" text="Delete" />
                 <TableColumn fx:id="playlistName" prefWidth="152.0" text="Playlist" />

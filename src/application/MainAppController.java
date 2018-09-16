@@ -89,7 +89,6 @@ public class MainAppController implements Initializable {
 	@FXML
 	private TableColumn<Playlist,String> playlistName;
 	
-
 	// search buttons
 	@FXML
 	private ImageView btnAlbum;
@@ -150,6 +149,7 @@ public class MainAppController implements Initializable {
             }
         
         });
+		
 		playlistTable.setItems(playlists);
 		
 		playlistTable.getSelectionModel().getSelectedCells().toString();
@@ -162,6 +162,17 @@ public class MainAppController implements Initializable {
 		
 	}
 
+	//when user double click the playlist, it will display the songs in the playlist on the right
+	@FXML
+	public void clickItem(MouseEvent event)
+	{
+	    if (event.getClickCount() == 2) //Checking double click
+	    {
+	        playlistTable.getSelectionModel().getSelectedItem().getName();
+	        
+	    }
+	}
+	
 	@FXML
 	public void btnSongClick(MouseEvent event) 
 	{
@@ -477,7 +488,7 @@ public class MainAppController implements Initializable {
             }
         });
 	    
-
+	    
 	}
 		
 	

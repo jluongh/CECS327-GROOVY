@@ -1,52 +1,79 @@
 package data.init;
 
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import data.models.*;
 
 public class Seeder {
-	private static final String UNIX_PATH = "src/data/"; 
+	private static final String filePath = "src/data/"; 
 	
 	public static void main(String[] args) {
 		seedLibrary();
-		seedStore();	
+		seedUsers();	
 	}
 	
-	private static void seedStore() {
+	private static void seedUsers() {
+	
+		// Create Users
+		User user1 = new User("user1", "cecs327");
+		user1.setUserID(0);
+		User user2 = new User("user2", "cecs327");
+		user2.setUserID(1);
 		
-		// Create playlists
-		Playlist playlist1 = new Playlist("80s love songs");
-		Playlist playlist2 = new Playlist("Bangerz");
+		List<User> users = new ArrayList<User>();
+		users.add(user1);
+		users.add(user2);
+		
+		// Create user profiles
+		Playlist playlist1 = new Playlist("sample1");
+		playlist1.setPlaylistID(0);
+		playlist1.setSongCount(0);
+		
+		Playlist playlist2 = new Playlist("sample2");
+		playlist2.setPlaylistID(1);
+		playlist2.setSongCount(0);
 		
 		List<Playlist> playlists = new ArrayList<Playlist>();
 		playlists.add(playlist1);
 		playlists.add(playlist2);
 		
-		// Create users
-		User user1 = new User("user1", "cecs327");
-		User user2 = new User("user2", "cecs327");
-		User user3 = new User("user3", "cecs327");
+		UserProfile up1 = new UserProfile();
+		up1.setUserID(0);
+		up1.setPlaylists(playlists);
 		
-		List<User> users = new ArrayList<User>();
-		users.add(user1);
-		users.add(user2);
-		users.add(user3);
+		UserProfile up2 = new UserProfile();
+		up2.setUserID(1);
 		
-		// Create store
-		Store store = new Store(users);
+		String uFilePath = filePath + "users.json";
 		
+		try (Writer writer = new FileWriter(uFilePath)) {
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			gson.toJson(users, writer);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
-		try {
-			Gson gson = new Gson();
+		uFilePath = filePath + "userprofile/0.json";
+		try (Writer writer = new FileWriter(uFilePath)) {
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			gson.toJson(up1, writer);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
-			FileOutputStream out = new FileOutputStream(UNIX_PATH + "store.json");
-			out.write(gson.toJson(store).getBytes());
-			out.close();
-		
-		} catch (Exception e) {
-			System.out.println(e);
+		uFilePath = filePath + "userprofile/1.json";
+		try (Writer writer = new FileWriter(uFilePath)) {
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			gson.toJson(up2, writer);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -54,6 +81,7 @@ public class Seeder {
 		//TODO : Will need function to convert length of song to string and to total the duration for playlists 
 		//TODO : Auto generate song name, id based on what's in arraylist
 		//TODO : Auto generate name and duration based on title and length of .wav file properties
+		
 		// Create songs
 		Song song1 = new Song(1, "Everybody Wants To Rule The World", 252000000);
 		Song song2 = new Song(2, "September", 200400000);
@@ -62,65 +90,70 @@ public class Seeder {
 		Song song5 = new Song(5, "Mamma Mia", 198000000);
 		Song song6 = new Song(6, "Let's Groove", 213000000);
 		
-//		Given file: 
-//		File file = ...;
-//		AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
-//		AudioFormat format = audioInputStream.getFormat();
-//		long frames = audioInputStream.getFrameLength();
-//		double durationInSeconds = (frames+0.0) / format.getFrameRate(); 
-	
-// Getting file property duration (length) and converting to seconds		
-//		AudioFileFormat baseFileFormat = null;
-//        AudioFormat baseFormat = null;
-//        baseFileFormat = AudioSystem.getAudioFileFormat(file);
-//        Map<String, Object> properties = baseFileFormat.properties(); 
-//       Long minutes = ((Long) properties.get("length"))/60000000.0; 
-
-		List<Song> GreatestHits = new ArrayList<Song>();
-		GreatestHits.add(song2);
-		GreatestHits.add(song6);
 		
-		List<Song> StoneColdClassics = new ArrayList<Song>();
-		StoneColdClassics.add(song4);
+		/* ---------- Abba ---------- */
+		// Albums: Abba, Arrival
+		// Songs: Mamma Mia in Abba, Dancing Queen in Arrival
+		List<Song> songs = new ArrayList<Song>();
+		songs.add(song5);
+		Album album1 = new Album(1, "ABBA", songs);
 		
-		List<Song> Abba = new ArrayList<Song>();
-		Abba.add(song5);
+		songs = new ArrayList<Song>();
+		songs.add(song3);
+		Album album2 = new Album(2, "Arrival", songs);
 		
-		List<Song> Arrival = new ArrayList<Song>();
-		Arrival.add(song3);
+		List<Album> albums = new ArrayList<Album>();
+		albums.add(album1);
+		albums.add(album2);
 		
-		List<Song> SongsFromTheBigChair = new ArrayList<Song>();
-		SongsFromTheBigChair.add(song1);
+		Artist artist1 = new Artist(1, "ABBA");
+		artist1.setAlbums(albums);
+		
+		
+		/* ---------- Earth, Wind, & Fire ---------- */
+		// Albums: Greatest Hits
+		// Songs: September, Let's Groove
+		songs = new ArrayList<Song>();
+		songs.add(song2);
+		songs.add(song6);
+		Album album3 = new Album(3, "Greatest Hits", songs);
+		
+		albums = new ArrayList<Album>();
+		albums.add(album3);
+		
+		Artist artist2 = new Artist(2, "Earth, Wind, & Fire");
+		artist2.setAlbums(albums);
+		
+		/* ---------- Queen ---------- */
+		// Albums: Stone Cold Classics
+		// Songs: Bohemian Rhapsody
+		songs = new ArrayList<Song>();
+		songs.add(song4);
+		Album album4 = new Album(4, "Stone Cold Classics", songs);
+		
+		albums = new ArrayList<Album>();
+		albums.add(album4);
+		
+		Artist artist3 = new Artist(2, "Queen");
+		artist3.setAlbums(albums);
+		
+		/* ---------- Tears for Fears ---------- */
+		// Album: Songs From the Big Chair
+		// Songs: Everybody wants to Rule the World
+		songs = new ArrayList<Song>();
+		songs.add(song1);
+		Album album5 = new Album(5, "Songs from the Big Chair", songs);
+		
+		albums = new ArrayList<Album>();
+		albums.add(album5);
+		
+		Artist artist4 = new Artist(2, "Tears for Fears");
+		artist4.setAlbums(albums);
 		
 		
 		//TODO : Auto generate album name, id based on what's in arraylist
 		//TODO : Auto generate album based on album in .wav file properties
-		// Create albums
-		Album album1 = new Album(1, "Greatest Hits", GreatestHits);
-		Album album2 = new Album(2, "Stone Cold Classics", StoneColdClassics);
-		Album album3 = new Album(3, "Abba", Abba);
-		Album album4 = new Album(4, "Arrival", Arrival);
-		Album album5 = new Album(5, "Songs From The Big Chair", SongsFromTheBigChair);
 		
-		List<Album> ABBA = new ArrayList<Album>();
-		ABBA.add(album3);
-		ABBA.add(album4);
-		
-		List<Album> EarthWindAndFire = new ArrayList<Album>();
-		EarthWindAndFire.add(album1);
-		
-		List<Album> Queen = new ArrayList<Album>();
-		Queen.add(album2);
-		
-		List<Album> TearsForFears= new ArrayList<Album>();
-		TearsForFears.add(album5);
-
-		
-		// Create artists
-		Artist artist1 = new Artist(1, "ABBA", ABBA);
-		Artist artist2 = new Artist(2, "Earth, Wind, & Fire", EarthWindAndFire);
-		Artist artist3 = new Artist(3, "Queen", Queen);
-		Artist artist4 = new Artist(4, "Tears For Fears", TearsForFears); 
 		
 		List<Artist> artists = new ArrayList<Artist>();		
 		artists.add(artist1);
@@ -128,21 +161,16 @@ public class Seeder {
 		artists.add(artist3);
 		artists.add(artist4);
 		
-		// Create library
-		Library library = new Library(artists);
-				
 		
-		try {
-			Gson gson = new Gson();
+		// Write to file
+		String uFilePath = filePath + "library.json";
 		
-			FileOutputStream out = new FileOutputStream(UNIX_PATH + "library.json");
-			out.write(gson.toJson(library).getBytes());
-			out.close();
-		
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-				
+		try (Writer writer = new FileWriter(uFilePath)) {
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			gson.toJson(artists, writer);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
 	}
 }
 

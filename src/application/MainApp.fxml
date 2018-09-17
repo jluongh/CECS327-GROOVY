@@ -10,35 +10,41 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="634.0" prefWidth="965.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainAppController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="634.0" prefWidth="965.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainAppController">
    <children>
       <AnchorPane prefHeight="633.0" prefWidth="269.0">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#cfe0e8" height="634.0" stroke="BLACK" strokeType="INSIDE" width="269.0" />
-            <Label layoutX="18.0" layoutY="29.0" prefHeight="35.0" prefWidth="107.0" text="Playlist:" textFill="#0a0a0a" underline="true">
+            <Rectangle arcHeight="5.0" arcWidth="5.0" height="634.0" stroke="BLACK" strokeType="INSIDE" width="269.0">
+               <fill>
+                  <RadialGradient centerX="0.5277777777777777" centerY="0.5571428571428572" radius="0.7674418604651163">
+                     <stops>
+                        <Stop color="#d0d8f8" />
+                        <Stop color="#dacacd" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+            </Rectangle>
+            <Label layoutX="20.0" layoutY="41.0" prefHeight="35.0" prefWidth="107.0" text="Playlist:" textFill="#0a0a0a" underline="true">
                <font>
                   <Font name="Arial Bold Italic" size="24.0" />
                </font>
             </Label>
             <ListView fx:id="playlistScreen" layoutX="14.0" layoutY="79.0" prefHeight="479.0" prefWidth="246.0" />
-            <ImageView fx:id="addPlaylist" fitHeight="26.0" fitWidth="27.0" layoutX="227.0" layoutY="38.0" onMouseClicked="#addPlaylistClicked" pickOnBounds="true">
+            <ImageView fx:id="addPlaylist" fitHeight="26.0" fitWidth="27.0" layoutX="228.0" layoutY="50.0" onMouseClicked="#addPlaylistClicked" pickOnBounds="true">
                <image>
                   <Image url="@ALL/icons8-add.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="deletePlaylist" fitHeight="26.0" fitWidth="27.0" layoutX="191.0" layoutY="38.0" onMouseClicked="#deletePlaylistClicked" pickOnBounds="true">
-               <image>
-                  <Image url="@ALL/icons8-delete-2.png" />
-               </image>
-            </ImageView>
-            <TableView fx:id="playlistTable" layoutX="14.0" layoutY="76.0" prefHeight="485.0" prefWidth="246.0">
+            <TableView fx:id="playlistTable" layoutX="14.0" layoutY="76.0" onMouseClicked="#clickItem" prefHeight="485.0" prefWidth="246.0">
               <columns>
-                <TableColumn fx:id="delete" prefWidth="52.0" text="Delete" />
-                <TableColumn fx:id="playlistName" prefWidth="193.0" text="Playlist" />
+                <TableColumn fx:id="delete" prefWidth="93.0" text="Delete" />
+                <TableColumn fx:id="playlistName" prefWidth="152.0" text="Playlist" />
               </columns>
             </TableView>
          </children>
@@ -46,7 +52,7 @@
       <AnchorPane layoutX="269.0" layoutY="558.0" prefHeight="67.0" prefWidth="696.0">
          <children>
             <ImageView fitHeight="150.0" fitWidth="43.0" pickOnBounds="true" preserveRatio="true" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#daebe8" height="76.0" stroke="BLACK" strokeType="INSIDE" width="696.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f5fbfc" height="76.0" stroke="BLACK" strokeType="INSIDE" width="696.0" />
             <ImageView fx:id="playMusic" fitHeight="26.0" fitWidth="27.0" layoutX="395.0" layoutY="25.0" onMouseClicked="#playMusicClicked" pickOnBounds="true">
                <image>
                   <Image url="@ALL/icons8-video-playback.png" />
@@ -72,13 +78,13 @@
                   <Image url="@ALL/icons8-noise-free.png" />
                </image>
             </ImageView>
-            <Slider layoutX="525.0" layoutY="31.0" prefHeight="14.0" prefWidth="119.0" value="50.0" />
+            <Slider layoutX="525.0" layoutY="31.0" prefHeight="14.0" prefWidth="119.0" />
             <Text fx:id="songName" layoutX="12.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Song Name">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <Text fx:id="artistName" layoutX="12.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Artist Name">
+            <Text fx:id="songName1" layoutX="12.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Artist Name">
                <font>
                   <Font size="15.0" />
                </font>
@@ -87,7 +93,15 @@
       </AnchorPane>
       <AnchorPane layoutX="269.0" prefHeight="85.0" prefWidth="696.0">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b7d7e8" height="83.0" stroke="BLACK" strokeType="INSIDE" width="696.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" height="83.0" stroke="BLACK" strokeType="INSIDE" width="696.0">
+               <fill>
+                  <RadialGradient centerY="0.5" radius="1.0">
+                     <stops>
+                        <Stop color="WHITE" />
+                        <Stop color="#d1f8fc" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill></Rectangle>
             <Label fx:id="userNameText" layoutX="115.0" layoutY="25.0" prefHeight="35.0" prefWidth="165.0" text="Username" textFill="#111111" underline="true">
                <font>
                   <Font name="Arial Black" size="18.0" />
@@ -98,19 +112,19 @@
                   <Image url="@image.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="btnArtist" fitHeight="29.0" fitWidth="35.0" layoutX="630.0" layoutY="44.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="btnArtist" fitHeight="29.0" fitWidth="35.0" layoutX="630.0" layoutY="44.0" onMouseClicked="#btnArtistClick" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@ALL/icons8-dj-64.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="btnSong" fitHeight="29.0" fitWidth="24.0" layoutX="567.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="btnSong" fitHeight="29.0" fitWidth="24.0" layoutX="567.0" layoutY="47.0" onMouseClicked="#btnSongClick" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@ALL/icons8-musical-notes-64.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="btnAlbum" fitHeight="40.0" fitWidth="24.0" layoutX="497.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="btnAlbum" fitHeight="40.0" fitWidth="24.0" layoutX="497.0" layoutY="47.0" onMouseClicked="#btnAlbumClick" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@ALL/icons8-music-folder.png" />
+                  <Image url="@ALL/icons8-photo-gallery-64.png" />
                </image>
             </ImageView>
             <TextField fx:id="txtSearch" layoutX="495.0" layoutY="12.0" promptText="search..." />
@@ -119,8 +133,18 @@
       </AnchorPane>
       <AnchorPane layoutX="269.0" layoutY="85.0" prefHeight="473.0" prefWidth="696.0">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#87bdd8" height="479.0" layoutY="-6.0" stroke="BLACK" strokeType="INSIDE" width="696.0" />
-            <Label layoutX="23.0" layoutY="1.0" prefHeight="48.0" prefWidth="107.0" text="Result:" textFill="#111111" underline="true">
+            <Rectangle arcHeight="5.0" arcWidth="5.0" height="479.0" layoutY="-6.0" stroke="BLACK" strokeType="INSIDE" width="696.0">
+               <fill>
+                  <RadialGradient centerX="0.5277777777777777" centerY="0.17142857142857143" focusDistance="-0.5348837209302325" radius="1.0">
+                     <stops>
+                        <Stop color="WHITE" />
+                        <Stop color="WHITE" offset="0.007662835249042145" />
+                        <Stop color="#e4ccd1" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+            </Rectangle>
+            <Label layoutX="14.0" prefHeight="48.0" prefWidth="107.0" text="Result:" underline="true">
                <font>
                   <Font size="24.0" />
                </font>
@@ -130,7 +154,7 @@
                   <Image url="@ALL/icons8-add-to-favorites.png" />
                </image>
             </ImageView>
-            <TableView fx:id="Result" layoutX="22.0" layoutY="50.0" prefHeight="397.0" prefWidth="653.0">
+            <TableView fx:id="Result" layoutX="22.0" layoutY="50.0" onMouseClicked="#playMusicClicked" prefHeight="397.0" prefWidth="653.0">
               <columns>
                 <TableColumn fx:id="col1" prefWidth="119.0" text="C1" />
                 <TableColumn fx:id="col2" prefWidth="130.0" text="C2" />

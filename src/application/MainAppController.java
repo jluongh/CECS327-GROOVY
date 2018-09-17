@@ -168,6 +168,10 @@ public class MainAppController implements Initializable {
 	    if (event.getClickCount() == 2) //Checking double click
 	    {
 	    	setTabletoPlaylist();
+	    	for(int i = 0; i<Result.getItems().size();i++)
+			{
+				Result.getItems().clear();
+			}
 	        Playlist userChoose = playlistTable.getSelectionModel().getSelectedItem();
 	        List<Song> songPlay = new ArrayList<Song>();
 	        ArrayList<SongInfo> songin = (ArrayList<SongInfo>) userChoose.getSongInfos();
@@ -235,6 +239,16 @@ public class MainAppController implements Initializable {
 		search(txtSearch.getText(), "artist");
 	}
 	
+	@FXML
+	public void playTable(MouseEvent event)
+	{
+		if (event.getClickCount() == 2) //Checking double click
+	    {
+			Song userSong = (Song) Result.getSelectionModel().getSelectedItem();
+			player.Load(userSong);
+			player.Play();
+	    }
+	}
 	
 	private void search(String text, String type) {
 		
@@ -578,12 +592,10 @@ public class MainAppController implements Initializable {
             				{
             					Date date = new Date();
             					SongInfo newSong = new SongInfo(currentSong, date);
-            					List<SongInfo> songlist = new ArrayList<SongInfo>();
-            					songlist = playlist.get(i).getSongInfos();
+            					ArrayList<SongInfo> songlist = (ArrayList<SongInfo>) playlist.get(i).getSongInfos();
             					songlist.add(newSong);
             					playlist.get(i).setSongInfos(songlist);
             					found = true;
-            					System.out.println("found");
             				}
             			}
             			if (found ==false)

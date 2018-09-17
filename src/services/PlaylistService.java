@@ -4,15 +4,15 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import data.models.Playlist;
-import data.models.User;
-import data.models.UserProfile;
+import data.models.*;
 
 public class PlaylistService {
 
@@ -44,6 +44,20 @@ public class PlaylistService {
 			playlists = new ArrayList<Playlist>();
 		}
 		return playlists;
+	}
+	
+	/**
+	 * 
+	 * @param playlistName
+	 * @return
+	 */
+	public Playlist GetPlaylistByID(int playlistID) {
+		List<Playlist> playlists = userProfile.getPlaylists();
+		try {
+			return playlists.stream().filter(p -> p.getPlaylistID() == playlistID).findFirst().get();
+		} catch (NoSuchElementException e) {
+			return null;
+		}
 	}
 	
 	/**
@@ -95,6 +109,39 @@ public class PlaylistService {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void AddToPlaylistBySongInfo(int playlistID, SongInfo song) {
+		Playlist playlist = GetPlaylistByID(playlistID);
+		if (playlist != null) {
+			List<SongInfo> songs;
+			
+			if (playlist.getSongInfos() == null) 
+				songs = new ArrayList<SongInfo>();
+			else
+				songs = playlist.getSongInfos();
+			
+			songs.add(song);
+			playlist.setSongInfos(songs);
+			
+			DeletePlaylist(playlistID);
+			
+			List<Playlist> playlists = userProfile.getPlaylists();
+			playlists.add(playlist);
+			Collections.sort(playlists, Comparator.comparingLong(Playlist::getPlaylistID));
+			userProfile.setPlaylists(playlists);
+			
+			try (Writer writer = new FileWriter(profileFilePath)) {
+			    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			    gson.toJson(userProfile, writer);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public boolean IsEmpty() {
+		return userProfile.getPlaylists().isEmpty();
 	}
 	
 	

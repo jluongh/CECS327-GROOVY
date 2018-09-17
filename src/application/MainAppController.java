@@ -120,6 +120,7 @@ public class MainAppController implements Initializable {
 	private List<Song> playlistSong = new ArrayList<Song>();
 	private AlbumController amc = new AlbumController();
 	private ArtistController atc = new ArtistController();
+	private Playlist currentPlaylist;
 	
 	// Audio player
 	AudioPlayer player = new AudioPlayer();
@@ -169,7 +170,7 @@ public class MainAppController implements Initializable {
 	    if (event.getClickCount() == 2) //Checking double click
 	    {
 	        Playlist userChoose = playlistTable.getSelectionModel().getSelectedItem();
-
+	        currentPlaylist = userChoose;
 	        for (int i = 0; i<userChoose.getSongInfos().size();i++)
 	        {
 	        	userSong.add(userChoose.getSongInfos().get(i));
@@ -177,9 +178,7 @@ public class MainAppController implements Initializable {
 	        
 	        setTabletoPlaylist();
 			col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
-			//col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getArtist()));
 			col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
-			//col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getAlbum()));
 			col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
 			col4.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getAddedDate().toString()));
 			col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() 
@@ -198,7 +197,7 @@ public class MainAppController implements Initializable {
 	            @Override
 	            public TableCell<Disposer.Record, Boolean> call(TableColumn<Disposer.Record, Boolean> p)
 	            {
-	                return new ButtonCelldeleteSong();
+	                return new ButtonCellPlaySong();
 	            }
 	        
 	        });
@@ -236,10 +235,6 @@ public class MainAppController implements Initializable {
 			
 			List<Song> song=search.findFromSongs(text);
 			// #2 update the result page from "Xinyi"
-			for(int i = 0; i< song.size();i++)
-			{
-				System.out.println(song);
-			}
 			
 			setSearchSong(song);
 			
@@ -297,6 +292,10 @@ public class MainAppController implements Initializable {
             }
         
         });
+		for(int i = 0; i<Result.getItems().size();i++)
+		{
+			Result.getItems().clear();
+		}
 		Result.setItems(songs);
 		Result.refresh();
 	}
@@ -340,7 +339,10 @@ public class MainAppController implements Initializable {
             }
         
         });
-		
+		for(int i = 0; i<Result.getItems().size();i++)
+		{
+			Result.getItems().clear();
+		}
 		Result.setItems(albumSong);
 		Result.refresh();
 	}
@@ -387,6 +389,10 @@ public class MainAppController implements Initializable {
             }
         
         });
+		for(int i = 0; i<Result.getItems().size();i++)
+		{
+			Result.getItems().clear();
+		}
 		Result.setItems(artistSong);
 		Result.refresh();
 	}
@@ -409,6 +415,7 @@ public class MainAppController implements Initializable {
 		showInputBox();
 	}
 	
+	//prompt user to input new playlist name
 	public void showInputBox()
 	{
 		TextInputDialog dialog = new TextInputDialog("");
@@ -500,10 +507,10 @@ public class MainAppController implements Initializable {
 	}
 	
 	//delete song button constructor
-	private class ButtonCelldeleteSong extends TableCell<Disposer.Record, Boolean> {
-        Button cellButton = new Button("Delete");
+	private class ButtonCellPlaySong extends TableCell<Disposer.Record, Boolean> {
+        Button cellButton = new Button("Play");
         
-        ButtonCelldeleteSong()
+        ButtonCellPlaySong()
         {
             
         	//Action when the button is pressed
@@ -512,8 +519,7 @@ public class MainAppController implements Initializable {
                 @Override
                 public void handle(ActionEvent t) 
                 {
-                    //TODO:handle delete action
-                	Song currentsong = (Song) ButtonCelldeleteSong.this.getTableView().getItems().get(ButtonCelldeleteSong.this.getIndex());
+                	Song currentsong = (Song) ButtonCellPlaySong.this.getTableView().getItems().get(ButtonCellPlaySong.this.getIndex());
                 	player.Load(currentsong);
                 	player.Play();
                 }
@@ -534,7 +540,7 @@ public class MainAppController implements Initializable {
 	
 	//add song button constructor
 	private class ButtonCelladdSong extends TableCell<Disposer.Record, Boolean> {
-        Button cellButton = new Button("Delete");
+        Button cellButton = new Button("Add");
         
         ButtonCelladdSong()
         {
@@ -564,9 +570,12 @@ public class MainAppController implements Initializable {
             				{
             					Date date = new Date();
             					SongInfo newSong = new SongInfo(currentSong, date);
-            					playlist.get(i).getSongInfos().add(newSong);
-            					//playlist.get(i).getSongInfos().
+            					List<SongInfo> songlist = new ArrayList<SongInfo>();
+            					songlist = playlist.get(i).getSongInfos();
+            					songlist.add(newSong);
+            					playlist.get(i).setSongInfos(songlist);
             					found = true;
+            					System.out.println("found");
             				}
             			}
             			if (found ==false)

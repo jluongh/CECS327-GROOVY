@@ -4,6 +4,16 @@
     {
       "playlistID": 0,
       "name": "me2",
+      "songInfos": [
+        {
+          "song": {
+            "songID": 5,
+            "title": "Mamma Mia",
+            "duration": 1.98E8
+          },
+          "addedDate": "Sep 17, 2018 1:26:49 PM"
+        }
+      ],
       "songCount": 0,
       "creationDate": "Sep 15, 2018 9:26:50 PM"
     },

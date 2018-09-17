@@ -185,7 +185,6 @@ public class MainAppController implements Initializable {
 		        }
 		        //load playlist to the audio player
 		        player.LoadSongs(songPlay);
-		        player.Play();
 		        
 				col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
 				col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
@@ -548,7 +547,10 @@ public class MainAppController implements Initializable {
                 {
                 	Song currentsong = (Song) ButtonCellPlaySong.this.getTableView().getItems().get(ButtonCellPlaySong.this.getIndex());
                 	player.Load(currentsong);
-                	player.Play();
+        			player.Play();
+        			songName.setText(currentsong.getTitle());
+        			String artist = atc.GetArtistBySongTitle(currentsong.getTitle()).getName();
+        			artistName.setText(artist);
                 }
             });
             
@@ -597,9 +599,11 @@ public class MainAppController implements Initializable {
             				{
             					Date date = new Date();
             					SongInfo newSong = new SongInfo(currentSong, date);
-            					ArrayList<SongInfo> songlist = (ArrayList<SongInfo>) playlist.get(i).getSongInfos();
-            					songlist.add(newSong);
-            					playlist.get(i).setSongInfos(songlist);
+//            					ArrayList<SongInfo> songlist = (ArrayList<SongInfo>) playlist.get(i).getSongInfos();
+//            					songlist.add(newSong);
+//            					playlist.get(i).setSongInfos(songlist);
+//            					playlists.get(i).setSongInfos(songlist);
+            					pc.AddToPlaylistBySongInfo(playlist.get(i).getPlaylistID(), newSong);
             					found = true;
             				}
             			}

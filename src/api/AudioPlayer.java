@@ -11,7 +11,8 @@ public class AudioPlayer {
 	public Song currentSong;
 	private Clip clip;
 	ListIterator<Song> iterator;
-
+	private boolean isPlaying;
+	
 	public void LoadSongs(List<Song> songs) {
 		this.iterator = songs.listIterator();
 	}
@@ -20,8 +21,13 @@ public class AudioPlayer {
 		currentSong = song;
 		String filename = "music/" + currentSong.getSongID() + ".wav";
 		try {
+
+			if (isPlaying) {
+				Reset();
+			}
 			clip = AudioSystem.getClip();
 			clip.open( AudioSystem.getAudioInputStream(new File(filename)));
+
 		} catch(LineUnavailableException e) {
             System.out.println("Audio Error");
 		} catch(IOException e) {
@@ -33,17 +39,20 @@ public class AudioPlayer {
 	
 	private void Reset() {
 		clip.stop();
-		clip.setMicrosecondPosition(0);
+		clip.setMicrosecondPosition(0);		
+		isPlaying = false;
 	}
 	
 	public void Play() {
 		System.out.println("Play");
 		clip.start();
+		isPlaying = true;
 	}
 	
 	public void Pause() {
 		System.out.println("Pause");
 		clip.stop();
+		isPlaying = false;
 	}
 	
 	public boolean HasNext() {

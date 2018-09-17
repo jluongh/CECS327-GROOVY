@@ -12,7 +12,7 @@ public class Artist {
 		//
 	}
 	
-	public Artist(int artistID, String name, List<Album> albums) {
+	public Artist(int artistID, String name) {
 		this.artistID = artistID;
 		this.name = name;
 	}

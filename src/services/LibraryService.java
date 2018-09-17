@@ -201,10 +201,10 @@ public class LibraryService {
 
 			// Identify token type for deserialization
 			Gson gson = new Gson();
-			Library library = gson.fromJson(json, new TypeToken<Library>() {}.getType());
+			List<Artist> artists = gson.fromJson(json, new TypeToken<List<Artist>>() {}.getType());
 
 			// Get Artist
-			for (Artist artist : library.getArtists()) {
+			for (Artist artist : artists) {
 				if (artist.getName().equals(artistName)) {
 					foundArtist = artist;
 					break;
@@ -243,11 +243,11 @@ public class LibraryService {
 
 			// Identify token type for deserialization
 			Gson gson = new Gson();
-			Library library = gson.fromJson(json, new TypeToken<Library>() {}.getType());
+			List<Artist> artists = gson.fromJson(json, new TypeToken<List<Artist>>() {}.getType());
 
 			// Get Artists
 			List<Artist> allArtists = new ArrayList<Artist>();
-			for (Artist artist : library.getArtists()) {
+			for (Artist artist : artists) {
 				allArtists.add(artist);
 			}
 
@@ -283,10 +283,11 @@ public class LibraryService {
 
 			// Identify token type for deserialization
 			Gson gson = new Gson();
-			Library library = gson.fromJson(json, new TypeToken<Library>() {}.getType());
+			List<Artist> artists = gson.fromJson(json, new TypeToken<List<Artist>>() {}.getType());
 
+			// TODO: Use while loop /remove break
 			// Get artist's album
-			for (Artist artist : library.getArtists()) {
+			for (Artist artist : artists) {
 				for(Album album : artist.getAlbums()) {
 					if (album.getName().equals(albumName)) {
 						foundAlbum = album;
@@ -329,11 +330,11 @@ public class LibraryService {
 
 			// Identify token type for deserialization
 			Gson gson = new Gson();
-			Library library = gson.fromJson(json, new TypeToken<Library>() {}.getType());
+			List<Artist> artists = gson.fromJson(json, new TypeToken<List<Artist>>() {}.getType());
 
 			// Get Albums from each Artists
 			List<Album> allAlbums = new ArrayList<Album>();
-			for (Artist artist : library.getArtists()) {
+			for (Artist artist : artists) {
 				for (Album album : artist.getAlbums()) {
 					allAlbums.add(album);
 				}
@@ -372,10 +373,10 @@ public class LibraryService {
 
 			// Identify token type for deserialization
 			Gson gson = new Gson();
-			Library library = gson.fromJson(json, new TypeToken<Library>() {}.getType());
+			List<Artist> artists = gson.fromJson(json, new TypeToken<List<Artist>>() {}.getType());
 
 			// Get album's song
-			for (Artist artist : library.getArtists()) {
+			for (Artist artist : artists) {
 				for(Album album : artist.getAlbums()) {
 					for(Song song : album.getSongs()) {
 						if (song.getTitle().equals(songName)) {
@@ -419,11 +420,11 @@ public class LibraryService {
 
 			// Identify token type for deserialization
 			Gson gson = new Gson();
-			Library library = gson.fromJson(json, new TypeToken<Library>() {}.getType());
+			List<Artist> artists = gson.fromJson(json, new TypeToken<List<Artist>>() {}.getType());
 
 			// Get Albums from each Artists
 			List<Song> allSongs = new ArrayList<Song>();
-			for (Artist artist : library.getArtists()) {
+			for (Artist artist : artists) {
 				for (Album album : artist.getAlbums()) {
 					for (Song song : album.getSongs()) {
 						allSongs.add(song);

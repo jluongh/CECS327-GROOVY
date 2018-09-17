@@ -5,6 +5,7 @@ import java.util.List;
 
 import services.PlaylistService;
 import data.models.Playlist;
+import data.models.SongInfo;
 public class PlaylistController {
 
 	PlaylistService playlistService;
@@ -28,6 +29,14 @@ public class PlaylistController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return Collections.emptyList();
+		}
+	}
+	
+	public Playlist GetPlaylistByID(int playlistID) {
+		try {
+			return playlistService.GetPlaylistByID(playlistID);
+		} catch (Exception e) {
+			return null;
 		}
 	}
 	
@@ -56,5 +65,12 @@ public class PlaylistController {
 		}
 	}
 	
+	public void AddToPlaylistBySongInfo(int playlistID, SongInfo songInfo) {
+		try {
+			playlistService.AddToPlaylistBySongInfo(playlistID, songInfo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 }

@@ -84,7 +84,7 @@
                   <Font size="18.0" />
                </font>
             </Text>
-            <Text fx:id="songName1" layoutX="12.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Artist Name">
+            <Text fx:id="artistName" layoutX="12.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Artist Name">
                <font>
                   <Font size="15.0" />
                </font>
@@ -149,11 +149,6 @@
                   <Font size="24.0" />
                </font>
             </Label>
-            <ImageView fitHeight="26.0" fitWidth="27.0" layoutX="636.0" layoutY="24.0" pickOnBounds="true">
-               <image>
-                  <Image url="@ALL/icons8-add-to-favorites.png" />
-               </image>
-            </ImageView>
             <TableView fx:id="Result" layoutX="22.0" layoutY="50.0" onMouseClicked="#playTable" prefHeight="397.0" prefWidth="653.0">
               <columns>
                 <TableColumn fx:id="col1" prefWidth="119.0" text="C1" />

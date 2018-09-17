@@ -247,6 +247,9 @@ public class MainAppController implements Initializable {
 			Song userSong = (Song) Result.getSelectionModel().getSelectedItem();
 			player.Load(userSong);
 			player.Play();
+			songName.setText(userSong.getTitle());
+			String artist = atc.GetArtistBySongTitle(userSong.getTitle()).getName();
+			artistName.setText(artist);
 	    }
 	}
 	
@@ -279,6 +282,7 @@ public class MainAppController implements Initializable {
 		}
 	}
 	
+	//search song according to song name
 	public void setSearchSong(List<Song> song)
 	{
 		for (int i = 0; i< song.size();i++)
@@ -369,6 +373,7 @@ public class MainAppController implements Initializable {
 		Result.refresh();
 	}
 	
+	//search according to artist
 	public void setSearchArtist(List<Artist> artist)
 	{
 		for (int i = 0; i< artist.size();i++)

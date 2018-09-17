@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Date;
+
+import api.AlbumController;
+import api.ArtistController;
 import api.AudioPlayer;
 import api.PlaylistController;
 import api.Searcher;
@@ -115,6 +118,8 @@ public class MainAppController implements Initializable {
 	private ObservableList<Object> artistSong = FXCollections.observableArrayList();
 	private ObservableList<Object> albumSong = FXCollections.observableArrayList();
 	private List<Song> playlistSong = new ArrayList<Song>();
+	private AlbumController amc = new AlbumController();
+	private ArtistController atc = new ArtistController();
 	
 	// Audio player
 	AudioPlayer player = new AudioPlayer();
@@ -172,8 +177,10 @@ public class MainAppController implements Initializable {
 	        
 	        setTabletoPlaylist();
 			col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
-			col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getArtist()));
-			col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getAlbum()));
+			//col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getArtist()));
+			col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
+			//col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getAlbum()));
+			col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
 			col4.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getAddedDate().toString()));
 			col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() 
 			{
@@ -268,8 +275,8 @@ public class MainAppController implements Initializable {
 		col5.setText("Add");
 
 		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
-		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getArtist()));
-		col3.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getAlbum()));
+		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
+		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
 		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(Double.toString(((Song) cellData.getValue()).getDuration())));
 		
 		col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
@@ -310,9 +317,9 @@ public class MainAppController implements Initializable {
 		col4.setText("Duration");
 		col5.setText("Add");
 		
-		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getAlbum()));
+		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
 		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
-		col3.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getArtist()));
+		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
 		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(Double.toString(((Song) cellData.getValue()).getDuration())));
 		
 		col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
@@ -357,9 +364,9 @@ public class MainAppController implements Initializable {
 		col4.setText("Duration");
 		col5.setText("Add");
 		
-		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getArtist()));
+		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
 		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
-		col3.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getAlbums()));
+		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
 		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(Double.toString(((Song) cellData.getValue()).getDuration())));
 		
 		col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
@@ -558,8 +565,8 @@ public class MainAppController implements Initializable {
             					Date date = new Date();
             					SongInfo newSong = new SongInfo(currentSong, date);
             					playlist.get(i).getSongInfos().add(newSong);
-            					playlist.get(i).getSongInfos().
-            					found= true;
+            					//playlist.get(i).getSongInfos().
+            					found = true;
             				}
             			}
             			if (found ==false)

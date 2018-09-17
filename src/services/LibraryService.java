@@ -30,7 +30,7 @@ public class LibraryService {
 	 * Creates library json file
 	 */
 	public LibraryService() {
-		createLibrary();
+		//createLibrary();
 	}
 
 	/**

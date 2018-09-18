@@ -13,6 +13,7 @@ import api.ArtistController;
 import api.AudioPlayer;
 import api.PlaylistController;
 import api.Searcher;
+import api.SongController;
 import api.UserProfileController;
 import data.models.Album;
 import data.models.Artist;
@@ -119,6 +120,7 @@ public class MainAppController implements Initializable {
 	private ObservableList<Object> albumSong = FXCollections.observableArrayList();
 	private AlbumController amc = new AlbumController();
 	private ArtistController atc = new ArtistController();
+	private SongController sc = new SongController();
 	
 	// Audio player
 	AudioPlayer player = new AudioPlayer();
@@ -302,7 +304,7 @@ public class MainAppController implements Initializable {
 		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
 		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
 		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(Double.toString(((Song) cellData.getValue()).getDuration())));
+		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
 		
 		col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
 			
@@ -351,7 +353,7 @@ public class MainAppController implements Initializable {
 		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
 		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
 		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(Double.toString(((Song) cellData.getValue()).getDuration())));
+		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
 		
 		col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
 			
@@ -402,8 +404,8 @@ public class MainAppController implements Initializable {
 		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
 		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
 		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(Double.toString(((Song) cellData.getValue()).getDuration())));
-		System.out.print(artist.get(0).getAlbums().get(0).getSongs().get(0).getDuration());
+		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
+		System.out.print(sc.FormatDuration(artist.get(0).getAlbums().get(0).getSongs().get(0).getDuration()));
 		col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
 			
             @Override

@@ -284,6 +284,11 @@ public class MainAppController implements Initializable {
 	//search song according to song name
 	public void setSearchSong(List<Song> song)
 	{
+		for(int i = 0; i<Result.getItems().size();i++)
+		{
+			Result.getItems().clear();
+		}
+		Result.refresh();
 		for (int i = 0; i< song.size();i++)
 		{
 			songs.add(song.get(i));
@@ -317,10 +322,7 @@ public class MainAppController implements Initializable {
             }
         
         });
-		for(int i = 0; i<Result.getItems().size();i++)
-		{
-			Result.getItems().clear();
-		}
+		
 		Result.setItems(songs);
 		Result.refresh();
 	}
@@ -328,6 +330,11 @@ public class MainAppController implements Initializable {
 	//search by album
 	public void setSearchAlbum(List<Album> album)
 	{
+		for(int i = 0; i<Result.getItems().size();i++)
+		{
+			Result.getItems().clear();
+		}
+		Result.refresh();
 		for (int i = 0; i< album.size();i++)
 		{
 			for (int j = 0; j<album.get(i).getSongs().size();j++)
@@ -364,10 +371,6 @@ public class MainAppController implements Initializable {
             }
         
         });
-		for(int i = 0; i<Result.getItems().size();i++)
-		{
-			Result.getItems().clear();
-		}
 		Result.setItems(albumSong);
 		Result.refresh();
 	}
@@ -375,16 +378,20 @@ public class MainAppController implements Initializable {
 	//search according to artist
 	public void setSearchArtist(List<Artist> artist)
 	{
+		for(int i = 0; i<Result.getItems().size();i++)
+		{
+			Result.getItems().clear();
+		}
+		Result.refresh();
 		for (int i = 0; i< artist.size();i++)
 		{
 			for(int j = 0; j < artist.get(i).getAlbums().size();j++)
 			{
-				for(int k = 9; k< artist.get(i).getAlbums().get(j).getSongs().size();k++)
+				for(int k = 0; k< artist.get(i).getAlbums().get(j).getSongs().size();k++)
 				{
 					artistSong.add(artist.get(i).getAlbums().get(j).getSongs().get(k));
 				}
 			}
-			
 		}
 		col1.setText("Artist");
 		col2.setText("Song");
@@ -396,7 +403,7 @@ public class MainAppController implements Initializable {
 		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
 		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
 		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(Double.toString(((Song) cellData.getValue()).getDuration())));
-		
+		System.out.print(artist.get(0).getAlbums().get(0).getSongs().get(0).getDuration());
 		col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
 			
             @Override
@@ -415,10 +422,6 @@ public class MainAppController implements Initializable {
             }
         
         });
-		for(int i = 0; i<Result.getItems().size();i++)
-		{
-			Result.getItems().clear();
-		}
 		Result.setItems(artistSong);
 		Result.refresh();
 	}
@@ -430,7 +433,7 @@ public class MainAppController implements Initializable {
 		col2.setText("Artist");
 		col3.setText("Album");
 		col4.setText("DateAdded");
-		col5.setText("Delete");
+		col5.setText("Play");
 	}
 	
 

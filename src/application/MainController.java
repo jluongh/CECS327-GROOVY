@@ -78,6 +78,7 @@ public class MainController
             window.setTitle("Groovy");
             window.show();
 		}
+		//if user enter wrong credential, throw error message box
 		else
 		{
 			Alert error = new Alert(Alert.AlertType.ERROR);
@@ -89,10 +90,12 @@ public class MainController
 		}
 	}
 	
+	//get the current user
 	public static User getUser()
 	{
 		return currentUser;
 	}
+	
 	// Event Listener on Button[#btnExit].onAction
 	@FXML
 	public void handleButtonExit(ActionEvent event)

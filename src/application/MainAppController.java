@@ -103,6 +103,7 @@ public class MainAppController implements Initializable {
 	private ImageView btnSong;
 	@FXML
 	private ImageView btnArtist;
+	private boolean isSearch = false;
 	
 	// Search bar 
 	@FXML
@@ -167,6 +168,7 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void clickItem(MouseEvent event)
 	{
+		isSearch=false;
 	    if (event.getClickCount() == 2) //Checking double click
 	    {
 	    	setTabletoPlaylist();
@@ -247,17 +249,30 @@ public class MainAppController implements Initializable {
 	{
 		if (event.getClickCount() == 2) //Checking double click
 	    {
-			Song userSong = (Song) Result.getSelectionModel().getSelectedItem();
-			player.Load(userSong);
-			player.Play();
-			songName.setText(userSong.getTitle());
-			String artist = atc.GetArtistBySongTitle(userSong.getTitle()).getName();
-			artistName.setText(artist);
+			if(isSearch== true)
+			{
+				Song userSong = (Song) Result.getSelectionModel().getSelectedItem();
+				player.Load(userSong);
+				player.Play();
+				songName.setText(userSong.getTitle());
+				String artist = atc.GetArtistBySongTitle(userSong.getTitle()).getName();
+				artistName.setText(artist);
+			}
+			else
+			{
+				SongInfo userSong = (SongInfo) Result.getSelectionModel().getSelectedItem();
+				player.Load(userSong.getSong());
+				player.Play();
+				songName.setText(userSong.getSong().getTitle());
+				String artist = atc.GetArtistBySongTitle(userSong.getSong().getTitle()).getName();
+				artistName.setText(artist);
+			}
+			
 	    }
 	}
 	
 	private void search(String text, String type) {
-		
+		isSearch=true;
 		if(type == "song") {
 			//update result page to search for that song
 			List<Song> song=search.findFromSongs(text);

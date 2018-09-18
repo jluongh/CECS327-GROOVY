@@ -14,13 +14,13 @@ public class Searcher {
 	}
 	
 	/**
-	 * 
+	 * Method searches for queried artist in music library
 	 * @param query
 	 * @return
 	 */
 	public List<Artist> findFromArtists(String query) {
 		
-		LibraryService ls = new LibraryService();
+		LibraryService ls = new LibraryService(); // TODO: Trish - decompose LibraryService
 		
 		List<Artist> artists = new ArrayList<Artist>();
 		artists = ls.getAllArtists();
@@ -47,7 +47,7 @@ public class Searcher {
 	}
 	
 	/**
-	 * 
+	 * Method searches for queried album in music library
 	 * @param query
 	 * @return
 	 */
@@ -80,7 +80,7 @@ public class Searcher {
 	}
 	
 	/**
-	 * 
+	 * Method searched for queried song in music library
 	 * @param query
 	 * @return
 	 */

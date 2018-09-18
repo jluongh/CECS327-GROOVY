@@ -17,11 +17,11 @@ public class UserValidator {
 	}
 	
 	/**
-	 * 
+	 * Method checks if entered credential is too long or is empty
 	 * @param textField
 	 * @return
 	 */
-	public boolean isValid(String textField) {
+	public boolean isValid(String textField) { // TODO: Trish - create separate methods for pw and un
 		if (textField.equals("")) {
 			return false;
 		} else if (textField.length() > MAX_LENGTH) {
@@ -32,7 +32,7 @@ public class UserValidator {
 	}
 	
 	/**
-	 * 
+	 * Method checks if username & password is valid/stored
 	 * @param inUsername
 	 * @param inPassword
 	 * @return

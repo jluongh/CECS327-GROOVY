@@ -17,7 +17,12 @@ public class ArtistService {
 		//	
 	}
 	
-	public Artist getArtistBySongTitle(String targetSong) {
+	/**
+	 * Method gets Artist by song title
+	 * @param targetSong
+	 * @return
+	 */
+	public Artist getArtistBySongTitle(String targetSong) { // TODO: Change to ID
 		try {
 			Artist artistOfSong = null;
 			String filePath = "./src/data/library.json";

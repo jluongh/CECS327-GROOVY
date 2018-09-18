@@ -27,6 +27,11 @@ public class UserService {
 		//
 	}
 	
+	/**
+	 * 
+	 * @param username
+	 * @return
+	 */
 	public User getUser(String username) {
 		List<User> UserList = getUsers();
 		try {
@@ -53,6 +58,10 @@ public class UserService {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param user
+	 */
 	public void AddUser(User user) {
 		
 		int userID = GetLatestUserID() + 1;
@@ -105,6 +114,10 @@ public class UserService {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	private int GetLatestUserID() {
 		int id;
 	

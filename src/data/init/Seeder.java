@@ -14,11 +14,18 @@ import data.models.*;
 public class Seeder {
 	private static final String filePath = "src/data/"; 
 	
+	/**
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		seedLibrary();
 		seedUsers();	
 	}
 	
+	/**
+	 * Method seeds users.json with credentials and seeds individual .json files
+	 */
 	private static void seedUsers() {
 	
 		// Create Users
@@ -77,6 +84,10 @@ public class Seeder {
 		}
 	}
 	
+	/**
+	 * Method seeds music library
+	 * (Method mostly helpful for testing reasons)
+	 */
 	private static void seedLibrary() {
 		//TODO : Will need function to convert length of song to string and to total the duration for playlists 
 		//TODO : Auto generate song name, id based on what's in arraylist

@@ -17,7 +17,12 @@ public class AlbumService {
 		//
 	}
 	
-	public Album getAlbumBySongTitle(String targetSong) {
+	/**
+	 * Method gets album by song title
+	 * @param targetSong
+	 * @return
+	 */
+	public Album getAlbumBySongTitle(String targetSong) { // TODO: Change to song ID?
 		try {
 			Album albumOfSong = null;
 			String filePath = "./src/data/library.json";

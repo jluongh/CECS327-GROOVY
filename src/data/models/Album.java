@@ -18,26 +18,44 @@ public class Album {
 		this.songs = songs;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getAlbumID() {
 		return albumID;
 	}
 
+	/**
+	 * @param albumID
+	 */
 	public void setAlbumID(int albumID) {
 		this.albumID = albumID;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @param name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * @return
+	 */
 	public List<Song> getSongs() {
 		return songs;
 	}
 
+	/**
+	 * @param songs
+	 */
 	public void setSongs(List<Song> songs) {
 		this.songs = songs;
 	}	

@@ -6,6 +6,11 @@ public class SongService {
 		
 	}
 	
+	/**
+	 * Method formats duration from double to mm:ss string
+	 * @param duration
+	 * @return
+	 */
 	public String FormatDuration(double duration) {
 		if (duration == 0.0) 
 			return "";

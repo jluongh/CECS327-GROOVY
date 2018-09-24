@@ -1,27 +1,16 @@
 [
   {
     "artistID": 1,
-    "name": "ABBA",
+    "name": "Tears For Fears",
     "albums": [
       {
         "albumID": 1,
-        "name": "ABBA",
+        "name": "Songs From The Big Chair",
         "songs": [
           {
-            "songID": 5,
-            "title": "Mamma Mia",
-            "duration": 1.98E8
-          }
-        ]
-      },
-      {
-        "albumID": 2,
-        "name": "Arrival",
-        "songs": [
-          {
-            "songID": 3,
-            "title": "Dancing Queen",
-            "duration": 2.106E8
+            "songID": 1,
+            "title": "Everybody Wants To Rule The World",
+            "duration": 4.13
           }
         ]
       }
@@ -32,25 +21,69 @@
     "name": "Earth, Wind, \u0026 Fire",
     "albums": [
       {
-        "albumID": 3,
+        "albumID": 2,
         "name": "Greatest Hits",
         "songs": [
           {
             "songID": 2,
             "title": "September",
-            "duration": 2.004E8
+            "duration": 3.35
           },
           {
             "songID": 6,
-            "title": "Let\u0027s Groove",
-            "duration": 2.13E8
+            "title": "Let\u0027s Groovy",
+            "duration": 3.55
+          }
+        ]
+      },
+      {
+        "albumID": 2,
+        "name": "Greatest Hits",
+        "songs": [
+          {
+            "songID": 2,
+            "title": "September",
+            "duration": 3.35
+          },
+          {
+            "songID": 6,
+            "title": "Let\u0027s Groovy",
+            "duration": 3.55
           }
         ]
       }
     ]
   },
   {
-    "artistID": 2,
+    "artistID": 3,
+    "name": "ABBA",
+    "albums": [
+      {
+        "albumID": 3,
+        "name": "Arrival",
+        "songs": [
+          {
+            "songID": 3,
+            "title": "Dancing Queen",
+            "duration": 3.51
+          }
+        ]
+      },
+      {
+        "albumID": 5,
+        "name": "Abba",
+        "songs": [
+          {
+            "songID": 5,
+            "title": "Mamma Mia",
+            "duration": 3.31
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistID": 4,
     "name": "Queen",
     "albums": [
       {
@@ -60,7 +93,35 @@
           {
             "songID": 4,
             "title": "Bohemian Rhapsody",
-            "duration": 3.636E8
+            "duration": 6.07
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistID": 3,
+    "name": "ABBA",
+    "albums": [
+      {
+        "albumID": 3,
+        "name": "Arrival",
+        "songs": [
+          {
+            "songID": 3,
+            "title": "Dancing Queen",
+            "duration": 3.51
+          }
+        ]
+      },
+      {
+        "albumID": 5,
+        "name": "Abba",
+        "songs": [
+          {
+            "songID": 5,
+            "title": "Mamma Mia",
+            "duration": 3.31
           }
         ]
       }
@@ -68,16 +129,37 @@
   },
   {
     "artistID": 2,
-    "name": "Tears for Fears",
+    "name": "Earth, Wind, \u0026 Fire",
     "albums": [
       {
-        "albumID": 5,
-        "name": "Songs from the Big Chair",
+        "albumID": 2,
+        "name": "Greatest Hits",
         "songs": [
           {
-            "songID": 1,
-            "title": "Everybody Wants To Rule The World",
-            "duration": 2.52E8
+            "songID": 2,
+            "title": "September",
+            "duration": 3.35
+          },
+          {
+            "songID": 6,
+            "title": "Let\u0027s Groovy",
+            "duration": 3.55
+          }
+        ]
+      },
+      {
+        "albumID": 2,
+        "name": "Greatest Hits",
+        "songs": [
+          {
+            "songID": 2,
+            "title": "September",
+            "duration": 3.35
+          },
+          {
+            "songID": 6,
+            "title": "Let\u0027s Groovy",
+            "duration": 3.55
           }
         ]
       }

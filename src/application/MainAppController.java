@@ -390,47 +390,52 @@ public class MainAppController implements Initializable {
 			Result.getItems().clear();
 		}
 		Result.refresh();
-		for (int i = 0; i< artist.size();i++)
-		{
-			for(int j = 0; j < artist.get(i).getAlbums().size();j++)
-			{
-				for(int k = 0; k< artist.get(i).getAlbums().get(j).getSongs().size();k++)
-				{
-					artistSong.add(artist.get(i).getAlbums().get(j).getSongs().get(k));
-				}
-			}
-		}
 		col1.setText("Artist");
 		col2.setText("Song");
 		col3.setText("Album");
 		col4.setText("Duration");
 		col5.setText("Add");
-		//display object to the table
-		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
-		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
-		System.out.print(sc.FormatDuration(artist.get(0).getAlbums().get(0).getSongs().get(0).getDuration()));
-		col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
+		if(artist!=null &&!artist.isEmpty())
+		{
+			for (int i = 0; i< artist.size();i++)
+			{
+				for(int j = 0; j < artist.get(i).getAlbums().size();j++)
+				{
+					for(int k = 0; k< artist.get(i).getAlbums().get(j).getSongs().size();k++)
+					{
+						artistSong.add(artist.get(i).getAlbums().get(j).getSongs().get(k));
+					}
+				}
+			}
 			
-            @Override
-            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Disposer.Record, Boolean> p) 
-            {
-                return new SimpleBooleanProperty(p.getValue() != null);
-            }
-            
-		});
-		//display delete button
-		col5.setCellFactory(new Callback<TableColumn<Disposer.Record, Boolean>, TableCell<Disposer.Record, Boolean>>() {
+			//display object to the table
+			col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
+			col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
+			col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
+			col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
+			System.out.print(sc.FormatDuration(artist.get(0).getAlbums().get(0).getSongs().get(0).getDuration()));
+			col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
+				
+	            @Override
+	            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Disposer.Record, Boolean> p) 
+	            {
+	                return new SimpleBooleanProperty(p.getValue() != null);
+	            }
+	            
+			});
+			//display delete button
+			col5.setCellFactory(new Callback<TableColumn<Disposer.Record, Boolean>, TableCell<Disposer.Record, Boolean>>() {
 
-            @Override
-            public TableCell<Disposer.Record, Boolean> call(TableColumn<Disposer.Record, Boolean> p) {
-                return new ButtonCelladdSong();
-            }
-        
-        });
-		Result.setItems(artistSong);
-		Result.refresh();
+	            @Override
+	            public TableCell<Disposer.Record, Boolean> call(TableColumn<Disposer.Record, Boolean> p) {
+	                return new ButtonCelladdSong();
+	            }
+	        
+	        });
+			Result.setItems(artistSong);
+			Result.refresh();
+		}
+		
 	}
 	
 	//set center panel to be playlist panel
@@ -556,11 +561,11 @@ public class MainAppController implements Initializable {
                 @Override
                 public void handle(ActionEvent t) 
                 {
-                	Song currentsong = (Song) ButtonCellPlaySong.this.getTableView().getItems().get(ButtonCellPlaySong.this.getIndex());
-                	player.Load(currentsong);
+                	SongInfo currentsong = (SongInfo) ButtonCellPlaySong.this.getTableView().getItems().get(ButtonCellPlaySong.this.getIndex());
+                	player.Load(currentsong.getSong());
         			player.Play();
-        			songName.setText(currentsong.getTitle());
-        			String artist = atc.GetArtistBySongTitle(currentsong.getTitle()).getName();
+        			songName.setText(currentsong.getSong().getTitle());
+        			String artist = atc.GetArtistBySongTitle(currentsong.getSong().getTitle()).getName();
         			artistName.setText(artist);
                 }
             });

@@ -19,65 +19,44 @@ public class Searcher {
 	 * @return
 	 */
 	public List<Artist> findFromArtists(String query) {
-		
-		LibraryService ls = new LibraryService(); // TODO: Trish - decompose LibraryService
-		
-		List<Artist> artists = new ArrayList<Artist>();
-		artists = ls.getAllArtists();
-		
-		Collections.sort(artists, new Comparator<Artist>() {
-	        
-			@Override
-			public int compare(Artist a, Artist b) {
-				
-				if (a.getName().contains(query) && b.getName().contains(query)) 
-					return a.getName().compareTo(b.getName());
-				
-			    if (a.getName().contains(query) && !b.getName().contains(query)) 
-			    	return -1;
-			    
-			    if (!a.getName().contains(query) && b.getName().contains(query)) 
-			    	return 1;
-			            
-			    return 0;
-			}
-		});
-		
-		return artists;
-	}
-	
+        
+        LibraryService ls = new LibraryService(); // TODO: Trish - decompose LibraryService
+        
+        List<Artist> artists = new ArrayList<Artist>();
+        artists = ls.getAllArtists();
+        
+        List<Artist> response = new ArrayList<Artist>();
+        
+        for (Artist artist : artists) {
+            if (artist.getName().toLowerCase().contains(query.toLowerCase())) {
+                response.add(artist);
+            }
+        }
+        
+        return response;
+    }
 	/**
 	 * Method searches for queried album in music library
 	 * @param query
 	 * @return
 	 */
 	public List<Album> findFromAlbums(String query) {
-		
-		LibraryService ls = new LibraryService();
-		
-		List<Album> albums = new ArrayList<Album>();
-		albums = ls.getAllAlbums();
-		
-		Collections.sort(albums, new Comparator<Album>() {
-	        
-			@Override
-			public int compare(Album a, Album b) {
-				
-				if (a.getName().contains(query) && b.getName().contains(query)) 
-					return a.getName().compareTo(b.getName());
-				
-			    if (a.getName().contains(query) && !b.getName().contains(query)) 
-			    	return -1;
-			    
-			    if (!a.getName().contains(query) && b.getName().contains(query)) 
-			    	return 1;
-			            
-			    return 0;
-			}
-		});
-		
-		return albums;
-	}
+        
+        LibraryService ls = new LibraryService();
+        
+        List<Album> albums = new ArrayList<Album>();
+        albums = ls.getAllAlbums();
+
+        List<Album> albumsToReturn = new ArrayList<Album>();
+        
+        for (int i = 0; i < albums.size(); i++) {
+            if (albums.get(i).getName().toLowerCase().contains(query.toLowerCase())) {
+                albumsToReturn.add(albums.get(i));
+            }
+        }
+        
+        return albumsToReturn;
+    }
 	
 	/**
 	 * Method searched for queried song in music library
@@ -85,30 +64,20 @@ public class Searcher {
 	 * @return
 	 */
 	public List<Song> findFromSongs(String query) {
-		
-		LibraryService ls = new LibraryService();
-		
-		List<Song> songs = new ArrayList<Song>();
-		songs = ls.getAllSongs();
-		
-		Collections.sort(songs, new Comparator<Song>() {
-	        
-			@Override
-			public int compare(Song a, Song b) {
-				
-				if (a.getTitle().contains(query) && b.getTitle().contains(query)) 
-					return a.getTitle().compareTo(b.getTitle());
-				
-			    if (a.getTitle().contains(query) && !b.getTitle().contains(query)) 
-			    	return -1;
-			    
-			    if (!a.getTitle().contains(query) && b.getTitle().contains(query)) 
-			    	return 1;
-			            
-			    return 0;
-			}
-		});
-		
-		return songs;
-	}
+        
+        LibraryService ls = new LibraryService();
+        
+        List<Song> songs = new ArrayList<Song>();
+        songs = ls.getAllSongs();
+        
+        List<Song> songsToReturn = new ArrayList<Song>();
+
+        for (int i = 0; i < songs.size(); i++) {
+            if (songs.get(i).getTitle().toLowerCase().contains(query.toLowerCase())) {
+                songsToReturn.add(songs.get(i));
+            }
+        }
+        
+        return songsToReturn;
+    }
 }

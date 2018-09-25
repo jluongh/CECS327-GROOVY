@@ -44,22 +44,27 @@ public class UserValidator {
 		
 		boolean isMatch = false;
 		
-		if (!users.isEmpty()) {
-			
-			Iterator it = users.iterator();
-			
-			while(it.hasNext() && !isMatch) {
-				
-				User tempUser = (User) it.next();
-				
-				if (inUsername.equals(tempUser.getUsername())
-						&& inPassword.equals(tempUser.getPassword())) {
-					
-					isMatch = true;
-				}
-			}
+		if (us.getUser(inUsername) != null) {
+			isMatch = true;
 		}
+//		}
+//		if (!users.isEmpty()) {
+//			
+//			Iterator it = users.iterator();
+//			
+//			while(it.hasNext() && !isMatch) {
+//				
+//				User tempUser = (User) it.next();
+//				
+//				if (inUsername.toLowerCase().equals(tempUser.getUsername())
+//						&& inPassword.equals(tempUser.getPassword())) {
+//					
+//					isMatch = true;
+//				}
+//			}
+//		}
 		
 		return isMatch;
 	}
+	
 }

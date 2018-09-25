@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
+import javax.swing.JOptionPane;
+
 import java.util.Date;
 
 import api.AlbumController;
@@ -108,6 +111,7 @@ public class MainAppController implements Initializable {
 	// Search bar 
 	@FXML
 	private TextField txtSearch;
+	//hi
 	
 	private static User currentUser = MainController.getUser();
 	private UserProfileController uc = new UserProfileController();
@@ -556,11 +560,11 @@ public class MainAppController implements Initializable {
                 @Override
                 public void handle(ActionEvent t) 
                 {
-                	Song currentsong = (Song) ButtonCellPlaySong.this.getTableView().getItems().get(ButtonCellPlaySong.this.getIndex());
-                	player.Load(currentsong);
+                	SongInfo currentsong = (SongInfo) ButtonCellPlaySong.this.getTableView().getItems().get(ButtonCellPlaySong.this.getIndex());
+                	player.Load(currentsong.getSong());
         			player.Play();
-        			songName.setText(currentsong.getTitle());
-        			String artist = atc.GetArtistBySongTitle(currentsong.getTitle()).getName();
+        			songName.setText(currentsong.getSong().getTitle());
+        			String artist = atc.GetArtistBySongTitle(currentsong.getSong().getTitle()).getName();
         			artistName.setText(artist);
                 }
             });
@@ -592,24 +596,28 @@ public class MainAppController implements Initializable {
                 @Override
                 public void handle(ActionEvent t) 
                 {
+                	
+                	// We will be implementing a drop down box * NOT Working yet*
+                	
                 	Song currentSong = (Song) ButtonCelladdSong.this.getTableView().getItems().get(ButtonCelladdSong.this.getIndex());
-                	//prompt user to enter playlist name they wish to add to
-                	TextInputDialog dialog = new TextInputDialog("");
-           		 
-            		dialog.setTitle("Enter Playlist Name");
-            		dialog.setHeaderText("Enter the playlist name:");
-            		dialog.setContentText("Name:");
-            		Optional<String> result = dialog.showAndWait();
-            		//create new playlist
-            		if(result.isPresent())
+                	
+                	String[] dropDown= {" test"};
+                	for(int i = 0; i<playlist.size();i++)
+        			{
+                		dropDown[i] = playlist.get(i).getName().toString();
+        			}
+                	
+                	String dropInput = (String) JOptionPane.showInputDialog(null, "Please select a playlist to add the song to:",
+                	        "Choice which playlist", JOptionPane.QUESTION_MESSAGE, null, dropDown, dropDown[1]); // Initial choice
+                	
             		{
-            			String playlistName = result.get();
+            			
             			boolean found = false;
             			//find if the playlist user entered exist
             			for(int i = 0; i<playlist.size();i++)
             			{
             				//if yes, add the song to the playlist
-            				if(playlist.get(i).getName().equals(playlistName))
+            				if(playlist.get(i).getName().equals(dropInput))
             				{
             					Date date = new Date();
             					SongInfo newSong = new SongInfo(currentSong, date);
@@ -628,6 +636,48 @@ public class MainAppController implements Initializable {
             	            error.showAndWait();
             			}
             		}
+            		
+
+                	    
+                	    
+                	    
+//                	
+//                	Song currentSong = (Song) ButtonCelladdSong.this.getTableView().getItems().get(ButtonCelladdSong.this.getIndex());
+//                	//prompt user to enter playlist name they wish to add to
+//                	TextInputDialog dialog = new TextInputDialog("");
+//           		 
+//            		dialog.setTitle("Enter Playlist Name");
+//            		dialog.setHeaderText("Enter the playlist name:");
+//            		dialog.setContentText("Name:");
+//            		Optional<String> result = dialog.showAndWait();
+//            		//create new playlist
+//            		if(result.isPresent())
+//            		{
+//            			String playlistName = result.get();
+//            			boolean found = false;
+//            			//find if the playlist user entered exist
+//            			for(int i = 0; i<playlist.size();i++)
+//            			{
+//            				//if yes, add the song to the playlist
+//            				if(playlist.get(i).getName().equals(playlistName))
+//            				{
+//            					Date date = new Date();
+//            					SongInfo newSong = new SongInfo(currentSong, date);
+//            					pc.AddToPlaylistBySongInfo(playlist.get(i).getPlaylistID(), newSong);
+//            					found = true;
+//            				}
+//            			}
+//            			//if not, give error message to user
+//            			if (found ==false)
+//            			{
+//            				Alert error = new Alert(Alert.AlertType.ERROR);
+//            				error.setTitle("Invalid Playlist Name");
+//            				error.setHeaderText("You enter a playlist name that does not exist");
+//            	            error.setContentText("Please try again.");
+//            	            Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
+//            	            error.showAndWait();
+//            			}
+//            		}
                 	
                 }
             });

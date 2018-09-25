@@ -560,11 +560,11 @@ public class MainAppController implements Initializable {
                 @Override
                 public void handle(ActionEvent t) 
                 {
-                	Song currentsong = (Song) ButtonCellPlaySong.this.getTableView().getItems().get(ButtonCellPlaySong.this.getIndex());
-                	player.Load(currentsong);
+                	SongInfo currentsong = (SongInfo) ButtonCellPlaySong.this.getTableView().getItems().get(ButtonCellPlaySong.this.getIndex());
+                	player.Load(currentsong.getSong());
         			player.Play();
-        			songName.setText(currentsong.getTitle());
-        			String artist = atc.GetArtistBySongTitle(currentsong.getTitle()).getName();
+        			songName.setText(currentsong.getSong().getTitle());
+        			String artist = atc.GetArtistBySongTitle(currentsong.getSong().getTitle()).getName();
         			artistName.setText(artist);
                 }
             });

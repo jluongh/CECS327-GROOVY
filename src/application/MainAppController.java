@@ -111,6 +111,7 @@ public class MainAppController implements Initializable {
 	// Search bar 
 	@FXML
 	private TextField txtSearch;
+	//hi
 	
 	private static User currentUser = MainController.getUser();
 	private UserProfileController uc = new UserProfileController();

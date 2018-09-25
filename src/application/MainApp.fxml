@@ -38,7 +38,7 @@
             <ListView fx:id="playlistScreen" layoutX="14.0" layoutY="79.0" prefHeight="479.0" prefWidth="246.0" />
             <ImageView fx:id="addPlaylist" fitHeight="26.0" fitWidth="27.0" layoutX="228.0" layoutY="50.0" onMouseClicked="#addPlaylistClicked" pickOnBounds="true">
                <image>
-                  <Image url="@ALL/icons8-add.png" />
+                  <Image url="@resources/icons8-add.png" />
                </image>
             </ImageView>
             <TableView fx:id="playlistTable" layoutX="14.0" layoutY="76.0" onMouseClicked="#clickItem" prefHeight="485.0" prefWidth="246.0">
@@ -55,27 +55,27 @@
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f5fbfc" height="76.0" stroke="BLACK" strokeType="INSIDE" width="696.0" />
             <ImageView fx:id="playMusic" fitHeight="26.0" fitWidth="27.0" layoutX="395.0" layoutY="25.0" onMouseClicked="#playMusicClicked" pickOnBounds="true">
                <image>
-                  <Image url="@ALL/icons8-video-playback.png" />
+                  <Image url="@resources/icons8-video-playback.png" />
                </image>
             </ImageView>
             <ImageView fx:id="previousMusic" fitHeight="26.0" fitWidth="27.0" layoutX="348.0" layoutY="25.0" onMouseClicked="#previousIsClicked" pickOnBounds="true">
                <image>
-                  <Image url="@ALL/icons8-simple-arrow.png" />
+                  <Image url="@resources/icons8-simple-arrow.png" />
                </image>
             </ImageView>
             <ImageView fx:id="nextMusic" fitHeight="26.0" fitWidth="27.0" layoutX="476.0" layoutY="25.0" onMouseClicked="#nextIsClicked" pickOnBounds="true">
                <image>
-                  <Image url="@ALL/icons8-right-pointing-arrow.png" />
+                  <Image url="@resources/icons8-right-pointing-arrow.png" />
                </image>
             </ImageView>
             <ImageView fx:id="stopMusic" fitHeight="26.0" fitWidth="27.0" layoutX="433.0" layoutY="25.0" onMouseClicked="#musicStopClicked" pickOnBounds="true">
                <image>
-                  <Image url="@ALL/icons8-stop.png" />
+                  <Image url="@resources/icons8-stop.png" />
                </image>
             </ImageView>
             <ImageView fx:id="Mute" fitHeight="26.0" fitWidth="27.0" layoutX="655.0" layoutY="25.0" onMouseClicked="#muteIsClicked" pickOnBounds="true">
                <image>
-                  <Image url="@ALL/icons8-noise-free.png" />
+                  <Image url="@resources/icons8-noise-free.png" />
                </image>
             </ImageView>
             <Slider layoutX="525.0" layoutY="31.0" prefHeight="14.0" prefWidth="119.0" />
@@ -114,17 +114,17 @@
             </ImageView>
             <ImageView fx:id="btnArtist" fitHeight="29.0" fitWidth="35.0" layoutX="630.0" layoutY="44.0" onMouseClicked="#btnArtistClick" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@ALL/icons8-dj-64.png" />
+                  <Image url="@resources/icons8-dj-64.png" />
                </image>
             </ImageView>
             <ImageView fx:id="btnSong" fitHeight="29.0" fitWidth="24.0" layoutX="567.0" layoutY="47.0" onMouseClicked="#btnSongClick" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@ALL/icons8-musical-notes-64.png" />
+                  <Image url="@resources/icons8-musical-notes-64.png" />
                </image>
             </ImageView>
             <ImageView fx:id="btnAlbum" fitHeight="40.0" fitWidth="24.0" layoutX="497.0" layoutY="47.0" onMouseClicked="#btnAlbumClick" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@ALL/icons8-photo-gallery-64.png" />
+                  <Image url="@resources/icons8-photo-gallery-64.png" />
                </image>
             </ImageView>
             <TextField fx:id="txtSearch" layoutX="495.0" layoutY="12.0" promptText="search..." />

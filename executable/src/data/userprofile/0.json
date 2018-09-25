@@ -11,7 +11,7 @@
             "title": "Mamma Mia",
             "duration": 1.98E8
           },
-          "addedDate": "Sep 17, 2018 1:26:49 PM"
+          "addedDate": "Sep 17, 2018, 1:26:49 PM"
         },
         {
           "song": {
@@ -19,17 +19,35 @@
             "title": "Bohemian Rhapsody",
             "duration": 3.636E8
           },
-          "addedDate": "Sep 17, 2018 8:24:01 PM"
+          "addedDate": "Sep 17, 2018, 8:24:01 PM"
         }
       ],
       "songCount": 0,
-      "creationDate": "Sep 15, 2018 9:26:50 PM"
+      "creationDate": "Sep 15, 2018, 9:26:50 PM"
     },
     {
-      "playlistID": 1,
-      "name": "3",
+      "playlistID": 2,
+      "name": "fav",
+      "songInfos": [
+        {
+          "song": {
+            "songID": 5,
+            "title": "Mamma Mia",
+            "duration": 1.98E8
+          },
+          "addedDate": "Sep 18, 2018, 10:50:49 AM"
+        },
+        {
+          "song": {
+            "songID": 3,
+            "title": "Dancing Queen",
+            "duration": 2.106E8
+          },
+          "addedDate": "Sep 18, 2018, 10:50:54 AM"
+        }
+      ],
       "songCount": 0,
-      "creationDate": "Sep 15, 2018 9:27:25 PM"
+      "creationDate": "Sep 18, 2018, 10:50:33 AM"
     }
   ]
 }

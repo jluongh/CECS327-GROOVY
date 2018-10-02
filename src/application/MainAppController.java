@@ -106,6 +106,7 @@ public class MainAppController implements Initializable {
 	private ImageView btnSong;
 	@FXML
 	private ImageView btnArtist;
+	
 	private boolean isSearch = false;
 	
 	// Search bar 

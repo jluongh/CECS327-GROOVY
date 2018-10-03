@@ -5,14 +5,16 @@ import java.util.*;
 import data.models.User;
 import services.UserService;
 
-public class UserValidator {
+public class UserController {
 	
 	private int MAX_LENGTH = 15;
+	private UserService us = new UserService();
+	private List<User> users = us.getUsers();
 
 	/**
 	 * 
 	 */
-	public UserValidator() {
+	public UserController() {
 		
 	}
 	
@@ -39,9 +41,6 @@ public class UserValidator {
 	 */
 	public boolean isValidCredentials(String inUsername, String inPassword) {
 		
-		UserService us = new UserService();
-		List<User> users = us.getUsers();
-		
 		boolean isMatch = false;
 		
 		if (!users.isEmpty()) {
@@ -61,5 +60,20 @@ public class UserValidator {
 		}
 		
 		return isMatch;
+	}
+	
+	/**
+	 * Gets user
+	 * @param username
+	 * @return
+	 */
+	public User getUser(String username)
+	{
+		for (User user : users)
+		{
+			if (username.equals(user.getUsername()))
+				return user;
+		}
+		return null;
 	}
 }

@@ -7,8 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import java.io.IOException;
 
-import api.ConnectUser;
-import api.UserValidator;
+import api.UserController;
 import data.models.User;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
@@ -42,8 +41,7 @@ public class MainController
 	{
 		
 			
-		UserValidator uv = new UserValidator();
-		ConnectUser cu = new ConnectUser();
+		UserController uv = new UserController();
 		// if user enter nothing on the username, display error message 
 		if(!uv.isValid(userID.getText()))
 		{
@@ -65,11 +63,10 @@ public class MainController
             Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
             error.showAndWait();
 		}
-		//if the user enter the corrent credential, transit into new stage: the main application
+		//if the user enter the correct credential, transit into new stage: the main application
 		else if(uv.isValidCredentials(userID.getText(), password.getText()))
 		{
-
-			currentUser = cu.getUser(userID.getText());
+			currentUser = uv.getUser(userID.getText());
 			Parent Parent = FXMLLoader.load(getClass().getResource("MainApp.fxml"));
             Scene nextScene = new Scene(Parent);
             Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();

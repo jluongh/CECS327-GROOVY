@@ -16,14 +16,14 @@ import data.models.*;
 
 public class PlaylistService {
 
-	// Get UserProfile file path
+	//global variables to get UserProfile file path
 	String profileFilePath;
 	private UserProfileService ups = new UserProfileService();
 	UserProfile userProfile;
 	
 	/**
 	 * Functions to manipulate playlist data
-	 * @param userID
+	 * @param userID - unique identification for user
 	 */
 	public PlaylistService(int userID) {
 		profileFilePath = "./src/data/userprofile/" + userID + ".json";
@@ -33,7 +33,7 @@ public class PlaylistService {
 
 	/**
 	 * Get all playlists for a given user
-	 * @return	List of playlists
+	 * @return	playlists
 	 */
 	public List<Playlist> GetPlaylists() {
 		// Get user's playlists
@@ -47,9 +47,9 @@ public class PlaylistService {
 	}
 	
 	/**
-	 * 
-	 * @param playlistName
-	 * @return
+	 * Get playlist ID from a list of user's playlist
+	 * @param playlistID - {int} unique identification for playlist
+	 * @return playlist
 	 */
 	public Playlist GetPlaylistByID(int playlistID) {
 		List<Playlist> playlists = userProfile.getPlaylists();
@@ -62,7 +62,7 @@ public class PlaylistService {
 	
 	/**
 	 * Create a playlist
-	 * @param name	Name of the playlist to create
+	 * @param name - {String} name of the playlist to create
 	 */
 	public void CreatePlaylist(String name) {
 		Playlist playlist = new Playlist(name);
@@ -91,7 +91,7 @@ public class PlaylistService {
 	
 	/**
 	 * Delete a playlist 
-	 * @param playlistID	ID of playlist to delete
+	 * @param playlistID - {int} ID of playlist to delete
 	 */
 	public void DeletePlaylist(int playlistID) {
 		// Get user's playlists
@@ -111,6 +111,11 @@ public class PlaylistService {
 		}
 	}
 	
+	/**
+	 * Add a song to the playlist 
+	 * @param playlistID - {int} ID of playlist to add
+	 * @param song - {SongInfo} the song and date of when the song is added 
+	 */
 	public void AddToPlaylistBySongInfo(int playlistID, SongInfo song) {
 		Playlist playlist = GetPlaylistByID(playlistID);
 		if (playlist != null) {
@@ -140,11 +145,18 @@ public class PlaylistService {
 		}
 	}
 	
+	/**
+	 * Telling whether a playist is empty or not
+	 * @return boolean
+	 */
 	public boolean IsEmpty() {
 		return userProfile.getPlaylists().isEmpty();
 	}
 	
-	
+	/**
+	 * Get latest playlist id
+	 * @return id
+	 */
 	private int GetLatestPlaylistID() {
 		int id;
 	

@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"api"}]
+packageSearchIndex = [{"l":"services"}]

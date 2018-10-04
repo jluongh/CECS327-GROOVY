@@ -12,7 +12,11 @@ import data.models.UserProfile;
 
 public class UserProfileService {
 	
-
+	/**
+	 * Getting user profile from json file
+	 * @param UserID - unique identification for user
+	 * @return response
+	 */ 
 	public UserProfile GetUserProfile(int UserID) {
 		try {
 			String filePath = "./src/data/userprofile/" + UserID + ".json";;

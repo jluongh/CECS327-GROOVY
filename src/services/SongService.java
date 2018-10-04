@@ -3,13 +3,13 @@ package services;
 public class SongService {
 
 	public SongService() {
-		
+		//no initialization
 	}
 	
 	/**
 	 * Method formats duration from double to mm:ss string
-	 * @param duration
-	 * @return
+	 * @param duration - {double} length of song
+	 * @return formattedDuration
 	 */
 	public String FormatDuration(double duration) {
 		if (duration == 0.0) 

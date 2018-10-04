@@ -14,13 +14,13 @@ import data.models.*;
 public class ArtistService {
 
 	public ArtistService() {
-		//	
+		//no initialization
 	}
 	
 	/**
-	 * Method gets Artist by song title
-	 * @param targetSong
-	 * @return
+	 * Method gets Artist by Song title
+	 * @param targetSong - song title
+	 * @return artistOfSong
 	 */
 	public Artist getArtistBySongTitle(String targetSong) { // TODO: Change to ID
 		try {

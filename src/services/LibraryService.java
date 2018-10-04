@@ -15,11 +15,9 @@ import java.util.*;
 
 import data.models.*;
 
-/**
- * 
- * 
- */
 public class LibraryService {
+
+	//global variables
 	private String fPath = "./src/data/library.json";
 
 	private String libraryPath = "./music/";
@@ -55,6 +53,8 @@ public class LibraryService {
 	
 	/**
 	 * Creates library of a files with only the .wav files located in folder
+	 * @param dirName - the directory for the file
+	 * @return .wav files
 	 */
 	private File[] dir (String dirName) {
 		File file = new File (dirName);
@@ -142,8 +142,8 @@ public class LibraryService {
 	/**
 	 * Creates new artist or updates existing artist
 	 * Assigns unique IDs
-	 * @param {String} artistName - Name of artist
-	 * @param {Album} al - Album object to be added into an artist
+	 * @param artistName - {String} Name of artist
+	 * @param al - {Album} Album object to be added into an artist
 	 * @return artist
 	 */	
 	private Artist createArtist(String artistName, Album al) {
@@ -185,8 +185,8 @@ public class LibraryService {
 	/**
 	 * Creates new album or updates existing album
 	 * Assigns unique IDs
-	 * @param {String} albumName - Name of album
-	 * @param {Song} so - Song object to be added into an album
+	 * @param albumName - {String} Name of album
+	 * @param so - {Song} Song object to be added into an album
 	 * @return album 
 	 */	
 	private Album createAlbum(String albumName, Song so) {
@@ -227,8 +227,8 @@ public class LibraryService {
 	/**
 	 * Creates new song
 	 * Assigns unique IDs
-	 * @param {String} songTitle - Title of song
-	 * @param {double} minutes - Length of song
+	 * @param songTitle - {String} Title of song
+	 * @param minutes - {double} Length of song
 	 * @return song
 	 */	
 	private Song createSong(String songTitle, double minutes) {
@@ -243,7 +243,7 @@ public class LibraryService {
 
 	/**
 	 * Getter for specific artist	
-	 * @param {String} artistName - Name of the artist being searched for 
+	 * @param artistName - {String} Name of the artist being searched for 
 	 * @return artist
 	 */
 	public Artist getArtist(String artistName) {
@@ -329,7 +329,7 @@ public class LibraryService {
 
 	/**
 	 * Getter for specific artist's album	
-	 * @param {String} albumName - Name of the album being searched for 
+	 * @param albumName - {String} Name of the album being searched for 
 	 * @return album
 	 */
 	public Album getAlbum(String albumName) {
@@ -420,7 +420,7 @@ public class LibraryService {
 
 	/**
 	 * Getter for specific album's song	
-	 * @param {String} songName - Name of the song being searched for 
+	 * @param songName - {String} Name of the song being searched for 
 	 * @return song
 	 */
 	public Song getSong(String songName) {

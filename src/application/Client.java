@@ -29,6 +29,7 @@ public class Client {
         String received = new String(packet.getData(), 0, packet.getLength());
         System.out.println(received);
      
+        
         socket.close();
     }
 	

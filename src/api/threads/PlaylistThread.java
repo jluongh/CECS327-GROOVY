@@ -14,67 +14,68 @@ public class PlaylistThread extends Thread {
 	protected boolean morePlaylists = true;
 
     public PlaylistThread() throws IOException {
-    		this("PlaylistThread");
+		this("PlaylistThread");
     }
     
     public PlaylistThread(String name) throws IOException {
-    		super(name);
-    		socket = new DatagramSocket(4445);
-    		int userID = 0;
-    		try {
-    			String profileFilePath = "./src/data/userprofile/" + userID + ".json";
-    			br = new BufferedReader(new FileReader(profileFilePath));
-    		} catch (FileNotFoundException e) {
-    			System.err.println("Could not open quote file. Serving time instead.");
-    		}
+		super(name);
+		socket = new DatagramSocket(4445);
     }
     
     public void run() {
-	    	while (true) {
-	            try {
-	                byte[] buf = new byte[4000];
-	 
-	                // receive request
-	                DatagramPacket packet = new DatagramPacket(buf, buf.length);
-	                socket.receive(packet);
-	 
-	                // figure out response
-	                List<Playlist> playlists = null;
-	                if (br == null)
-	                		playlists = null;
-	                else {
-	                	playlists = getPlaylist();
-		            
-	                	if (playlists != null) {
-		                	for (int i = 0; i < playlists.size(); i++) {
-		                		buf = serialize(playlists.get(i));
-		                		System.out.println("GOt one");
-		        	        // send the response to the client at "address" and "port"
-	        	                InetAddress address = packet.getAddress();
-	        	                int port = packet.getPort();
-	        	                packet = new DatagramPacket(buf, buf.length, address, port);
-	        	                socket.send(packet);
-		                	}
-		         
+    	while (true) {
+            try {
+                byte[] buf = new byte[4000];
+ 
+                // receive request
+                DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                socket.receive(packet);
+ 
+                // read buffer -- user ID
+        		int userID = 0;
+        		try {
+        			String profileFilePath = "./src/data/userprofile/" + userID + ".json";
+        			br = new BufferedReader(new FileReader(profileFilePath));
+        		} catch (FileNotFoundException e) {
+        			System.err.println("Could not open quote file. Serving time instead.");
+        		}
+                
+                // figure out response
+                List<Playlist> playlists = null;
+                if (br == null)
+                		playlists = null;
+                else {
+                	playlists = getPlaylist();
+	            
+                	if (playlists != null) {
+	                	for (int i = 0; i < playlists.size(); i++) {
+	                		buf = serialize(playlists.get(i));
+	                		System.out.println("GOt one");
+	        	        // send the response to the client at "address" and "port"
+        	                InetAddress address = packet.getAddress();
+        	                int port = packet.getPort();
+        	                packet = new DatagramPacket(buf, buf.length, address, port);
+        	                socket.send(packet);
 	                	}
-	                }
-	              	
-	                
-	                
-	            } catch (IOException e) {
-	                e.printStackTrace();
-	                System.out.println(e.getMessage());
-	    	        socket.close();
+	         
+                	}
+                	
+                	br.close();
+                }
+                
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println(e.getMessage());
+    	        socket.close();
 
-	            }
-	        }
+            }
+        }
     }
     
     public static byte[] serialize(Object obj) throws IOException {
 	    Gson gson = new GsonBuilder().create();
 		String objString = gson.toJson(obj);
 		return objString.getBytes();
-        
     }
     
     protected List<Playlist> getPlaylist() {

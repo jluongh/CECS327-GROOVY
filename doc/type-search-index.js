@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"api","l":"AlbumController"},{"p":"api","l":"ArtistController"},{"p":"api","l":"AudioPlayer"},{"p":"api","l":"PlaylistController"},{"p":"api","l":"Searcher"},{"p":"api","l":"Server"},{"p":"api","l":"SongController"},{"p":"api","l":"UserController"},{"p":"api","l":"UserProfileController"}]

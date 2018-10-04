@@ -35,7 +35,7 @@ public class UserController {
 	 * Method checks if username and password is valid/stored
 	 * @param inUsername - {String} username input text
 	 * @param inPassword - {String} password input text
-	 * @return boolean
+	 * @return isMatch
 	 */
 	public boolean isValidCredentials(String inUsername, String inPassword) {
 		
@@ -62,7 +62,7 @@ public class UserController {
 	
 	/**
 	 * Gets user
-	 * @param username
+	 * @param username - {String} name of user profile
 	 * @return user
 	 */
 	public User getUser(String username)

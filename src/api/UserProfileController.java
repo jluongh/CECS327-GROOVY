@@ -3,10 +3,6 @@ package api;
 import data.models.UserProfile;
 import services.UserProfileService;
 
-/**
- * Controller to view/manipulate user profile data
- * @param userID	ID of user
- */
 public class UserProfileController {
 	
 	//global variables

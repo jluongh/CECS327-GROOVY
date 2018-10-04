@@ -6,17 +6,14 @@ import services.LibraryService;
 
 public class Searcher {
 
-	/**
-	 * 
-	 */
 	public Searcher() {
-		
+		//no initialization
 	}
 	
 	/**
 	 * Method searches for queried artist in music library
-	 * @param query
-	 * @return
+	 * @param query - {String} search for certain artist
+	 * @return response
 	 */
 	public List<Artist> findFromArtists(String query) {
         
@@ -38,8 +35,8 @@ public class Searcher {
 	
 	/**
 	 * Method searches for queried album in music library
-	 * @param query
-	 * @return
+	 * @param query - {String} search for certain album
+	 * @return response
 	 */
 	public List<Album> findFromAlbums(String query) {
 		
@@ -61,8 +58,8 @@ public class Searcher {
 	
 	/**
 	 * Method searched for queried song in music library
-	 * @param query
-	 * @return
+	 * @param query - {String} search for certain song
+	 * @return response
 	 */
 	public List<Song> findFromSongs(String query) {
 		

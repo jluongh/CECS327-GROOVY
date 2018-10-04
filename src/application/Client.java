@@ -2,6 +2,7 @@ package application;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import data.constants.Net;
 
 public class Client {
 	
@@ -12,16 +13,16 @@ public class Client {
              return;
         }
         
-            // get a datagram socket
+        // get a datagram socket
         DatagramSocket socket = new DatagramSocket();
         
-            // send request
-        byte[] buf = new byte[4000];
+        // send request
+        byte[] buf = new byte[Net.PACKET_SIZE];
         InetAddress address = InetAddress.getByName(args[0]);
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, address, 4445);
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, address, Net.PORT);
         socket.send(packet);
      
-            // get response
+        // get response
         packet = new DatagramPacket(buf, buf.length);
         socket.receive(packet);
  

@@ -1,6 +1,8 @@
 package data.models;
 
-public class Song {
+import java.io.Serializable;
+
+public class Song implements Serializable {
 
 	private int songID;
 	private String title;

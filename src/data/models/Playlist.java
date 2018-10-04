@@ -1,8 +1,9 @@
 package data.models;
 
+import java.io.*;
 import java.util.*;
 
-public class Playlist implements Comparable {
+public class Playlist implements Comparable, Serializable {
 	
 	private int playlistID;
 	private String name;

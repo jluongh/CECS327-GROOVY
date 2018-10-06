@@ -35,7 +35,7 @@ public class AudioPlayer {
 				Reset();
 			}
 			clip = AudioSystem.getClip();
-			clip.open( AudioSystem.getAudioInputStream(new File(filename)));
+			clip.open(AudioSystem.getAudioInputStream(new File(filename)));
 
 		} catch(LineUnavailableException e) {
             System.out.println("Audio Error");

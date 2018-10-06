@@ -2,12 +2,13 @@ package api;
 
 import java.io.IOException;
 
-import api.threads.PlaylistThread;
+import api.threads.*;
 
 public class Server {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		new PlaylistThread().start();
+//		new PlaylistThread().start();
+		new AudioPlayerThread().start();
 	}
 }

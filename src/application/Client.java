@@ -64,7 +64,10 @@ public class Client {
   
         boolean receiving = true;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
+        
+//        int size = 1024 * 1000 * 50;
+//        ByteBuffer target = ByteBuffer.allocate(size);
+        
         while (receiving) {
     		buf = new byte[1024 * 1000 * 50];
             // get response
@@ -81,6 +84,7 @@ public class Client {
             
             ByteArrayInputStream bais = new ByteArrayInputStream(packet.getData());
             
+            System.out.println("Packet size: " + packet.getLength());
 			int id = bais.read(packet.getData(), 0, 4);
 			ByteBuffer wrapped = ByteBuffer.wrap(packet.getData(), 4, 4); // big-endian by default
 			int offset = wrapped.getInt();
@@ -90,17 +94,20 @@ public class Client {
 			int count = wrapped.getInt();	
 			System.out.println("Count: " + count);
 			
-			byte[] fragment = IOUtils.toByteArray(bais);
-			byte[] data = Arrays.copyOfRange(fragment, 12, fragment.length);
+			byte[] data = Arrays.copyOfRange(packet.getData(), 12, packet.getLength());
 			if (offset <= count) {
-				System.out.println("Writing fragment to bytes");
+				System.out.println("Writing fragment to bytes with length: " + data.length);
 				baos.write(data);
+//				target.put(data);
 			}
 
         }
         
         byte[] received1 = baos.toByteArray();
         System.out.println("End : " + received1.length);
+        
+//        byte [] bigByteArray = target.array();
+//        System.out.println(bigByteArray.length);
                
 
 //		AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100.0f, 16, 1, 2, 44100.0f, false);

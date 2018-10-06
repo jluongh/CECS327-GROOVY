@@ -8,6 +8,8 @@ import com.google.gson.GsonBuilder;
 
 import data.models.Playlist;
 import data.models.UserProfile;
+import data.constants.Net;
+
 public class PlaylistThread extends Thread {
 	protected DatagramSocket socket = null;
 	protected BufferedReader br = null;
@@ -19,13 +21,13 @@ public class PlaylistThread extends Thread {
     
     public PlaylistThread(String name) throws IOException {
 		super(name);
-		socket = new DatagramSocket(4445);
+		socket = new DatagramSocket(Net.PORT);
     }
     
     public void run() {
     	while (true) {
             try {
-                byte[] buf = new byte[4000];
+                byte[] buf = new byte[Net.PACKET_SIZE];
  
                 // receive request
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);

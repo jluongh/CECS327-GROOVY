@@ -19,18 +19,17 @@ import data.models.*;
  */
 public class UserService {
 
+	//global variables
 	private String usersFilePath = "./src/data/users.json";
-	/**
-	 * 
-	 */
+	
 	public UserService() {
-		//
+		//no initialization
 	}
 	
 	/**
-	 * 
-	 * @param username
-	 * @return
+	 * Get user
+	 * @param username - {String} name of profile user
+	 * @return User
 	 */
 	public User getUser(String username) {
 		List<User> UserList = getUsers();
@@ -42,8 +41,8 @@ public class UserService {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Get all users
+	 * @return Userlist
 	 */
 	public List<User> getUsers() {
 		try {
@@ -59,8 +58,8 @@ public class UserService {
 	}
 	
 	/**
-	 * 
-	 * @param user
+	 * Add user
+	 * @param user - {User} user profile
 	 */
 	public void AddUser(User user) {
 		
@@ -115,8 +114,8 @@ public class UserService {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Get latest user id
+	 * @return id
 	 */
 	private int GetLatestUserID() {
 		int id;

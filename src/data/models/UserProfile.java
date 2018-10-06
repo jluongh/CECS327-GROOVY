@@ -4,33 +4,39 @@ import java.util.List;
 
 public class UserProfile {
 	
+	//global variables
 	private int userID;
 	private List<Playlist> playlists;
 	
 	/**
-	 * @return the userID
+	 * Getter method for user ID
+	 * @return userID
 	 */
 	public int getUserID() {
 		return userID;
 	}
+	
 	/**
-	 * @param userID the userID to set
+	 * Setter method for userID
+	 * @param userID - {int} unique identification for user
 	 */
 	public void setUserID(int userID) {
 		this.userID = userID;
 	}
+	
 	/**
-	 * @return the playlists
+	 * Getter method for playlist
+	 * @return playlists
 	 */
 	public List<Playlist> getPlaylists() {
 		return playlists;
 	}
+	
 	/**
-	 * @param playlists the playlists to set
+	 * Setter method for playlist objects in a list
+	 * @param playlists - {List} list of playlist objects
 	 */
 	public void setPlaylists(List<Playlist> playlists) {
 		this.playlists = playlists;
 	}
-
-	
 }

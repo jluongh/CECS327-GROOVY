@@ -14,13 +14,13 @@ import data.models.*;
 public class AlbumService {
 
 	public AlbumService() {
-		//
+		//no initialization
 	}
 	
 	/**
-	 * Method gets album by song title
-	 * @param targetSong
-	 * @return
+	 * Method gets Album by Song title
+	 * @param targetSong - song title
+	 * @return albumOfSong
 	 */
 	public Album getAlbumBySongTitle(String targetSong) { // TODO: Change to song ID?
 		try {

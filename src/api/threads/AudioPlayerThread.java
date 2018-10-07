@@ -4,9 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.util.*;
-import java.util.zip.Deflater;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.InflaterInputStream;
+
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -45,7 +43,7 @@ public class AudioPlayerThread extends Thread {
 		while (true) {
 			try {
 				byte[] buf = new byte[1024 * 1000 * 50];
-
+				int sizeOfPacket = 63000;
 				// receive request
 				DatagramPacket packet = new DatagramPacket(buf, buf.length);
 				socket.receive(packet);
@@ -67,18 +65,19 @@ public class AudioPlayerThread extends Thread {
 								
 								
 								// divide the data into chunks
-								int packetcount = data.length / 60000;
-								int start = 1;
+								int packetcount = data.length / sizeOfPacket;
+								int start = 0;
 								
 								for (int j = 1; j <= packetcount; j++) {
-									int end = 60000 * j;
+									int end = sizeOfPacket * j;
 									
 									byte[] id = ByteBuffer.allocate(4).putInt(1).array();
 									byte[] offset = ByteBuffer.allocate(4).putInt(j).array();
 									System.out.println("Offset: " + j);
 									byte[] count = ByteBuffer.allocate(4).putInt(packetcount).array();
 									byte[] fragment = Arrays.copyOfRange(data, start, end);
-									
+									System.out.println("Fragment length: " + fragment.length + " --- " + start + " - " + end);
+
 									ByteArrayOutputStream baos = new ByteArrayOutputStream();
 									baos.write(id);
 									baos.write(offset);
@@ -87,18 +86,17 @@ public class AudioPlayerThread extends Thread {
 
 									byte send[] = baos.toByteArray();
 
-									start = end + 1;
+									start = end;
 									
-									System.out.println("Length: " + send.length);
 									InetAddress address = packet.getAddress();
 									int port = packet.getPort();
 									
 									packet = new DatagramPacket(send, send.length, address, port);
 									socket.send(packet);
-									System.out.println("File sent from server");
+//									System.out.println("File sent from server");
 									
 									if (j % 100 == 0) {
-								         Thread.sleep(2000);
+								         Thread.sleep(1000);
 
 									}
 								}
@@ -148,7 +146,7 @@ public class AudioPlayerThread extends Thread {
 				fileEvent.setFileSize(len);
 				fileEvent.setFileData(fileBytes);
 				fileEvent.setStatus("Success");
-				System.out.println("Success");
+//				System.out.println("Success");
 				
 				return fileBytes;
 

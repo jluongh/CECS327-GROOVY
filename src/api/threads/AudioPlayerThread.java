@@ -92,10 +92,15 @@ public class AudioPlayerThread extends Thread {
 									System.out.println("Length: " + send.length);
 									InetAddress address = packet.getAddress();
 									int port = packet.getPort();
+									
 									packet = new DatagramPacket(send, send.length, address, port);
-
 									socket.send(packet);
 									System.out.println("File sent from server");
+									
+									if (j % 100 == 0) {
+								         Thread.sleep(2000);
+
+									}
 								}
 								
 								
@@ -105,6 +110,9 @@ public class AudioPlayerThread extends Thread {
 								
 							} catch (FileNotFoundException e) {
 								System.err.println("Could not open quote file. Serving time instead.");
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
 
 						}

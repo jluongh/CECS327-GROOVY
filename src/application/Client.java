@@ -15,6 +15,9 @@ import com.google.gson.Gson;
 
 import data.models.Song;
 import data.models.UserProfile;
+import sun.audio.AudioData;
+import sun.audio.AudioDataStream;
+import sun.audio.AudioPlayer;
 
 public class Client {
 	
@@ -65,20 +68,13 @@ public class Client {
         boolean receiving = true;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
         
-//        int size = 1024 * 1000 * 50;
-//        ByteBuffer target = ByteBuffer.allocate(size);
-        
         while (receiving) {
     		buf = new byte[1024 * 1000 * 50];
             // get response
             packet = new DatagramPacket(buf, buf.length);
             socket.receive(packet);
             
-            //if the packet is empty or null, then the server is done sending?
-            if (packet.getData().length == 0) {
-            	receiving = false;
-            	System.out.println("Receiving done");
-            }
+
             
             System.out.println("Client: Received from server");
             
@@ -95,25 +91,32 @@ public class Client {
 			System.out.println("Count: " + count);
 			
 			byte[] data = Arrays.copyOfRange(packet.getData(), 12, packet.getLength());
-			if (offset <= count) {
+			if (offset < count) {
 				System.out.println("Writing fragment to bytes with length: " + data.length);
 				baos.write(data);
-//				target.put(data);
+			}
+			else if (offset == count) {
+	            //if the packet is empty or null, then the server is done sending?
+            	receiving = false;
+            	System.out.println("Receiving done");
 			}
 
         }
         
         byte[] received1 = baos.toByteArray();
         System.out.println("End : " + received1.length);
-        
-//        byte [] bigByteArray = target.array();
-//        System.out.println(bigByteArray.length);
-               
+
+     // Create the AudioData object from the byte array
+        AudioData audiodata = new AudioData(received1);
+        // Create an AudioDataStream to play back
+        AudioDataStream audioStream = new AudioDataStream(audiodata);
+        // Play the sound
+        AudioPlayer.player.start(audioStream);
 
 //		AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100.0f, 16, 1, 2, 44100.0f, false);
 //		try {
 //			Clip clip = AudioSystem.getClip();
-//			clip.open(format, received.getBytes(), 0, received.length());
+//			clip.open(format, received1, 0, received1.length);
 //			clip.start();
 //
 //		} catch (LineUnavailableException e) {

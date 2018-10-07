@@ -95,7 +95,7 @@ public class AudioPlayerThread extends Thread {
 									socket.send(packet);
 //									System.out.println("File sent from server");
 									
-									if (j % 100 == 0) {
+									if (j % 50 == 0) {
 								         Thread.sleep(1000);
 
 									}

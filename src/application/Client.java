@@ -71,6 +71,7 @@ public class Client {
         boolean receiving = true;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
         
+		int receivedCount = 0;
 		try {
 			while (receiving) {
 	    		buf = new byte[1024 * 1000 * 50];
@@ -98,6 +99,7 @@ public class Client {
 				if (offset < count) {
 					System.out.println("Writing fragment to bytes with length: " + data.length);
 					baos.write(data);
+					receivedCount++;
 				}
 				else if (offset == count) {
 		            //if the packet is empty or null, then the server is done sending?
@@ -122,9 +124,9 @@ public class Client {
 			
 		}
         
-		int percent = (int) (((double) offset / (double) count) * 100);
-
-		if(percent > 75) {
+		int percent = (int) (((double) receivedCount / (double) count) * 100);
+		System.out.println(percent);
+		if(percent > 60) {
 	        // Create the AudioData object from the byte array
 	        AudioData audiodata = new AudioData(received1);
 	        // Create an AudioDataStream to play back

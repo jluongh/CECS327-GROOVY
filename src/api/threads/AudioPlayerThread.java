@@ -5,7 +5,6 @@ import java.net.*;
 import java.nio.ByteBuffer;
 import java.util.*;
 
-
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
@@ -59,24 +58,22 @@ public class AudioPlayerThread extends Thread {
 					if (songs != null) {
 						for (int i = 0; i < songs.size(); i++) {
 							try {
-								
+
 								byte[] data = getFileEvent(songs.get(i).getSongID());
-//								byte[] (int idOfPacket + int positionOfPacket + int numberOfPackets) + byte[] data
-								
-								
+								// byte[] (int idOfPacket + int positionOfPacket + int numberOfPackets) + byte[]
+								// data
+
 								// divide the data into chunks
 								int packetcount = data.length / sizeOfPacket;
 								int start = 0;
-								
+
 								for (int j = 1; j <= packetcount; j++) {
 									int end = sizeOfPacket * j;
-									
+
 									byte[] id = ByteBuffer.allocate(4).putInt(1).array();
 									byte[] offset = ByteBuffer.allocate(4).putInt(j).array();
-									System.out.println("Offset: " + j);
 									byte[] count = ByteBuffer.allocate(4).putInt(packetcount).array();
 									byte[] fragment = Arrays.copyOfRange(data, start, end);
-									System.out.println("Fragment length: " + fragment.length + " --- " + start + " - " + end);
 
 									ByteArrayOutputStream baos = new ByteArrayOutputStream();
 									baos.write(id);
@@ -87,25 +84,20 @@ public class AudioPlayerThread extends Thread {
 									byte send[] = baos.toByteArray();
 
 									start = end;
-									
+
 									InetAddress address = packet.getAddress();
 									int port = packet.getPort();
-									
+
 									packet = new DatagramPacket(send, send.length, address, port);
 									socket.send(packet);
-//									System.out.println("File sent from server");
-									
-									if (j % 50 == 0) {
-								         Thread.sleep(1000);
 
+									if (j % 50 == 0) {
+										Thread.sleep(1000);
 									}
 								}
-								
-								
+
 								System.out.println("Server: Done");
-								
-								
-								
+
 							} catch (FileNotFoundException e) {
 								System.err.println("Could not open quote file. Serving time instead.");
 							} catch (InterruptedException e) {
@@ -146,8 +138,8 @@ public class AudioPlayerThread extends Thread {
 				fileEvent.setFileSize(len);
 				fileEvent.setFileData(fileBytes);
 				fileEvent.setStatus("Success");
-//				System.out.println("Success");
-				
+				// System.out.println("Success");
+
 				return fileBytes;
 
 			} catch (Exception e) {

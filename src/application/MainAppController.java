@@ -35,6 +35,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TableCell;
@@ -598,87 +600,48 @@ public class MainAppController implements Initializable {
                 public void handle(ActionEvent t) 
                 {
                 	
-                	// We will be implementing a drop down box * NOT Working yet*
-                	
                 	Song currentSong = (Song) ButtonCelladdSong.this.getTableView().getItems().get(ButtonCelladdSong.this.getIndex());
-                	
-                	String[] dropDown= {" test"};
-                	for(int i = 0; i<playlist.size();i++)
-        			{
-                		dropDown[i] = playlist.get(i).getName().toString();
-        			}
-                	
-                	String dropInput = (String) JOptionPane.showInputDialog(null, "Please select a playlist to add the song to:",
-                	        "Choice which playlist", JOptionPane.QUESTION_MESSAGE, null, dropDown, dropDown[1]); // Initial choice
-                	
-            		{
-            			
-            			boolean found = false;
-            			//find if the playlist user entered exist
-            			for(int i = 0; i<playlist.size();i++)
+                	ArrayList<String> dropDown = new ArrayList<String>();
+                	if (playlist!=null && !playlist.isEmpty())
+                	{
+                		for(int i = 0; i<playlist.size();i++)
             			{
-            				//if yes, add the song to the playlist
-            				if(playlist.get(i).getName().equals(dropInput))
-            				{
-            					Date date = new Date();
-            					SongInfo newSong = new SongInfo(currentSong, date);
-            					pc.AddToPlaylistBySongInfo(playlist.get(i).getPlaylistID(), newSong);
-            					found = true;
-            				}
+                    		dropDown.add(playlist.get(i).getName());
             			}
-            			//if not, give error message to user
-            			if (found ==false)
-            			{
-            				Alert error = new Alert(Alert.AlertType.ERROR);
-            				error.setTitle("Invalid Playlist Name");
-            				error.setHeaderText("You enter a playlist name that does not exist");
-            	            error.setContentText("Please try again.");
-            	            Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
-            	            error.showAndWait();
-            			}
-            		}
+                		ChoiceDialog<String> dialog = new ChoiceDialog<>(dropDown.get(0), dropDown);
+                    	dialog.setTitle("Playlist");
+                    	dialog.setHeaderText("Select Playlist");
+                    	dialog.setContentText("Please select the playlist you wish to add to");
+                    	Optional<String> result = dialog.showAndWait();
+                    	if (result.isPresent())
+                    	{
+                    		Date date = new Date();
+        					SongInfo newSong = new SongInfo(currentSong, date);
+        					for (int i = 0; i < playlist.size(); i++)
+        					{
+        						if (playlist.get(i).getName().equals(result.get()))
+        						{
+        							pc.AddToPlaylistBySongInfo(playlist.get(i).getPlaylistID(), newSong);
+        						}
+        					}
+                    		
+                    	}
+                    	
+                	}
+                	else
+                	{
+                		Alert error = new Alert(Alert.AlertType.ERROR);
+            			error.setTitle("No playlist");
+            			error.setHeaderText("There is no playlist");
+                        error.setContentText("Please create a new playlist before you add a song");
+                        Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
+                        error.showAndWait();
+                	}
+                	
+             	
             		
 
                 	    
-                	    
-                	    
-//                	
-//                	Song currentSong = (Song) ButtonCelladdSong.this.getTableView().getItems().get(ButtonCelladdSong.this.getIndex());
-//                	//prompt user to enter playlist name they wish to add to
-//                	TextInputDialog dialog = new TextInputDialog("");
-//           		 
-//            		dialog.setTitle("Enter Playlist Name");
-//            		dialog.setHeaderText("Enter the playlist name:");
-//            		dialog.setContentText("Name:");
-//            		Optional<String> result = dialog.showAndWait();
-//            		//create new playlist
-//            		if(result.isPresent())
-//            		{
-//            			String playlistName = result.get();
-//            			boolean found = false;
-//            			//find if the playlist user entered exist
-//            			for(int i = 0; i<playlist.size();i++)
-//            			{
-//            				//if yes, add the song to the playlist
-//            				if(playlist.get(i).getName().equals(playlistName))
-//            				{
-//            					Date date = new Date();
-//            					SongInfo newSong = new SongInfo(currentSong, date);
-//            					pc.AddToPlaylistBySongInfo(playlist.get(i).getPlaylistID(), newSong);
-//            					found = true;
-//            				}
-//            			}
-//            			//if not, give error message to user
-//            			if (found ==false)
-//            			{
-//            				Alert error = new Alert(Alert.AlertType.ERROR);
-//            				error.setTitle("Invalid Playlist Name");
-//            				error.setHeaderText("You enter a playlist name that does not exist");
-//            	            error.setContentText("Please try again.");
-//            	            Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
-//            	            error.showAndWait();
-//            			}
-//            		}
                 	
                 }
             });

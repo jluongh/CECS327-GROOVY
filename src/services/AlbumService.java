@@ -14,10 +14,15 @@ import data.models.*;
 public class AlbumService {
 
 	public AlbumService() {
-		//
+		//no initialization
 	}
 	
-	public Album getAlbumBySongTitle(String targetSong) {
+	/**
+	 * Method gets Album by Song title
+	 * @param targetSong - song title
+	 * @return albumOfSong
+	 */
+	public Album getAlbumBySongTitle(String targetSong) { // TODO: Change to song ID?
 		try {
 			Album albumOfSong = null;
 			String filePath = "./src/data/library.json";

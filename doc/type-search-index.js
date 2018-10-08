@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"services","l":"AlbumService"},{"p":"services","l":"ArtistService"},{"p":"services","l":"LibraryService"},{"p":"services","l":"PlaylistService"},{"p":"services","l":"SongService"},{"p":"services","l":"TestService"},{"p":"services","l":"UserProfileService"},{"p":"services","l":"UserService"}]

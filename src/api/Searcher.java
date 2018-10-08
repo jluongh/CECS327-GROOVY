@@ -6,50 +6,37 @@ import services.LibraryService;
 
 public class Searcher {
 
-	/**
-	 * 
-	 */
 	public Searcher() {
-		
+		//no initialization
 	}
 	
 	/**
-	 * 
-	 * @param query
-	 * @return
+	 * Method searches for queried artist in music library
+	 * @param query - {String} search for certain artist
+	 * @return response
 	 */
 	public List<Artist> findFromArtists(String query) {
-		
-		LibraryService ls = new LibraryService();
-		
-		List<Artist> artists = new ArrayList<Artist>();
-		artists = ls.getAllArtists();
-		
-		Collections.sort(artists, new Comparator<Artist>() {
-	        
-			@Override
-			public int compare(Artist a, Artist b) {
-				
-				if (a.getName().contains(query) && b.getName().contains(query)) 
-					return a.getName().compareTo(b.getName());
-				
-			    if (a.getName().contains(query) && !b.getName().contains(query)) 
-			    	return -1;
-			    
-			    if (!a.getName().contains(query) && b.getName().contains(query)) 
-			    	return 1;
-			            
-			    return 0;
-			}
-		});
-		
-		return artists;
-	}
+        
+        LibraryService ls = new LibraryService(); // TODO: Trish - decompose LibraryService
+        
+        List<Artist> artists = new ArrayList<Artist>();
+        artists = ls.getAllArtists();
+        
+        List<Artist> response = new ArrayList<Artist>();
+        
+        for (Artist artist : artists) {
+            if (artist.getName().toLowerCase().contains(query.toLowerCase())) {
+                response.add(artist);
+            }
+        }
+        
+        return response;
+    }
 	
 	/**
-	 * 
-	 * @param query
-	 * @return
+	 * Method searches for queried album in music library
+	 * @param query - {String} search for certain album
+	 * @return response
 	 */
 	public List<Album> findFromAlbums(String query) {
 		
@@ -58,31 +45,21 @@ public class Searcher {
 		List<Album> albums = new ArrayList<Album>();
 		albums = ls.getAllAlbums();
 		
-		Collections.sort(albums, new Comparator<Album>() {
-	        
-			@Override
-			public int compare(Album a, Album b) {
-				
-				if (a.getName().contains(query) && b.getName().contains(query)) 
-					return a.getName().compareTo(b.getName());
-				
-			    if (a.getName().contains(query) && !b.getName().contains(query)) 
-			    	return -1;
-			    
-			    if (!a.getName().contains(query) && b.getName().contains(query)) 
-			    	return 1;
-			            
-			    return 0;
-			}
-		});
+		List<Album> response = new ArrayList<Album>();
 		
-		return albums;
+		for (Album album : albums) {
+			if (album.getName().toLowerCase().contains(query.toLowerCase())) {
+				response.add(album);
+			}
+		}
+		
+		return response;
 	}
 	
 	/**
-	 * 
-	 * @param query
-	 * @return
+	 * Method searched for queried song in music library
+	 * @param query - {String} search for certain song
+	 * @return response
 	 */
 	public List<Song> findFromSongs(String query) {
 		
@@ -91,24 +68,14 @@ public class Searcher {
 		List<Song> songs = new ArrayList<Song>();
 		songs = ls.getAllSongs();
 		
-		Collections.sort(songs, new Comparator<Song>() {
-	        
-			@Override
-			public int compare(Song a, Song b) {
-				
-				if (a.getTitle().contains(query) && b.getTitle().contains(query)) 
-					return a.getTitle().compareTo(b.getTitle());
-				
-			    if (a.getTitle().contains(query) && !b.getTitle().contains(query)) 
-			    	return -1;
-			    
-			    if (!a.getTitle().contains(query) && b.getTitle().contains(query)) 
-			    	return 1;
-			            
-			    return 0;
-			}
-		});
+		List<Song> response = new ArrayList<Song>();
 		
-		return songs;
+		for (Song song : songs) {
+			if (song.getTitle().toLowerCase().contains(query.toLowerCase())) {
+				response.add(song);
+			}
+		}
+		
+		return response;
 	}
 }

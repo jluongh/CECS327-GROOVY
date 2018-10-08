@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
+import javax.swing.JOptionPane;
+
 import java.util.Date;
 
 import api.AlbumController;
@@ -13,6 +16,7 @@ import api.ArtistController;
 import api.AudioPlayer;
 import api.PlaylistController;
 import api.Searcher;
+import api.SongController;
 import api.UserProfileController;
 import data.models.Album;
 import data.models.Artist;
@@ -31,6 +35,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TableCell;
@@ -103,13 +109,16 @@ public class MainAppController implements Initializable {
 	@FXML
 	private ImageView btnArtist;
 	
+	private boolean isSearch = false;
+	
 	// Search bar 
 	@FXML
 	private TextField txtSearch;
+	//hi
 	
 	private static User currentUser = MainController.getUser();
-	private UserProfileController uc = new UserProfileController();
-	private UserProfile up= uc.GetUserProfile(currentUser.getUserID());;
+//	private UserProfileController uc = new UserProfileController();
+//	private UserProfile up= uc.GetUserProfile(currentUser.getUserID());;
 	private PlaylistController pc = new PlaylistController(currentUser.getUserID());
 	private List<Playlist> playlist = pc.GetPlaylists();
 	private ObservableList<Playlist> playlists = FXCollections.observableArrayList();
@@ -119,6 +128,7 @@ public class MainAppController implements Initializable {
 	private ObservableList<Object> albumSong = FXCollections.observableArrayList();
 	private AlbumController amc = new AlbumController();
 	private ArtistController atc = new ArtistController();
+	private SongController sc = new SongController();
 	
 	// Audio player
 	AudioPlayer player = new AudioPlayer();
@@ -165,6 +175,7 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void clickItem(MouseEvent event)
 	{
+		isSearch=false;
 	    if (event.getClickCount() == 2) //Checking double click
 	    {
 	    	setTabletoPlaylist();
@@ -185,8 +196,7 @@ public class MainAppController implements Initializable {
 		        }
 		        //load playlist to the audio player
 		        player.LoadSongs(songPlay);
-		        player.Play();
-		        
+		        //display object to the table
 				col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
 				col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
 				col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
@@ -219,6 +229,7 @@ public class MainAppController implements Initializable {
 	    }
 	}
 	
+	//make if song button is clicked then
 	@FXML
 	public void btnSongClick(MouseEvent event) 
 	{
@@ -239,48 +250,59 @@ public class MainAppController implements Initializable {
 		search(txtSearch.getText(), "artist");
 	}
 	
+	//when row in table isClicked
 	@FXML
 	public void playTable(MouseEvent event)
 	{
 		if (event.getClickCount() == 2) //Checking double click
 	    {
-			Song userSong = (Song) Result.getSelectionModel().getSelectedItem();
-			player.Load(userSong);
-			player.Play();
+			if(isSearch== true)
+			{
+				Song userSong = (Song) Result.getSelectionModel().getSelectedItem();
+				player.Load(userSong);
+				player.Play();
+				songName.setText(userSong.getTitle());
+				String artist = atc.GetArtistBySongTitle(userSong.getTitle()).getName();
+				artistName.setText(artist);
+			}
+			else
+			{
+				SongInfo userSong = (SongInfo) Result.getSelectionModel().getSelectedItem();
+				player.Load(userSong.getSong());
+				player.Play();
+				songName.setText(userSong.getSong().getTitle());
+				String artist = atc.GetArtistBySongTitle(userSong.getSong().getTitle()).getName();
+				artistName.setText(artist);
+			}
+			
 	    }
 	}
 	
 	private void search(String text, String type) {
-		
+		isSearch=true;
 		if(type == "song") {
 			//update result page to search for that song
-			
 			List<Song> song=search.findFromSongs(text);
-			// #2 update the result page from "Xinyi"
-			
 			setSearchSong(song);
-			
 		} else if(type == "album") {
 			//update result page to search for that album
-			
-			// #1 use the search function from "Trisha"
-			
 			List<Album> album=search.findFromAlbums(text);;
-			// #2 update the result page from "Xinyi"
 			setSearchAlbum(album);
 		} else if(type == "artist") {
-			//update result page to search for that artist
-			
-			// #1 use the search function from "Trisha"
-			
+			//update result page to search for that artist			
 			List<Artist> artist=search.findFromArtists(text);
-			// #2 update the result page from "Xinyi"
 			setSearchArtist(artist);
 		}
 	}
 	
+	//search song according to song name
 	public void setSearchSong(List<Song> song)
 	{
+		for(int i = 0; i<Result.getItems().size();i++)
+		{
+			Result.getItems().clear();
+		}
+		Result.refresh();
 		for (int i = 0; i< song.size();i++)
 		{
 			songs.add(song.get(i));
@@ -290,11 +312,11 @@ public class MainAppController implements Initializable {
 		col3.setText("Album");
 		col4.setText("Duration");
 		col5.setText("Add");
-
+		//display object to the table
 		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
 		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
 		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(Double.toString(((Song) cellData.getValue()).getDuration())));
+		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
 		
 		col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
 			
@@ -314,10 +336,7 @@ public class MainAppController implements Initializable {
             }
         
         });
-		for(int i = 0; i<Result.getItems().size();i++)
-		{
-			Result.getItems().clear();
-		}
+		
 		Result.setItems(songs);
 		Result.refresh();
 	}
@@ -325,6 +344,11 @@ public class MainAppController implements Initializable {
 	//search by album
 	public void setSearchAlbum(List<Album> album)
 	{
+		for(int i = 0; i<Result.getItems().size();i++)
+		{
+			Result.getItems().clear();
+		}
+		Result.refresh();
 		for (int i = 0; i< album.size();i++)
 		{
 			for (int j = 0; j<album.get(i).getSongs().size();j++)
@@ -337,11 +361,11 @@ public class MainAppController implements Initializable {
 		col3.setText("Artist");
 		col4.setText("Duration");
 		col5.setText("Add");
-		
+		//display object to the table
 		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
 		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
 		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(Double.toString(((Song) cellData.getValue()).getDuration())));
+		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
 		
 		col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
 			
@@ -361,38 +385,39 @@ public class MainAppController implements Initializable {
             }
         
         });
-		for(int i = 0; i<Result.getItems().size();i++)
-		{
-			Result.getItems().clear();
-		}
 		Result.setItems(albumSong);
 		Result.refresh();
 	}
 	
+	//search according to artist
 	public void setSearchArtist(List<Artist> artist)
 	{
+		for(int i = 0; i<Result.getItems().size();i++)
+		{
+			Result.getItems().clear();
+		}
+		Result.refresh();
 		for (int i = 0; i< artist.size();i++)
 		{
 			for(int j = 0; j < artist.get(i).getAlbums().size();j++)
 			{
-				for(int k = 9; k< artist.get(i).getAlbums().get(j).getSongs().size();k++)
+				for(int k = 0; k< artist.get(i).getAlbums().get(j).getSongs().size();k++)
 				{
 					artistSong.add(artist.get(i).getAlbums().get(j).getSongs().get(k));
 				}
 			}
-			
 		}
 		col1.setText("Artist");
 		col2.setText("Song");
 		col3.setText("Album");
 		col4.setText("Duration");
 		col5.setText("Add");
-		
+		//display object to the table
 		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
 		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
 		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(Double.toString(((Song) cellData.getValue()).getDuration())));
-		
+		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
+		System.out.print(sc.FormatDuration(artist.get(0).getAlbums().get(0).getSongs().get(0).getDuration()));
 		col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
 			
             @Override
@@ -411,10 +436,6 @@ public class MainAppController implements Initializable {
             }
         
         });
-		for(int i = 0; i<Result.getItems().size();i++)
-		{
-			Result.getItems().clear();
-		}
 		Result.setItems(artistSong);
 		Result.refresh();
 	}
@@ -426,7 +447,7 @@ public class MainAppController implements Initializable {
 		col2.setText("Artist");
 		col3.setText("Album");
 		col4.setText("DateAdded");
-		col5.setText("Delete");
+		col5.setText("Play");
 	}
 	
 
@@ -516,6 +537,7 @@ public class MainAppController implements Initializable {
             });
             
         }
+        //display the button when there is an object associate with it
         @Override
         protected void updateItem(Boolean t, boolean empty) {
             super.updateItem(t, empty);
@@ -528,7 +550,7 @@ public class MainAppController implements Initializable {
         }
 	}
 	
-	//delete song button constructor
+	//play song button constructor
 	private class ButtonCellPlaySong extends TableCell<Disposer.Record, Boolean> {
         Button cellButton = new Button("Play");
         
@@ -541,13 +563,17 @@ public class MainAppController implements Initializable {
                 @Override
                 public void handle(ActionEvent t) 
                 {
-                	Song currentsong = (Song) ButtonCellPlaySong.this.getTableView().getItems().get(ButtonCellPlaySong.this.getIndex());
-                	player.Load(currentsong);
-                	player.Play();
+                	SongInfo currentsong = (SongInfo) ButtonCellPlaySong.this.getTableView().getItems().get(ButtonCellPlaySong.this.getIndex());
+                	player.Load(currentsong.getSong());
+        			player.Play();
+        			songName.setText(currentsong.getSong().getTitle());
+        			String artist = atc.GetArtistBySongTitle(currentsong.getSong().getTitle()).getName();
+        			artistName.setText(artist);
                 }
             });
             
         }
+        //display the button when there is an object associate with it
         @Override
         protected void updateItem(Boolean t, boolean empty) {
             super.updateItem(t, empty);
@@ -573,45 +599,54 @@ public class MainAppController implements Initializable {
                 @Override
                 public void handle(ActionEvent t) 
                 {
+                	
                 	Song currentSong = (Song) ButtonCelladdSong.this.getTableView().getItems().get(ButtonCelladdSong.this.getIndex());
-                	//prompt user to enter playlist name they wish to add to
-                	TextInputDialog dialog = new TextInputDialog("");
-           		 
-            		dialog.setTitle("Enter Playlist Name");
-            		dialog.setHeaderText("Enter the playlist name:");
-            		dialog.setContentText("Name:");
-            		Optional<String> result = dialog.showAndWait();
-            		//create new playlist
-            		if(result.isPresent())
-            		{
-            			String playlistName = result.get();
-            			boolean found = false;
-            			for(int i = 0; i<playlist.size();i++)
+                	ArrayList<String> dropDown = new ArrayList<String>();
+                	if (playlist!=null && !playlist.isEmpty())
+                	{
+                		for(int i = 0; i<playlist.size();i++)
             			{
-            				if(playlist.get(i).getName().equals(playlistName))
-            				{
-            					Date date = new Date();
-            					SongInfo newSong = new SongInfo(currentSong, date);
-            					ArrayList<SongInfo> songlist = (ArrayList<SongInfo>) playlist.get(i).getSongInfos();
-            					songlist.add(newSong);
-            					playlist.get(i).setSongInfos(songlist);
-            					found = true;
-            				}
+                    		dropDown.add(playlist.get(i).getName());
             			}
-            			if (found ==false)
-            			{
-            				Alert error = new Alert(Alert.AlertType.ERROR);
-            				error.setTitle("Invalid Playlist Name");
-            				error.setHeaderText("You enter a playlist name that does not exist");
-            	            error.setContentText("Please try again.");
-            	            Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
-            	            error.showAndWait();
-            			}
-            		}
+                		ChoiceDialog<String> dialog = new ChoiceDialog<>(dropDown.get(0), dropDown);
+                    	dialog.setTitle("Playlist");
+                    	dialog.setHeaderText("Select Playlist");
+                    	dialog.setContentText("Please select the playlist you wish to add to");
+                    	Optional<String> result = dialog.showAndWait();
+                    	if (result.isPresent())
+                    	{
+                    		Date date = new Date();
+        					SongInfo newSong = new SongInfo(currentSong, date);
+        					for (int i = 0; i < playlist.size(); i++)
+        					{
+        						if (playlist.get(i).getName().equals(result.get()))
+        						{
+        							pc.AddToPlaylistBySongInfo(playlist.get(i).getPlaylistID(), newSong);
+        						}
+        					}
+                    		
+                    	}
+                    	
+                	}
+                	else
+                	{
+                		Alert error = new Alert(Alert.AlertType.ERROR);
+            			error.setTitle("No playlist");
+            			error.setHeaderText("There is no playlist");
+                        error.setContentText("Please create a new playlist before you add a song");
+                        Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
+                        error.showAndWait();
+                	}
+                	
+             	
+            		
+
+                	    
                 	
                 }
             });
         }
+        //display the button when there is an object associate with it
         @Override
         protected void updateItem(Boolean t, boolean empty) {
             super.updateItem(t, empty);
@@ -623,6 +658,8 @@ public class MainAppController implements Initializable {
             }
         }
 	}
+	
+	
 	public void updateInfo() {
 		
 		// Have not tested this!

@@ -14,10 +14,15 @@ import data.models.*;
 public class ArtistService {
 
 	public ArtistService() {
-		//	
+		//no initialization
 	}
 	
-	public Artist getArtistBySongTitle(String targetSong) {
+	/**
+	 * Method gets Artist by Song title
+	 * @param targetSong - song title
+	 * @return artistOfSong
+	 */
+	public Artist getArtistBySongTitle(String targetSong) { // TODO: Change to ID
 		try {
 			Artist artistOfSong = null;
 			String filePath = "./src/data/library.json";

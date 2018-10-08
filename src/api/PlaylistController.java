@@ -5,14 +5,15 @@ import java.util.List;
 
 import services.PlaylistService;
 import data.models.Playlist;
+import data.models.SongInfo;
 public class PlaylistController {
 
+	//global variables
 	PlaylistService playlistService;
-	
 	
 	/**
 	 * Controller to manipulate playlist data
-	 * @param userID	ID of user
+	 * @param userID - ID of user
 	 */
 	public PlaylistController(int userID) {
 		playlistService = new PlaylistService(userID);
@@ -20,7 +21,7 @@ public class PlaylistController {
 	
 	/**
 	 * Get all playlists for a given user
-	 * @return	List of playlists
+	 * @return	playlists
 	 */
 	public List<Playlist> GetPlaylists() {
 		try {
@@ -31,9 +32,17 @@ public class PlaylistController {
 		}
 	}
 	
+	public Playlist GetPlaylistByID(int playlistID) {
+		try {
+			return playlistService.GetPlaylistByID(playlistID);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
 	/**
 	 * Create a playlist
-	 * @param name	Name of the playlist to create
+	 * @param name - {String} name of the playlist to create
 	 */
 	public void CreatePlaylist(String name) {
 		try {
@@ -43,10 +52,9 @@ public class PlaylistController {
 		}
 	}
 	
-	
 	/**
 	 * Delete a playlist 
-	 * @param playlistID	ID of playlist to delete
+	 * @param playlistID - {int} ID of playlist to delete
 	 */
 	public void DeletePlaylist(int playlistID) {
 		try {
@@ -56,5 +64,16 @@ public class PlaylistController {
 		}
 	}
 	
-	
+	/**
+	 * Add song to playlist based on song information
+	 * @param playlistID - {int} ID of playlist to delete
+	 * @param songInfo - {SongInfo} song information 
+	 */
+	public void AddToPlaylistBySongInfo(int playlistID, SongInfo songInfo) {
+		try {
+			playlistService.AddToPlaylistBySongInfo(playlistID, songInfo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

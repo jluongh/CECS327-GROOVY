@@ -12,10 +12,14 @@ import data.models.UserProfile;
 
 public class UserProfileService {
 	
-
+	/**
+	 * Getting user profile from json file
+	 * @param UserID - unique identification for user
+	 * @return response
+	 */ 
 	public UserProfile GetUserProfile(int UserID) {
 		try {
-			String filePath = "./src/data/userprofile/" + UserID + ".json";;
+			String filePath = "./src/data/userprofile/" + UserID + ".json";
 			BufferedReader br = new BufferedReader(new FileReader(filePath));
 			UserProfile response = new Gson().fromJson(br, UserProfile.class);
 			return response;

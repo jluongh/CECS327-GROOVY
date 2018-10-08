@@ -1,79 +1,133 @@
 package services;
 
 import java.io.*;
+
+import com.drew.imaging.riff.RiffProcessingException;
+import com.drew.imaging.wav.WavMetadataReader;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.Tag;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import java.util.*;
 
-import javax.sound.sampled.*;
-
 import data.models.*;
 
-/**
- * 
- * 
- */
 public class LibraryService {
+
+	//global variables
 	private String fPath = "./src/data/library.json";
-	private String libraryPath = " ./music/";
-	private File[] library = new File(libraryPath).listFiles();
+
+	private String libraryPath = "./music/";
+	private File[] library;
+	
 	private Artist artist;
 	private Album album;
 	private Song song;
 
 	private List<Artist> artists = new ArrayList<Artist>();
-	private List<Album> albums = null;
+	private List<Album> albums;
 	private List<Song> songs;
+	
+	private List<Album> allAlbums = new ArrayList<Album>();
+	private List<Artist > allArtists = new ArrayList<Artist>();
+
+	int songID;
+	int albumID;
+	int artistID;
 	
 	/**
 	 * Creates library json file
 	 */
 	public LibraryService() {
-		//createLibrary();
+//		System.out.println(dir(libraryPath));
+		library = dir(libraryPath);
+		
+//		for (File file : library) {
+//			System.out.println(file.getName());
+//		}
+		createLibrary();
 	}
-
+	
+	/**
+	 * Creates library of a files with only the .wav files located in folder
+	 * @param dirName - the directory for the file
+	 * @return .wav files
+	 */
+	private File[] dir (String dirName) {
+		File file = new File (dirName);
+		return file.listFiles(new FilenameFilter(){
+			public boolean accept(File file, String filename) {return filename.endsWith(".wav");}
+		});
+	}
+	
 	/**
 	 * Creates and makes relations for artists, albums, and songs and stores the information as json file
 	 * Assigns unique IDs
 	 */
 	public void createLibrary(){
-		AudioFileFormat baseFileFormat = null;
-
-		int songID = 1;
-		int albumID = 1;
-		int artistID = 1;
-
+		library = dir(libraryPath);		
+		
 		for (File file : library) {
-			//Getting properties of .wav file
+			String songTitleDesc = null;
+			String albumNameDesc = null;
+			String artistNameDesc = null;
+			double minutes = 0;
+			//Mapping .wav file metadata tags into data models
 			try {
-				baseFileFormat = AudioSystem.getAudioFileFormat(file);
-			} catch (UnsupportedAudioFileException e) {
+				Metadata metadata = WavMetadataReader.readMetadata(file);
+				Iterable<Directory> dir = metadata.getDirectories();
+				
+				for (Directory d : dir) {
+					for(Tag tag : d.getTags()) {
+						if(tag.getTagName().equals("Duration")) {
+							String duration = tag.getTagName();
+							String durationDesc = tag.getDescription();
+							String durationTime = durationDesc.replaceAll(":", "");
+							minutes = Double.parseDouble(durationTime)/100;
+						}
+						if (tag.getTagName().equals("Product")) {
+							String albumName = tag.getTagName();
+							albumNameDesc = tag.getDescription();
+						}
+						if (tag.getTagName().equals("Title")) {
+							String songTitle = tag.getTagName();
+							songTitleDesc = tag.getDescription();
+						}
+						if (tag.getTagName().equals("Artist")) {
+							String artistName = tag.getTagName();
+							artistNameDesc = tag.getDescription();
+						}
+					}	
+				}
+				
+			} catch (RiffProcessingException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-			//Mapping .wav file properties 
-			Map<String, Object> properties = baseFileFormat.properties();
-			String artistName = (String) properties.get("Contributing artists");
-			String albumName = (String) properties.get("Album");
-			String songTitle = (String) properties.get("Title");
-			double minutes =  (double) properties.get("length")/60000000.0;
-
+			
 			//Create new Song
-			Song so = createSong(songID,songTitle,minutes);
+			Song so = createSong(songTitleDesc, minutes);
 
 			//Creating new album and adding song or adding song to pre-existing album
-			Album al = createAlbum(albumID, albumName, so);
-
+			Album al = createAlbum(albumNameDesc, so);
+			
 			//Creating new artist and adding album or adding album to pre-existing artist
-			Artist ar = createArtist(artistID, artistName, al);
+			Artist ar = createArtist(artistNameDesc, al);
 
 			//List of Artists
 			artists.add(ar);
-
-			songID++;
+			
+//			System.out.println(minutes);
+//			System.out.println(songTitleDesc);
+//			System.out.println(albumNameDesc);
+//			System.out.println(artistNameDesc);
+//			System.out.println("********************************");
 		}	
 
 		//Writing list of artists into library json file
@@ -88,101 +142,108 @@ public class LibraryService {
 	/**
 	 * Creates new artist or updates existing artist
 	 * Assigns unique IDs
-	 * @param {int} artistID - Unique ID for artist
-	 * @param {String} artistName - Name of artist
-	 * @param {Album} al - Album object to be added into an artist
+	 * @param artistName - {String} Name of artist
+	 * @param al - {Album} Album object to be added into an artist
 	 * @return artist
 	 */	
-	private Artist createArtist(int artistID, String artistName, Album al) {
-		if(artists.isEmpty()) { //list of albums doesn't exist
+	private Artist createArtist(String artistName, Album al) {
+		if (allArtists.isEmpty()) {//first artist
 			artist = new Artist();
+			artistID++;
 			artist.setArtistID(artistID);
 			artist.setName(artistName);
 			albums = new ArrayList<Album>();
-			albums.add(album);
+			albums.add(al);
 			artist.setAlbums(albums);
-			artistID++;
+			allArtists.add(artist);
 		}
 		else {
-			for(int index = 1; index <= artists.size(); index++) {
-				if(artistName.equals(artists.get(index-1).getName())) { //album exists
-					artists.get(index-1).getAlbums().add(album);
-					break;
-				}
-				else if (index == artists.size()) { //album doesn't exist
+			for (int index = 0; index <= allArtists.size(); index++) { //search array
+				if(index == allArtists.size()) { //new artist
 					artist = new Artist();
+					artistID++;
 					artist.setArtistID(artistID);
 					artist.setName(artistName);
 					albums = new ArrayList<Album>();
-					albums.add(album);
+					albums.add(al);
 					artist.setAlbums(albums);
-					artistID++;
+					allArtists.add(artist);
+					break;
+				}
+				if (allArtists.get(index).getName().equals(artistName)) { //artist exists
+					allArtists.get(index).getAlbums().add(al); //add new album to artist
+					artist = allArtists.get(index); //return existing artist
+					break;
 				}	
 			}
-		}
+		}	
+//		System.out.println(artist.getArtistID()+ " - "+ artist.getName());
+//		System.out.println("*******************************************");
 		return artist;
 	}
 	
 	/**
 	 * Creates new album or updates existing album
 	 * Assigns unique IDs
-	 * @param {int} albumID - Unique ID for album
-	 * @param {String} albumName - Name of album
-	 * @param {Song} so - Song object to be added into an album
+	 * @param albumName - {String} Name of album
+	 * @param so - {Song} Song object to be added into an album
 	 * @return album 
 	 */	
-	private Album createAlbum(int albumID, String albumName, Song so) {
-		if(albums.isEmpty()) { //list of albums doesn't exist
+	private Album createAlbum(String albumName, Song so) {
+		if (allAlbums.isEmpty()) {//first album
 			album = new Album();
+			albumID++;
 			album.setAlbumID(albumID);
 			album.setName(albumName);
 			songs = new ArrayList<Song>();
-			songs.add(song);
+			songs.add(so);
 			album.setSongs(songs);
-			albums.add(album);
-			albumID++;
+			allAlbums.add(album);
 		}
 		else {
-			for(int index = 1; index <= albums.size(); index++) {
-				if(albumName.equals(albums.get(index-1).getName())) { //album exists
-					albums.get(index-1).getSongs().add(song);
-					break;
-				}
-				else if (index == albums.size()) { //album doesn't exist
+			for (int index = 0; index <= allAlbums.size(); index++) { //search array
+				if(index == allAlbums.size()) { //new album
 					album = new Album();
+					albumID++;
 					album.setAlbumID(albumID);
 					album.setName(albumName);
 					songs = new ArrayList<Song>();
-					songs.add(song);
+					songs.add(so);
 					album.setSongs(songs);
-					albums.add(album);
-					albumID++;
+					allAlbums.add(album);
+					break;
+				}
+				if (allAlbums.get(index).getName().equals(albumName)) { //album exists
+					allAlbums.get(index).getSongs().add(so); //add new song to album
+					album = allAlbums.get(index); //return existing album
+					break;
 				}	
 			}
-		}
-
+		}	
+//		System.out.println(album.getAlbumID()+ " - "+ album.getName());
 		return album;
 	}
 	
 	/**
 	 * Creates new song
 	 * Assigns unique IDs
-	 * @param {int} songID - Unique ID for song
-	 * @param {String} songTitle - Title of song
-	 * @param {double} minutes - Length of song
+	 * @param songTitle - {String} Title of song
+	 * @param minutes - {double} Length of song
 	 * @return song
 	 */	
-	private Song createSong(int songID, String songTitle, double minutes) {
+	private Song createSong(String songTitle, double minutes) {
+		songID++;
 		song = new Song();
 		song.setSongID(songID);
 		song.setTitle(songTitle);
 		song.setDuration(minutes);
+//		System.out.println(song.getSongID()+ " - "+ song.getTitle());
 		return song;
 	}
 
 	/**
 	 * Getter for specific artist	
-	 * @param {String} artistName - Name of the artist being searched for 
+	 * @param artistName - {String} Name of the artist being searched for 
 	 * @return artist
 	 */
 	public Artist getArtist(String artistName) {
@@ -213,9 +274,7 @@ public class LibraryService {
 					System.out.println("Artist does not exist");
 				}
 			}
-
 		} catch(Exception e) {
-
 			System.out.print(e);
 		}
 		return foundArtist;
@@ -236,9 +295,7 @@ public class LibraryService {
 
 			int w;
 			while ((w = in.read()) != -1) {
-
 				json = json + (char) w;
-
 			}
 
 			// Identify token type for deserialization
@@ -246,25 +303,33 @@ public class LibraryService {
 			List<Artist> artists = gson.fromJson(json, new TypeToken<List<Artist>>() {}.getType());
 
 			// Get Artists
-			List<Artist> allArtists = new ArrayList<Artist>();
+			List<Artist> allAr = new ArrayList<Artist>();
 			for (Artist artist : artists) {
-				allArtists.add(artist);
+				if (allAr.isEmpty()) { //first artist
+					allAr.add(artist);
+				}
+				else{ //search array
+					for(int index = 0; index <= allAr.size(); index++ ) {
+						if (index == allAr.size()) { //new artist
+							allAr.add(artist);
+							break;
+						}
+						if(allAr.get(index).getArtistID() == artist.getArtistID()) { //artist exist
+							break;
+						}
+					}
+				}
 			}
-
-			return allArtists;
-
+			return allAr;
 		} catch(Exception e) {
-
 			System.out.print(e);
-
 			return Collections.emptyList();
-
 		}
 	}
 
 	/**
 	 * Getter for specific artist's album	
-	 * @param {String} albumName - Name of the album being searched for 
+	 * @param albumName - {String} Name of the album being searched for 
 	 * @return album
 	 */
 	public Album getAlbum(String albumName) {
@@ -297,11 +362,8 @@ public class LibraryService {
 						System.out.println("Album does not exist");
 					}
 				}
-
 			}
-
 		} catch(Exception e) {
-
 			System.out.print(e);
 		}
 		return foundAlbum;
@@ -312,7 +374,6 @@ public class LibraryService {
 	 * @return list of all albums
 	 */
 	public List<Album> getAllAlbums() {
-
 		// Create file object from store
 		File file = new File(fPath);
 
@@ -323,9 +384,7 @@ public class LibraryService {
 
 			int w;
 			while ((w = in.read()) != -1) {
-
 				json = json + (char) w;
-
 			}
 
 			// Identify token type for deserialization
@@ -333,28 +392,35 @@ public class LibraryService {
 			List<Artist> artists = gson.fromJson(json, new TypeToken<List<Artist>>() {}.getType());
 
 			// Get Albums from each Artists
-			List<Album> allAlbums = new ArrayList<Album>();
+			List<Album> allAl = new ArrayList<Album>();
 			for (Artist artist : artists) {
 				for (Album album : artist.getAlbums()) {
-					allAlbums.add(album);
+					if (allAl.isEmpty()) { //first album
+						allAl.add(album);
+					}
+					else{ //search array
+						for(int index = 0; index <= allAl.size(); index++ ) {
+							if (index == allAl.size()) { //new album
+								allAl.add(album);
+								break;
+							}
+							if(allAl.get(index).getAlbumID() == album.getAlbumID()) { //album exist
+								break;
+							}
+						}
+					}
 				}
 			}
-
-			return allAlbums;
-
+			return allAl;
 		} catch(Exception e) {
-
 			System.out.print(e);
-
 			return Collections.emptyList();
-
 		}
-
 	}
 
 	/**
 	 * Getter for specific album's song	
-	 * @param {String} songName - Name of the song being searched for 
+	 * @param songName - {String} Name of the song being searched for 
 	 * @return song
 	 */
 	public Song getSong(String songName) {
@@ -374,7 +440,7 @@ public class LibraryService {
 			// Identify token type for deserialization
 			Gson gson = new Gson();
 			List<Artist> artists = gson.fromJson(json, new TypeToken<List<Artist>>() {}.getType());
-
+			
 			// Get album's song
 			for (Artist artist : artists) {
 				for(Album album : artist.getAlbums()) {
@@ -390,9 +456,7 @@ public class LibraryService {
 				}
 
 			}
-
 		} catch(Exception e) {
-
 			System.out.print(e);
 		}
 		return foundSong;
@@ -413,33 +477,41 @@ public class LibraryService {
 
 			int w;
 			while ((w = in.read()) != -1) {
-
 				json = json + (char) w;
-
 			}
 
 			// Identify token type for deserialization
 			Gson gson = new Gson();
 			List<Artist> artists = gson.fromJson(json, new TypeToken<List<Artist>>() {}.getType());
-
+			
 			// Get Albums from each Artists
-			List<Song> allSongs = new ArrayList<Song>();
+			List<Song> allSo = new ArrayList<Song>();
+			
 			for (Artist artist : artists) {
 				for (Album album : artist.getAlbums()) {
-					for (Song song : album.getSongs()) {
-						allSongs.add(song);
+					for(Song song : album.getSongs()) {
+						if (allSo.isEmpty()) { //first song
+							allSo.add(song);
+						}
+						else{ //search array
+							for(int index = 0; index <= allSo.size(); index++ ) {
+								if (index == allSo.size()) { //new song
+									allSo.add(song);
+									break;
+								}
+								if(allSo.get(index).getSongID() == song.getSongID()) { //album exist
+									break;
+								}
+							}
+						}
 					}
 				}
 			}
-
-			return allSongs;
+			return allSo;
 
 		} catch(Exception e) {
-
 			System.out.print(e);
-
 			return Collections.emptyList();
-
 		}
 	}
 }

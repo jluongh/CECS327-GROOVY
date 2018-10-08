@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import javax.swing.JOptionPane;
 
 import java.util.Date;
 
@@ -36,7 +35,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TableCell;
@@ -48,7 +46,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -114,7 +111,7 @@ public class MainAppController implements Initializable {
 	// Search bar 
 	@FXML
 	private TextField txtSearch;
-	//hi
+
 	
 	private static User currentUser = MainController.getUser();
 	private UserProfileController uc = new UserProfileController();
@@ -196,6 +193,7 @@ public class MainAppController implements Initializable {
 		        }
 		        //load playlist to the audio player
 		        player.LoadSongs(songPlay);
+		        player.Play();
 		        //display object to the table
 				col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
 				col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));

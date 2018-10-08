@@ -1,20 +1,16 @@
 package api;
 
 import java.io.*;
-import java.net.DatagramPacket;
+import java.net.*;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import javax.sound.sampled.*;
 
 import com.google.gson.Gson;
 
-import api.audio.AudioPlayer;
 import data.constants.Net;
 import data.models.Song;
 
@@ -23,49 +19,41 @@ public class PlayerController {
 	final static int REQUEST = 0;
 	final static int REPLY = 1;
 	final static int REQUEST_ID = 4;
+	private static final String HOST = "localhost";
 
-	// public byte[] LoadSong(int songID) throws IOException {
-	// List<Song> songs = new ArrayList<Song>();
-	// Song song = new Song();
-	// song.setSongID(songID);
-	// songs.add(song);
-	// String songsJson = new Gson().toJson(songs);
-	//
-	// byte[] messageType = ByteBuffer.allocate(4).putInt(REQUEST).array();
-	// byte[] requestId = ByteBuffer.allocate(4).putInt(REQUEST_ID).array();
-	// byte[] fragment = songsJson.getBytes();
-	//
-	// ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	// baos.write(messageType);
-	// baos.write(requestId);
-	// baos.write(fragment);
-	//
-	// byte[] send = baos.toByteArray();
-	//
-	// return send;
-	// }
-
-	public AudioInputStream LoadSong(DatagramSocket socket, int songID) throws IOException {
-		List<Song> songs = new ArrayList<Song>();
+	private DatagramSocket socket;
+	
+	
+	public PlayerController (DatagramSocket socket)  {
+		this.socket = socket;
+	}
+	
+	public List<AudioInputStream> LoadSongs(List<Song> songs) throws IOException {
+		List<AudioInputStream> streams = new ArrayList<AudioInputStream>();
+		for(int i = 0; i < songs.size(); i++) {
+			AudioInputStream stream = LoadSong(songs.get(i).getSongID());
+			streams.add(stream);
+		}
+		return streams;
+	}
+	
+	public AudioInputStream LoadSong(int songID) throws IOException {
 		Song song = new Song();
 		song.setSongID(songID);
-		songs.add(song);
-		String songsJson = new Gson().toJson(songs);
+		String songJson = new Gson().toJson(song);
 
 		byte[] messageType = ByteBuffer.allocate(4).putInt(REQUEST).array();
 		byte[] requestIdSend = ByteBuffer.allocate(4).putInt(REQUEST_ID).array();
-		byte[] fragment = songsJson.getBytes();
+		byte[] fragment = songJson.getBytes();
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		baos.write(messageType);
 		baos.write(requestIdSend);
 		baos.write(fragment);
 
-		// byte[] send = baos.toByteArray();
-
 		// send request
 		byte[] message = baos.toByteArray();
-		InetAddress address = InetAddress.getByName("localhost");
+		InetAddress address = InetAddress.getByName(HOST);
 		DatagramPacket request = new DatagramPacket(message, message.length, address, Net.PORT);
 		socket.send(request);
 
@@ -87,8 +75,7 @@ public class PlayerController {
 		int requestIdReceive = wrapped.getInt();
 		fragment = Arrays.copyOfRange(reply.getData(), 8, reply.getLength());
 
-		if (messageTypeReceive == 1) {
-			System.out.println(requestIdReceive);
+		if (messageTypeReceive == REPLY) {
 			switch (requestIdReceive) {
 			// Loading User Profile
 			case 0:
@@ -129,7 +116,7 @@ public class PlayerController {
 
 				int percent = (int) (((double) receivedCount / (double) count) * 100);
 				System.out.println(percent);
-				if (percent > 80) {
+				if (percent > 50) {
 					ByteArrayInputStream bis = new ByteArrayInputStream(received1);
 					AudioFormat audioFormat = new AudioFormat(44100, 16, 2, true, false);
 					AudioInputStream audioStream = new AudioInputStream(bis, audioFormat, received1.length);

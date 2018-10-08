@@ -5,13 +5,16 @@ import java.io.*;
 import java.util.*;
 
 public class AudioPlayer {
-	private static HashMap<String, AudioData> soundMap = new HashMap<String, AudioData>();
-
+	private HashMap<String, AudioData> soundMap = new HashMap<String, AudioData>();
+	private AudioData ad;
+	public boolean isPlaying;
+	public String currentSong;
 	/**
 	 * Converts an AudioInputStream to PCM_SIGNED format if it is not already either
 	 * PCM_SIGNED or PCM_UNSIGNED.
 	 */
-	private static AudioInputStream convertToPCM(AudioInputStream audioInputStream) {
+	
+	private AudioInputStream convertToPCM(AudioInputStream audioInputStream) {
 		AudioFormat format = audioInputStream.getFormat();
 
 		if ((format.getEncoding() != AudioFormat.Encoding.PCM_SIGNED)
@@ -38,7 +41,7 @@ public class AudioPlayer {
 	 *         <code>false</code> otherwise
 	 */
 
-	public static boolean loadStream(String soundName, AudioInputStream audioInputStream) {
+	public boolean loadStream(String soundName, AudioInputStream audioInputStream) {
 		boolean retVal = true;
 
 		try {
@@ -76,6 +79,21 @@ public class AudioPlayer {
 
 		return retVal;
 	}
+	
+	public void playSongs(List<AudioInputStream> streams) {
+		if (streams != null) {
+			for(int i =0; i < streams.size(); i++) {
+				System.out.println("Playing");
+				currentSong = Integer.toString(i);
+				AudioInputStream stream = streams.get(i);
+				loadStream(currentSong, stream);
+				play(currentSong, false);
+				while (isPlaying) {
+				}
+				System.out.println("Done with one song");
+			}
+		}
+	}
 
 	/**
 	 * Plays a sound that has already been loaded by one of the sound loading
@@ -88,8 +106,8 @@ public class AudioPlayer {
 	 *                      <code>true</code> if the sound should loop forever,
 	 *                      <code>false</code> if the sound should play once
 	 */
-	public static void play(String soundName, boolean loop) {
-		AudioData ad = soundMap.get(soundName);
+	public void play(String soundName, boolean loop) {
+		ad = soundMap.get(soundName);
 		if (ad != null) {
 			if ((ad.thread == null) || (!ad.thread.isAlive())) {
 				if (ad.dataLine instanceof SourceDataLine) {
@@ -106,11 +124,19 @@ public class AudioPlayer {
 				ad.thread.setLooping(loop);
 				ad.thread.playSound();
 			}
+			while(ad.thread.isAlive()) {
+				isPlaying = true;
+			}
 		}
+		isPlaying = false;
 	}
 	
-	public static void resume(String soundName) {
-		AudioData ad = soundMap.get(soundName);
+	public void resume() {
+		resume(currentSong);
+	}
+	
+	public void resume(String soundName) {
+		ad = soundMap.get(soundName);
 		if (ad != null) {
 			if ((ad.thread == null) || (!ad.thread.isAlive())) {
 				if (ad.dataLine instanceof SourceDataLine) {
@@ -129,14 +155,18 @@ public class AudioPlayer {
 		}
 	}
 
+	public void stop() {
+		stop(currentSong);
+	}
+	
 	/**
 	 * Stops playing the specified sound.
 	 *
 	 * @param soundName
 	 *                      the name of the sound to stop
 	 */
-	public static void stop(String soundName) {
-		AudioData ad = soundMap.get(soundName);
+	public void stop(String soundName) {
+		ad = soundMap.get(soundName);
 		if (ad != null) {
 			if (ad.thread != null) {
 				ad.thread.stopSound();
@@ -148,7 +178,7 @@ public class AudioPlayer {
 	 * Stops all playing sounds and closes all lines and audio input streams. Any
 	 * previously loaded sounds will have to be re-loaded to be played again.
 	 */
-	public static void shutdown() {
+	public void shutdown() {
 		for (AudioData ad : soundMap.values()) {
 			if (ad != null) {
 				if (ad.thread != null) {

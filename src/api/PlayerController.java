@@ -9,7 +9,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ListIterator;
 
 import javax.sound.sampled.*;
 
@@ -19,14 +18,8 @@ import data.models.Song;
 
 
 public class PlayerController {
-
-	private boolean isPlaying;
-	List<byte[]> songs = new ArrayList<byte[]>();
-	ListIterator<byte[]> iterator = songs.listIterator();
-	private SourceDataLine sLine;
-
 	
-	public void LoadSong(int songID) throws IOException {
+	public AudioInputStream LoadSong(int songID) throws IOException {
 		// get a datagram socket
 		DatagramSocket socket = new DatagramSocket();
 		socket.setSoTimeout(1000 * 5);
@@ -36,27 +29,6 @@ public class PlayerController {
 		Song song = new Song();
 		song.setSongID(songID);
 		songsSend.add(song);
-
-		
-		// for (int i = 0; i < songs.size(); i++) {
-		// // convert to json
-		// String songJson = new Gson().toJson(songs.get(i));
-		// // convert json to bytes
-		// byte[] buf = songJson.getBytes();
-		//
-		// InetAddress address = InetAddress.getByName("localhost");
-		// DatagramPacket packet = new DatagramPacket(buf, buf.length, address, 4446);
-		//
-		// socket.send(packet);
-		//
-		// // get response
-		// packet = new DatagramPacket(buf, buf.length);
-		// socket.receive(packet);
-		//
-		// // display response
-		// String received = new String(packet.getData(), 0, packet.getLength());
-		// System.out.println(received);
-		// }
 
 		byte[] received1 = null;
 
@@ -108,7 +80,6 @@ public class PlayerController {
 					receiving = false;
 					System.out.println("Receiving done");
 				}
-
 			}
 
 			received1 = baos.toByteArray();
@@ -116,121 +87,22 @@ public class PlayerController {
 		} catch (SocketTimeoutException e) {
 
 		}
+		
+		socket.close();
 
 		int percent = (int) (((double) receivedCount / (double) count) * 100);
 		System.out.println(percent);
-		if (percent > 60) {
-			songs.add(received1);
-		}
-		socket.close();
-	}
-	
-	/**
-	 * Playing song
-	 */
-	public void Play() {	
-		iterator = songs.listIterator();
-
-		while (iterator.hasNext()) {
-			byte[] currentSong = iterator.next();
-			
-			ByteArrayInputStream bis = new ByteArrayInputStream(currentSong);
+		if (percent > 80) {
+			ByteArrayInputStream bis = new ByteArrayInputStream(received1);
 		    AudioFormat audioFormat = new AudioFormat(44100, 16, 2, true, false);
-		    AudioInputStream audioInputStream2=new AudioInputStream(bis, audioFormat, currentSong.length);
-		    
-		    DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-		    try  {
-		    	 sLine=(SourceDataLine) AudioSystem.getLine(info);
-		        System.out.println(sLine.getLineInfo());
-		    } catch (Exception e) {
-		        e.printStackTrace();
-		    }
-
-		    try {
-		        sLine.open(audioFormat);
-		    } catch (Exception e){
-		        e.printStackTrace();
-		    }
-		    sLine.start();
-		    isPlaying = true;
-		    System.out.println("Line Started");
-
-		    try {
-		        byte bytes[] =  new byte[1024];
-		        int bytesRead=0;
-		        int loop=0;
-		        while ((bytesRead=audioInputStream2.read(bytes, 0, bytes.length))!= -1) {
-		            //getVolumeLevel(bytes);
-		            try {
-		                sLine.write(bytes, 0, bytesRead);
-		            } catch (Exception e) {
-		                e.printStackTrace();
-		            }
-		            loop+=1;
-		        }
-		        System.out.println("No more bytes!");
-
-		    } catch (Exception e) {
-		        e.printStackTrace();
-		    }       
-		    System.out.println("Line stopped");
+		    AudioInputStream audioStream =new AudioInputStream(bis, audioFormat, received1.length);
+			return audioStream;
 		}
-	    
-	}
-	
-	
-	/**
-	 * Pausing song 
-	 */
-	public void Pause() {
-		System.out.println("Pause");
-		sLine.stop();
-		isPlaying = false;
-	}
-
-	/**
-	 * Stopping song in order to play new song
-	 * @return iterator 
-	 */
-	public boolean HasNext() {
-		return iterator.hasNext();
-	}
-	
-	/**
-	 * Stopping song in order to play new song 
-	 */
-	public void Next() {
-		if (iterator.hasNext()) {
-			System.out.println("Next");
-			Reset();
-			iterator.next();
-			Play();
+		else {
+			return null;
 		}
 	}
 	
-	/**
-	 * Iterator has previous song
-	 * @return iterator
-	 */
-	public boolean HasPrevious() {
-		return iterator.hasPrevious();
-	}
-	
-	/**
-	 * Play previous song
-	 */
-	public void Previous() {
-		if (iterator.hasPrevious()) {
-			System.out.println("Previous");
-			Reset();
-			iterator.previous();
-			Play();
-		}
-	}
 
-	private void Reset() {
-		sLine.stop();
-		sLine.flush();		
-		isPlaying = false;
-	}
+	
 }

@@ -19,7 +19,7 @@ public class UserProfileService {
 	 */ 
 	public UserProfile GetUserProfile(int UserID) {
 		try {
-			String filePath = "./src/data/userprofile/" + UserID + ".json";;
+			String filePath = "./src/data/userprofile/" + UserID + ".json";
 			BufferedReader br = new BufferedReader(new FileReader(filePath));
 			UserProfile response = new Gson().fromJson(br, UserProfile.class);
 			return response;

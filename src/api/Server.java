@@ -10,5 +10,6 @@ public class Server {
 		// TODO Auto-generated method stub
 //		new PlaylistThread().start();
 		new AudioPlayerThread().start();
+//		new UserProfileThread().start();
 	}
 }

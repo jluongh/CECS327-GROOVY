@@ -5,29 +5,26 @@ import java.util.*;
 import data.constants.Net;
 
 public class Client {
+	private static final String hostname = "localhost";
 	
 	public static void main(String[] args) throws IOException {
-		 
-        if (args.length != 1) {
-             System.out.println("Usage: java QuoteClient <hostname>");
-             return;
-        }
-        
+		
         // get a datagram socket
         DatagramSocket socket = new DatagramSocket();
         
         // send request
-        byte[] buf = new byte[Net.PACKET_SIZE];
-        InetAddress address = InetAddress.getByName(args[0]);
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, address, Net.PORT);
-        socket.send(packet);
+        byte[] message = new byte[4000];
+        InetAddress address = InetAddress.getByName(hostname);
+        DatagramPacket request = new DatagramPacket(message, message.length, address, Net.PORT);
+        socket.send(request);
      
-        // get response
-        packet = new DatagramPacket(buf, buf.length);
-        socket.receive(packet);
+        // get reply
+        byte[] buffer = new byte[4000];
+        DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
+        socket.receive(reply);
  
         // display response
-        String received = new String(packet.getData(), 0, packet.getLength());
+        String received = new String(reply.getData(), 0, reply.getLength());
         System.out.println(received);
      
         

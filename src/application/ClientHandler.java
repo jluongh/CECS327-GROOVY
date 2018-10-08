@@ -3,9 +3,7 @@ package application;
 import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -13,10 +11,14 @@ import com.google.gson.reflect.TypeToken;
 
 import data.models.FileEvent;
 import data.models.Song;
+import data.models.UserProfile;
+import services.UserProfileService;
 
 public class ClientHandler extends Thread {
 
 	final DatagramSocket socket;
+	final static int REQUEST_ID_GETPROFILE = 1;
+	final static int REQUEST_ID_LOADSONG = 4;
 
 	public ClientHandler(DatagramSocket socket) {
 		this.socket = socket;
@@ -36,35 +38,35 @@ public class ClientHandler extends Thread {
 				String received = new String(request.getData(), 0, request.getLength());
 				System.out.println("Server:\n" + received);
 
+				int requestId = 0;
 				if (received != null) {
 					// read header
 					// 0 = request, 1 = reply
 					ByteBuffer wrapped = ByteBuffer.wrap(request.getData(), 0, 4);
 					int messageTypeReceive = wrapped.getInt();
 					wrapped = ByteBuffer.wrap(request.getData(), 4, 4);
-					int requestId = wrapped.getInt();
+					int requestIdReceive = wrapped.getInt();
 					byte[] data = Arrays.copyOfRange(request.getData(), 8, request.getLength());
 					if (messageTypeReceive == 0) {
 						byte[] buffer = null;
 
-						switch (requestId) {
+						switch (requestIdReceive) {
 						// Loading User Profile
-						case 0:
-							buffer = "Test".getBytes("UTF-8");
-							break;
 //						case 0:
 //							buffer = LoadUser(received);
 //							break;
-//						case 1:
-//							buffer = LoadUserProfile(received);
-//							break;
+						case REQUEST_ID_GETPROFILE:
+							requestId = REQUEST_ID_GETPROFILE;
+							buffer = LoadUserProfile(new String(data));
+							break;
 //						case 2:
 //							buffer = AddSongToPlaylist(received);
 //							break;
 //						case 3:
 //							buffer = DeleteSongFromPlaylist(received);
 //							break;
-						case 4:
+						case REQUEST_ID_LOADSONG:
+							requestId = REQUEST_ID_LOADSONG;
 							buffer = LoadSong(new String(data));
 							  break;
 //						case 5:
@@ -82,17 +84,17 @@ public class ClientHandler extends Thread {
 							InetAddress address = request.getAddress();
 							int port = request.getPort();
 							
+							byte[] messageTypeSend = ByteBuffer.allocate(4).putInt(1).array();
+							byte[] requestIdSend = ByteBuffer.allocate(4).putInt(requestId).array();
 
 							if (buffer.length > sizeOfPacket) {
 								// divide the data into chunks
-								byte[] requestIdSend = ByteBuffer.allocate(4).putInt(4).array();
 								int packetcount = buffer.length / sizeOfPacket;
 								int start = 0;
 
 								for (int j = 1; j <= packetcount; j++) {
 									int end = sizeOfPacket * j;
 
-									byte[] messageTypeSend = ByteBuffer.allocate(4).putInt(1).array();
 									byte[] offset = ByteBuffer.allocate(4).putInt(j).array();
 									byte[] count = ByteBuffer.allocate(4).putInt(packetcount).array();
 									byte[] fragment = Arrays.copyOfRange(buffer, start, end);
@@ -111,13 +113,20 @@ public class ClientHandler extends Thread {
 									DatagramPacket packet = new DatagramPacket(send, send.length, address, port);
 									socket.send(packet);
 
-									if (j % 50 == 0) {
+									if (j % 100 == 0) {
 										Thread.sleep(1000);
 									}
 								}
 							}
 							else {
-								DatagramPacket reply = new DatagramPacket(buffer, buffer.length, address, port);
+								ByteArrayOutputStream baos = new ByteArrayOutputStream();
+								baos.write(messageTypeSend);
+								baos.write(requestIdSend);
+								baos.write(buffer);
+								
+								byte[] send = baos.toByteArray();
+
+								DatagramPacket reply = new DatagramPacket(send, send.length, address, port);
 								socket.send(reply);
 							}
 						}
@@ -137,16 +146,27 @@ public class ClientHandler extends Thread {
 
 	private byte[] LoadSong(String request) {		
 		Gson gson = new GsonBuilder().create();
-		List<Song> songs = new ArrayList<Song>();
-		songs = gson.fromJson(request, new TypeToken<List<Song>>() {
+		Song song =  gson.fromJson(request, new TypeToken<Song>() {
 		}.getType());
-		
-		Song song = songs.get(0);
-		
+				
 		byte[] data = null;
 		if (song != null) {
 			 data = getFileEvent(song.getSongID());
 			 System.out.println("Got Data");
+		}
+		return data;
+	}
+	
+	private byte[] LoadUserProfile(String request) {
+		UserProfileService ups = new UserProfileService();
+		Gson gson = new GsonBuilder().create();
+		UserProfile userProfile = gson.fromJson(request, UserProfile.class);
+		byte[] data = null;
+		if (userProfile != null) {
+			userProfile = ups.GetUserProfile(userProfile.getUserID());
+			String send = gson.toJson(userProfile);
+			data = send.getBytes();
+			System.out.println("Got Data");
 		}
 		return data;
 	}

@@ -2,36 +2,57 @@ package application;
 
 import java.io.*;
 import java.net.*;
-import java.nio.ByteBuffer;
 import java.util.*;
-import data.constants.Net;
 
-import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 
 import api.*;
-import data.models.*;
-import services.*;
 import api.audio.AudioPlayer;
+import data.models.*;
 
 public class Client {
-	private static final String hostname = "localhost";
 
 	public static void main(String[] args) throws IOException {
-		PlayerController pc = new PlayerController();
-
 		// get a datagram socket
 		DatagramSocket socket = new DatagramSocket();
 		socket.setSoTimeout(5000);
 		socket.setReceiveBufferSize(60011 * 30 * 100);
+
+		UserProfileController upc = new UserProfileController();
+		UserProfile user = upc.GetUserProfile(socket, 0);
+		List<Playlist> playlists = user.getPlaylists();
 		
-		AudioInputStream audioStream = pc.LoadSong(socket, 1);
-		if (audioStream != null) {
-			AudioPlayer.loadStream("1", audioStream);
-			AudioPlayer.play("1", false);
+		Playlist playlist = user.getPlaylists().get(0);
+		
+		PlayerController pc = new PlayerController(socket);
+		
+		List<Song> songs = new ArrayList<Song>();
+		for (int i = 0; i < playlist.getSongInfos().size(); i++) {
+			songs.add(playlist.getSongInfos().get(i).getSong());
 		}
 
-//		socket.close();
+		List<AudioInputStream> streams = pc.LoadSongs(songs);
+
+		AudioPlayer player = new AudioPlayer();
+		player.playSongs(streams);
+		
+		
+		System.out.println("Done");
+		//		AudioInputStream audioStream = pc.LoadSong(2);
+//
+//		if (audioStream != null) {
+//			AudioPlayer.loadStream("1", audioStream);
+//			audioStream = pc.LoadSong(3);
+//			AudioPlayer.loadStream("3", audioStream);
+//
+//			boolean loop = false;
+//			AudioPlayer.play("1", loop);
+////			AudioPlayer.play("3", loop);
+//
+//		}
+
+
+		socket.close();
 	}
 
 }

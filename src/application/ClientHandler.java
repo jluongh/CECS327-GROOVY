@@ -40,8 +40,29 @@ public class ClientHandler extends Thread {
 						case 0:
 							buffer = "Test".getBytes("UTF-8");
 							break;
+//						case 0:
+//							buffer = LoadUser(received);
+//							break;
 //						case 1:
+//							buffer = LoadUserProfile(received);
+//							break;
+//						case 2:
 //							buffer = AddSongToPlaylist(received);
+//							break;
+//						case 3:
+//							buffer = DeleteSongFromPlaylist(received);
+//							break;
+//						case 4:
+//							buffer = LoadSong(received);
+//							break;
+//						case 5:
+//							buffer = Search(received);
+//							break;
+//						case 6:
+//							buffer = CreatePlaylist(received);
+//							break;
+//						case 7:
+//							buffer = DeletePlaylist(received);
 //							break;
 						}
 

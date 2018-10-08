@@ -25,7 +25,7 @@ public class ClientHandler extends Thread {
 	public void run() {
 		while (true) {
 			try {
-				byte[] message = new byte[4000];
+				byte[] message = new byte[1024 * 1000];
 				int sizeOfPacket = 63000;
 
 				// receive request
@@ -82,8 +82,10 @@ public class ClientHandler extends Thread {
 							InetAddress address = request.getAddress();
 							int port = request.getPort();
 							
+
 							if (buffer.length > sizeOfPacket) {
 								// divide the data into chunks
+								byte[] requestIdSend = ByteBuffer.allocate(4).putInt(4).array();
 								int packetcount = buffer.length / sizeOfPacket;
 								int start = 0;
 
@@ -97,12 +99,14 @@ public class ClientHandler extends Thread {
 
 									ByteArrayOutputStream baos = new ByteArrayOutputStream();
 									baos.write(messageTypeSend);
+									baos.write(requestIdSend);
 									baos.write(offset);
 									baos.write(count);
 									baos.write(fragment);
 
 									byte[] send = baos.toByteArray();
-
+									System.out.println(requestIdSend);
+									System.out.println("Sending message with: " + j + "/" + packetcount );
 									start = end;
 
 									DatagramPacket packet = new DatagramPacket(send, send.length, address, port);

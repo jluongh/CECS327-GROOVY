@@ -24,11 +24,11 @@ public class PlayerController {
 	final static int REQUEST_ID = 4;
 	
 	public byte[] LoadSong(int songID) throws IOException {
-		List<Song> songsToSend = new ArrayList<Song>();
+		List<Song> songs = new ArrayList<Song>();
 		Song song = new Song();
 		song.setSongID(songID);
-		songsToSend.add(song);
-		String songsJson = new Gson().toJson(songsToSend);
+		songs.add(song);
+		String songsJson = new Gson().toJson(songs);
 		
 		byte[] messageType = ByteBuffer.allocate(4).putInt(REQUEST).array();
 		byte[] requestId = ByteBuffer.allocate(4).putInt(REQUEST_ID).array();

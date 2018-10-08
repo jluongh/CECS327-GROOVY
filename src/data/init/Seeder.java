@@ -117,7 +117,7 @@ public class Seeder {
 		albums.add(album1);
 		albums.add(album2);
 		
-		Artist artist1 = new Artist(1, "ABBA");
+		Artist artist1 = new Artist(1, "ABBA", null);
 		artist1.setAlbums(albums);
 		
 		
@@ -132,7 +132,7 @@ public class Seeder {
 		albums = new ArrayList<Album>();
 		albums.add(album3);
 		
-		Artist artist2 = new Artist(2, "Earth, Wind, & Fire");
+		Artist artist2 = new Artist(2, "Earth, Wind, & Fire", null);
 		artist2.setAlbums(albums);
 		
 		/* ---------- Queen ---------- */
@@ -145,7 +145,7 @@ public class Seeder {
 		albums = new ArrayList<Album>();
 		albums.add(album4);
 		
-		Artist artist3 = new Artist(2, "Queen");
+		Artist artist3 = new Artist(2, "Queen", null);
 		artist3.setAlbums(albums);
 		
 		/* ---------- Tears for Fears ---------- */
@@ -158,7 +158,7 @@ public class Seeder {
 		albums = new ArrayList<Album>();
 		albums.add(album5);
 		
-		Artist artist4 = new Artist(2, "Tears for Fears");
+		Artist artist4 = new Artist(2, "Tears for Fears", null);
 		artist4.setAlbums(albums);
 		
 		

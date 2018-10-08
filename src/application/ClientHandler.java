@@ -64,8 +64,8 @@ public class ClientHandler extends Thread {
 //						case 3:
 //							buffer = DeleteSongFromPlaylist(received);
 //							break;
-              case 4:
-							  buffer = LoadSong(new String(data));
+						case 4:
+							buffer = LoadSong(new String(data));
 							  break;
 //						case 5:
 //							buffer = Search(received);
@@ -105,7 +105,6 @@ public class ClientHandler extends Thread {
 									baos.write(fragment);
 
 									byte[] send = baos.toByteArray();
-									System.out.println(requestIdSend);
 									System.out.println("Sending message with: " + j + "/" + packetcount );
 									start = end;
 

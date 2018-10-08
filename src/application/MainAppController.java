@@ -117,8 +117,8 @@ public class MainAppController implements Initializable {
 	//hi
 	
 	private static User currentUser = MainController.getUser();
-	private UserProfileController uc = new UserProfileController();
-	private UserProfile up= uc.GetUserProfile(currentUser.getUserID());;
+//	private UserProfileController uc = new UserProfileController();
+//	private UserProfile up= uc.GetUserProfile(currentUser.getUserID());;
 	private PlaylistController pc = new PlaylistController(currentUser.getUserID());
 	private List<Playlist> playlist = pc.GetPlaylists();
 	private ObservableList<Playlist> playlists = FXCollections.observableArrayList();

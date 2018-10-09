@@ -18,8 +18,13 @@ public class Client {
 		socket.setSoTimeout(5000);
 		socket.setReceiveBufferSize(60011 * 30 * 100);
 
-		UserProfileController upc = new UserProfileController();
-		UserProfile user = upc.GetUserProfile(socket, 0);
+		UserProfileController upc = new UserProfileController(socket);
+		UserProfile user = upc.GetUserProfile(0);
+		
+//		Song song = new Song(3, "Dancing Queen", 210600000);
+//		SongInfo songinfo = new SongInfo(song, null);
+//		System.out.println(upc.AddToPlaylistBySongInfo(1, songinfo));
+		
 		List<Playlist> playlists = user.getPlaylists();
 		
 		Playlist playlist = user.getPlaylists().get(0);

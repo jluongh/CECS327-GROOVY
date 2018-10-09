@@ -24,7 +24,14 @@ public class UserProfileController {
 	private static final String HOST = "localhost";
 
 	private UserProfile userProfile;
-	public UserProfile GetUserProfile(DatagramSocket socket, int userID) throws IOException {
+	private DatagramSocket socket = null;
+	
+	public UserProfileController(DatagramSocket socket) {
+		this.socket = socket;
+	}
+	
+	
+	public UserProfile GetUserProfile(int userID) throws IOException {
 		UserProfile userProfile = new UserProfile();
 		userProfile.setUserID(userID);
 		String profileJson = new Gson().toJson(userProfile);
@@ -60,7 +67,7 @@ public class UserProfileController {
 		wrapped = ByteBuffer.wrap(reply.getData(), 4, 4);
 		int requestIdReceive = wrapped.getInt();
 		fragment = Arrays.copyOfRange(reply.getData(), 8, reply.getLength());
-		System.out.println(messageTypeReceive);
+		//System.out.println(messageTypeReceive);
 		if (messageTypeReceive == REPLY) {
 
 			switch (requestIdReceive) {
@@ -94,35 +101,73 @@ public class UserProfileController {
 //	 *                       - {SongInfo} song information
 //	 * @throws IOException
 //	 */
-//	public void AddToPlaylistBySongInfo(int playlistID, SongInfo songInfo) throws IOException {
-//		if (userProfile != null) {
-//			Playlist playlist = userProfile.getPlaylists().stream().filter(p -> p.getPlaylistID() == playlistID)
-//					.findFirst().get();
-//			List<SongInfo> songInfos = playlist.getSongInfos();
-//			songInfos.add(songInfo);
-//
-//			playlist.setSongInfos(songInfos);
-//
-//			String playlistJson = new Gson().toJson(playlist);
-//
-//			byte[] id = ByteBuffer.allocate(4).putInt(1).array();
-//			byte[] requestId = ByteBuffer.allocate(4).putInt(1).array();
-//
-//			// convert json to bytes
-//			byte[] fragment = playlistJson.getBytes();
-//
-//			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//			baos.write(id);
-//			baos.write(requestId);
-//			baos.write(fragment);
-//
-//			byte[] send = baos.toByteArray();
-//
-//			InetAddress address = InetAddress.getByName("localhost");
-//			DatagramPacket packet = new DatagramPacket(send, send.length, address, PORT);
-//			System.out.println("Sent request");
-//
-//			socket.send(packet);
-//		}
-//	}
+	public boolean AddToPlaylistBySongInfo(int playlistID, SongInfo songInfo) throws IOException {
+		boolean saveSuccessful = false;
+		
+		if (this.userProfile != null) {
+			
+			// Update new playlist
+			Playlist playlist = userProfile.getPlaylists().stream().filter(p -> p.getPlaylistID() == playlistID)
+					.findFirst().get();
+			List<SongInfo> songInfos = playlist.getSongInfos();
+			songInfos.add(songInfo);
+			playlist.setSongInfos(songInfos);
+
+			// Update user profile
+			List<Playlist> playlists = userProfile.getPlaylists();
+			for (int i = 0; i < playlists.size(); i++) {
+				if (playlists.get(i).getPlaylistID() == playlist.getPlaylistID()) {
+					playlists.set(i, playlist);
+				}
+			}
+			this.userProfile.setPlaylists(playlists);
+			
+			// Get userprofile JSON
+			String userProfileJson = new Gson().toJson(userProfile);
+
+			// Write to byte array
+			byte[] messageType = ByteBuffer.allocate(4).putInt(REQUEST).array();
+			byte[] requestIdSend = ByteBuffer.allocate(4).putInt(REQUEST_ID_ADDSONGTOPLAYLIST).array();
+			byte[] fragment = userProfileJson.getBytes();
+
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			baos.write(messageType);
+			baos.write(requestIdSend);
+			baos.write(fragment);
+			
+			// Send request
+			byte[] message = baos.toByteArray();
+			InetAddress address = InetAddress.getByName(HOST);
+			DatagramPacket request = new DatagramPacket(message, message.length, address, Net.PORT);
+			socket.send(request);
+			
+			// Receive reply 
+			byte[] buffer = new byte[1024 * 1000];
+			DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
+			socket.receive(reply);
+			
+			// Read reply
+			ByteBuffer wrapped = ByteBuffer.wrap(reply.getData(), 0, 4);
+			int messageTypeReceive = wrapped.getInt();
+			wrapped = ByteBuffer.wrap(reply.getData(), 4, 4);
+			int requestIdReceive = wrapped.getInt();
+			fragment = Arrays.copyOfRange(reply.getData(), 8, reply.getLength());
+
+			//System.out.println(messageTypeReceive);
+			
+			if (messageTypeReceive == REPLY) {
+				switch (requestIdReceive) {
+				
+				case REQUEST_ID_ADDSONGTOPLAYLIST:
+					String data = new String(fragment);
+					if (data.equals("1"))
+						saveSuccessful = true;
+					else
+						saveSuccessful = false;
+					break;
+				}
+			}
+		}
+		return saveSuccessful;
+	}
 }

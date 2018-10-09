@@ -17,6 +17,7 @@ import data.models.*;
 
 public class UserProfileController {
 
+	//global variables
 	private final static int REQUEST = 0;
 	private final static int REPLY = 1;
 	private final static int REQUEST_ID_GETPROFILE = 1;
@@ -26,11 +27,24 @@ public class UserProfileController {
 	private UserProfile userProfile;
 	private DatagramSocket socket = null;
 	
+	/**
+	 * Setter for socket for UserProfileController
+	 * @param socket - {DatagramSocket} 
+	 */
 	public UserProfileController(DatagramSocket socket) {
 		this.socket = socket;
 	}
 	
-	
+	/**
+	 * Writing into the json file the UserProfile 
+	 * Sending requests
+	 * Getting replies
+	 * Reading the response
+	 * Loading the User Profile
+	 * @param userID - {int} unique identification for user
+	 * @return userProfile
+	 * @throws IOException if input or output is invalid.
+	 */
 	public UserProfile GetUserProfile(int userID) throws IOException {
 		UserProfile userProfile = new UserProfile();
 		userProfile.setUserID(userID);
@@ -87,20 +101,22 @@ public class UserProfileController {
 		return userProfile;
 	}
 	
+	/**
+	 * Getter method for Playlists
+	 * @return playlists
+	 */
 	public List<Playlist> GetPlaylists() {
 		return this.userProfile.getPlaylists();
 	}
 
-//
-//	/**
-//	 * Add song to playlist based on song information
-//	 *
-//	 * @param playlistID
-//	 *                       - {int} ID of playlist to delete
-//	 * @param songInfo
-//	 *                       - {SongInfo} song information
-//	 * @throws IOException
-//	 */
+
+	/**
+	 * Add song to playlist based on song information
+	 * @param playlistID - {int} ID of playlist to delete
+	 * @param songInfo - {SongInfo} song information
+	 * @return saveSuccessful
+	 * @throws IOException if input or output is invalid.
+	 */
 	public boolean AddToPlaylistBySongInfo(int playlistID, SongInfo songInfo) throws IOException {
 		boolean saveSuccessful = false;
 		

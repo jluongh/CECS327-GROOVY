@@ -13,10 +13,6 @@ import java.util.Optional;
 
 import data.models.*;
 
-/**
- * 
- * 
- */
 public class UserService {
 
 	//global variables

@@ -14,7 +14,7 @@ public class Client {
 
 	/**
 	 * Created a client socket and streaming the playlist to play the playlist's songs 
-	 * @param args
+	 * @param args - arguments
 	 * @throws IOException if input or output is invalid.
 	 */
 	public static void main(String[] args) throws IOException {

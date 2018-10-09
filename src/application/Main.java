@@ -38,7 +38,7 @@ public class Main extends Application {
 	
 	/**
 	 * Lauching the application
-	 * @param args
+	 * @param args - arguments
 	 */
 	public static void main(String[] args) {
 

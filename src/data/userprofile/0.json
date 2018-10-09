@@ -20,6 +20,14 @@
             "duration": 3.636E8
           },
           "addedDate": "Sep 17, 2018 8:24:01 PM"
+        },
+        {
+          "song": {
+            "songID": 1,
+            "title": "Everybody Wants To Rule The World",
+            "duration": 4.13
+          },
+          "addedDate": "Oct 8, 2018 5:00:58 PM"
         }
       ],
       "songCount": 0,

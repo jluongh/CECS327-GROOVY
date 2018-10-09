@@ -12,13 +12,11 @@ import javax.sound.sampled.*;
 import com.google.gson.Gson;
 
 import data.constants.Net;
+import data.constants.Packet;
 import data.models.Song;
 
 public class PlayerController {
 
-	final static int REQUEST = 0;
-	final static int REPLY = 1;
-	final static int REQUEST_ID = 4;
 	private static final String HOST = "localhost";
 
 	private DatagramSocket socket;
@@ -44,8 +42,8 @@ public class PlayerController {
 		song.setSongID(songID);
 		String songJson = new Gson().toJson(song);
 
-		byte[] messageType = ByteBuffer.allocate(4).putInt(REQUEST).array();
-		byte[] requestIdSend = ByteBuffer.allocate(4).putInt(REQUEST_ID).array();
+		byte[] messageType = ByteBuffer.allocate(4).putInt(Packet.REQUEST).array();
+		byte[] requestIdSend = ByteBuffer.allocate(4).putInt(Packet.REQUEST_ID_LOADSONG).array();
 		byte[] fragment = songJson.getBytes();
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -77,7 +75,7 @@ public class PlayerController {
 		int requestIdReceive = wrapped.getInt();
 		fragment = Arrays.copyOfRange(reply.getData(), 8, reply.getLength());
 
-		if (messageTypeReceive == REPLY) {
+		if (messageTypeReceive == Packet.REPLY) {
 			switch (requestIdReceive) {
 			// Loading User Profile
 			case 0:

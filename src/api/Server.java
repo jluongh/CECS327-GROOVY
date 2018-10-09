@@ -3,9 +3,7 @@ package api;
 import java.io.IOException;
 import java.net.*;
 
-import api.threads.PlaylistThread;
 import application.ClientHandler;
-import data.constants.Net;
 
 public class Server {
 	
@@ -15,8 +13,6 @@ public class Server {
 	 * @throws IOException if input or output is invalid.
 	 */
 	public static void main(String[] args) throws IOException {
-
-		//new PlaylistThread().start();
 		
 		DatagramSocket socket = null;
 		

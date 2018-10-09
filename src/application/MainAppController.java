@@ -260,7 +260,6 @@ public class MainAppController implements Initializable {
 			        	while(iterator.hasNext()) {
 			        		Integer key = iterator.next();
 			        		ap.loadStream(key, streams.get(key));
-			        		System.out.println(key + " -- YES -- " + streams.get(key));
 			        	}
 			        }
 				} catch (IOException e) {

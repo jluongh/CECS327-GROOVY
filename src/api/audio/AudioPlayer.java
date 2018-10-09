@@ -5,15 +5,16 @@ import java.io.*;
 import java.util.*;
 
 public class AudioPlayer {
-	private HashMap<String, AudioData> soundMap = new HashMap<String, AudioData>();
+	public HashMap<Integer, AudioData> soundMap = new HashMap<Integer, AudioData>();
 	private AudioData ad;
 	public boolean isPlaying;
-	public String currentSong;
+	public int currentSong;
+
 	/**
 	 * Converts an AudioInputStream to PCM_SIGNED format if it is not already either
 	 * PCM_SIGNED or PCM_UNSIGNED.
 	 */
-	
+
 	private AudioInputStream convertToPCM(AudioInputStream audioInputStream) {
 		AudioFormat format = audioInputStream.getFormat();
 
@@ -41,7 +42,7 @@ public class AudioPlayer {
 	 *         <code>false</code> otherwise
 	 */
 
-	public boolean loadStream(String soundName, AudioInputStream audioInputStream) {
+	public boolean loadStream(int soundName, AudioInputStream audioInputStream) {
 		boolean retVal = true;
 
 		try {
@@ -79,17 +80,17 @@ public class AudioPlayer {
 
 		return retVal;
 	}
-	
+
 	public void playSongs(List<AudioInputStream> streams) {
 		if (streams != null) {
-			for(int i =0; i < streams.size(); i++) {
+			for (int i = 0; i < streams.size(); i++) {
 				System.out.println("Playing");
-				currentSong = Integer.toString(i);
+				currentSong = i;
 				AudioInputStream stream = streams.get(i);
 				loadStream(currentSong, stream);
 				play(currentSong, false);
-				while (isPlaying) {
-				}
+				// while (isPlaying) {
+				// }
 				System.out.println("Done with one song");
 			}
 		}
@@ -106,8 +107,9 @@ public class AudioPlayer {
 	 *                      <code>true</code> if the sound should loop forever,
 	 *                      <code>false</code> if the sound should play once
 	 */
-	public void play(String soundName, boolean loop) {
+	public void play(int soundName, boolean loop) {
 		ad = soundMap.get(soundName);
+		currentSong = soundName;
 		if (ad != null) {
 			if ((ad.thread == null) || (!ad.thread.isAlive())) {
 				if (ad.dataLine instanceof SourceDataLine) {
@@ -124,18 +126,16 @@ public class AudioPlayer {
 				ad.thread.setLooping(loop);
 				ad.thread.playSound();
 			}
-			while(ad.thread.isAlive()) {
-				isPlaying = true;
-			}
 		}
-		isPlaying = false;
 	}
-	
+
 	public void resume() {
 		resume(currentSong);
 	}
-	
-	public void resume(String soundName) {
+
+	public void resume(int soundName) {
+		currentSong = soundName;
+
 		ad = soundMap.get(soundName);
 		if (ad != null) {
 			if ((ad.thread == null) || (!ad.thread.isAlive())) {
@@ -148,9 +148,9 @@ public class AudioPlayer {
 
 				ad.thread.start();
 			} else {
-				ad.thread.stopSound();
+//				ad.thread.stopSound();
 				ad.thread.resumeSound();
-				ad.thread.playSound();
+//				ad.thread.playSound();
 			}
 		}
 	}
@@ -158,14 +158,16 @@ public class AudioPlayer {
 	public void stop() {
 		stop(currentSong);
 	}
-	
+
 	/**
 	 * Stops playing the specified sound.
 	 *
 	 * @param soundName
 	 *                      the name of the sound to stop
 	 */
-	public void stop(String soundName) {
+	public void stop(int soundName) {
+		currentSong = soundName;
+		
 		ad = soundMap.get(soundName);
 		if (ad != null) {
 			if (ad.thread != null) {

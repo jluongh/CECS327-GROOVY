@@ -16,6 +16,7 @@ import data.models.Song;
 
 public class PlayerController {
 
+	//global variables
 	final static int REQUEST = 0;
 	final static int REPLY = 1;
 	final static int REQUEST_ID = 4;
@@ -23,11 +24,20 @@ public class PlayerController {
 
 	private DatagramSocket socket;
 	
-	
+	/**
+	 * Setter for socket for PlayerController
+	 * @param socket - {DatagramSocket} 
+	 */
 	public PlayerController (DatagramSocket socket)  {
 		this.socket = socket;
 	}
 	
+	/**
+	 * Creating a HashMap for the songId to map to the the AudioInputStream
+	 * @param songs - {List} list of song objects
+	 * @return streams
+	 * @throws IOException if input or output is invalid.
+	 */
 	public HashMap <Integer, AudioInputStream> LoadSongs(List<Song> songs) throws IOException {
 		HashMap <Integer, AudioInputStream> streams= new HashMap<Integer, AudioInputStream>();
 		
@@ -39,6 +49,16 @@ public class PlayerController {
 		return streams;
 	}
 	
+	/**
+	 * Writing into the json file the song
+	 * Sending requests
+	 * Getting replies
+	 * Reading the response
+	 * Loading the song
+	 * @param songID - {int} unique identification for the song
+	 * @return audioStream
+	 * @throws IOException if input or output is invalid.
+	 */
 	public AudioInputStream LoadSong(int songID) throws IOException {
 		Song song = new Song();
 		song.setSongID(songID);

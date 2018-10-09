@@ -21,6 +21,7 @@ import javafx.scene.Node;
 
 public class MainController 
 {
+	//global variables
 	@FXML
 	private TextField userID;
 	@FXML
@@ -35,12 +36,17 @@ public class MainController
 	private Button btnEnter;
 	private static User currentUser;
 	
-	// Event Listener on Button[#btnEnter].onAction
+	/**
+	 * Event Listener on Button[#btnEnter].onAction to handle opening of the application
+	 * Displaying the initial page for logging into profile
+	 * Displaying errors for invalid inputs for username and password
+	 * Continuing to the next stage if the user validation is correct
+	 * @param event - {ActionEvent} the action the user takes
+	 * @throws IOException if input or output is invalid.
+	 */
 	@FXML
 	public void handleButtonEnter(ActionEvent event) throws IOException 
 	{
-		
-			
 		UserController uv = new UserController();
 		// if user enter nothing on the username, display error message 
 		if(!uv.isValid(userID.getText()))
@@ -87,13 +93,20 @@ public class MainController
 		}
 	}
 	
-	//get the current user
+	/**
+	 * Getter method for the user
+	 * @return currentUser
+	 */
 	public static User getUser()
 	{
 		return currentUser;
 	}
 	
-	// Event Listener on Button[#btnExit].onAction
+	/**
+	 * Event Listener on Button[#btnExit].onAction to handle the closing of the application
+	 * Removes stage being displayed
+	 * @param event - {ActionEvent} the action the user takes
+	 */
 	@FXML
 	public void handleButtonExit(ActionEvent event)
 	{

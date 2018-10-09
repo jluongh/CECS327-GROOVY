@@ -76,6 +76,11 @@
                   <Image url="@resources%20v2/full-sound-button.png" />
                </image>
             </ImageView>
+            <ImageView fx:id="btnRepeat" fitHeight="20.0" fitWidth="20.0" layoutX="328.0" layoutY="21.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@resources%20v2/repeat.png" />
+               </image>
+            </ImageView>
             <Slider layoutX="520.0" layoutY="31.0" prefHeight="14.0" prefWidth="119.0" />
             <Text fx:id="songName" layoutX="-261.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Song Name" wrappingWidth="246.00000163912773">
                <font>
@@ -92,6 +97,11 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
+            <ImageView fx:id="btnShuffle" fitHeight="20.0" fitWidth="24.0" layoutX="138.0" layoutY="21.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@resources%20v2/1082440.png" />
+               </image>
+            </ImageView>
          </children>
       </AnchorPane>
       <AnchorPane layoutX="269.0" layoutY="85.0" prefHeight="473.0" prefWidth="696.0">

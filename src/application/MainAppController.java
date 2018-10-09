@@ -567,6 +567,19 @@ public class MainAppController implements Initializable {
 		//player.setVolume(0);
 	}
 	// Event Listener on ImageView[#exit].onMouseClicked
+	
+	@FXML
+	public void shuffleClicked(MouseEvent event) 
+	{
+		
+	}
+	@FXML
+	public void repeatClicked(MouseEvent event) 
+	{
+		
+	}
+	
+	
 
 	//delete button constructor
 	private class ButtonCelldeletePlaylist extends TableCell<Disposer.Record, Boolean> {

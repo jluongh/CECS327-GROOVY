@@ -132,4 +132,26 @@ public class AudioPlayer {
 	    FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);        
 	    gainControl.setValue(20f * (float) Math.log10(volume));
 	}
+	
+	public ListIterator<Song> repeat() {
+		ListIterator<Song> temp;
+		temp = iterator;
+		if(temp.hasNext()) {
+
+			temp.set(currentSong);
+			temp.next();
+		}
+		return temp;
+	}
+	
+	public ListIterator<Song> shuffle() {
+		ListIterator<Song> temp;
+		temp = iterator;
+		Collections.shuffle((List<?>) temp);
+		return temp;
+		
+	}
+	
+	
+	
 }

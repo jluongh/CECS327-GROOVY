@@ -233,7 +233,7 @@ public class ClientHandler extends Thread {
 		String fileName = songID + "";
 		String path = "music/" + fileName + ".wav";
 		fileEvent.setPath(path);
-		fileEvent.setFilename(fileName);
+		fileEvent.setfileName(fileName);
 		File file = new File(path);
 		if (file.isFile()) {
 			try {

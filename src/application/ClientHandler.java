@@ -17,15 +17,27 @@ import data.models.Playlist;
 
 public class ClientHandler extends Thread {
 
+	//global variables
 	final DatagramSocket socket;
 	final static int REQUEST_ID_GETPROFILE = 1;
 	final static int REQUEST_ID_ADDSONGTOPLAYLIST = 2;
 	final static int REQUEST_ID_LOADSONG = 4;
-
+	
+	/**
+	 * Setter for socket for ClientHandler
+	 * @param socket - {DatagramSocket} 
+	 */
 	public ClientHandler(DatagramSocket socket) {
 		this.socket = socket;
 	}
 
+	/**
+	 * Run the client handler to handle the datagrampacket requests
+	 * Sending the data packets 
+	 * Divides the packets into smaller packet chunks 
+	 * @param args
+	 * @throws IOException if input or output is invalid.
+	 */
 	public void run() {
 		while (true) {
 			try {
@@ -147,6 +159,14 @@ public class ClientHandler extends Thread {
 		}
 	}
 
+	/**
+	 * Loading Song
+	 * Creating a json and for the list of songs
+	 * Getting the bytes of the json for the list of songs
+	 * @param request - {String} the text to be serialized
+	 * @return data
+	 * @throws IOException if input or output is invalid.
+	 */
 	private byte[] LoadSong(String request) {		
 		Gson gson = new GsonBuilder().create();
 		Song song =  gson.fromJson(request, new TypeToken<Song>() {
@@ -160,6 +180,14 @@ public class ClientHandler extends Thread {
 		return data;
 	}
 	
+	/**
+	 * Loading User Profile
+	 * Creating a json and for the UserProfile based on the UserProfile class 
+	 * Getting the bytes of the json for UserProfile
+	 * @param request - {String} the text to be serialized
+	 * @return data
+	 * @throws IOException if input or output is invalid.
+	 */ 
 	private byte[] LoadUserProfile(String request) {
 		UserProfileService ups = new UserProfileService();
 		Gson gson = new GsonBuilder().create();
@@ -174,6 +202,13 @@ public class ClientHandler extends Thread {
 		return data;
 	}
 
+	/**
+	 * Add song to playlist
+	 * Creating a userProfileService to be serialized in a json
+	 * Returing the bytes
+	 * @param request - {String} the text to be serialized
+	 * @return data
+	 */
 	private byte[] AddSongToPlaylist(String request) {
 		UserProfileService ups = new UserProfileService();
 		Gson gson = new GsonBuilder().create();
@@ -186,6 +221,12 @@ public class ClientHandler extends Thread {
 		return data;
 	}
 	
+	/**
+	 * Setting the path of the song file
+	 * Creating a stream for the song by setting the file size and bytes to play the song
+	 * @param songID - {int} unique identification for song
+	 * @throws IOException if input or output is invalid.
+	 */
 	public byte[] getFileEvent(int songID) {
 		FileEvent fileEvent = new FileEvent();
 

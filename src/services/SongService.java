@@ -14,7 +14,7 @@ public class SongService {
 	public String FormatDuration(double duration) {
 		if (duration == 0.0) 
 			return "";
-		String formattedDuration = Double.toString(duration/60000000);
+		String formattedDuration = Double.toString(duration);
 		String[] fd = formattedDuration.split("\\.");
 		if (fd[1].length()==1) {
 			fd[1] = fd[1] + "0";

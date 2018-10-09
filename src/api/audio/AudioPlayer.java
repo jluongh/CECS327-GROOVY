@@ -5,16 +5,18 @@ import java.io.*;
 import java.util.*;
 
 public class AudioPlayer {
+	
+	//global variables
 	public HashMap<Integer, AudioData> soundMap = new HashMap<Integer, AudioData>();
 	private AudioData ad;
 	public boolean isPlaying;
 	public int currentSong;
 
 	/**
-	 * Converts an AudioInputStream to PCM_SIGNED format if it is not already either
-	 * PCM_SIGNED or PCM_UNSIGNED.
+	 * Converts an AudioInputStream to PCM_SIGNED format if it is not already either PCM_SIGNED or PCM_UNSIGNED
+	 * @param audioInputStream - {AudioInputStream}  song that is being streamed
+	 * @return audioInputStream
 	 */
-
 	private AudioInputStream convertToPCM(AudioInputStream audioInputStream) {
 		AudioFormat format = audioInputStream.getFormat();
 
@@ -29,19 +31,15 @@ public class AudioPlayer {
 	}
 
 	/**
-	 * Loads an audio stream from a file and gives it the specified name. This name
-	 * can be used when calling the <code>{@link #play play}</code> and
-	 * <code>{@link #stop stop}</code> methods.
-	 *
-	 * @param soundName
-	 *                      the name to give this audio stream
-	 * @param filename
-	 *                      the name of the file to load the audio stream from
-	 *
-	 * @return <code>true</code> if the audio stream loaded successfully,
-	 *         <code>false</code> otherwise
+	 * Loading an audio stream from a file
+	 * Giving the audio stream a specified name
+	 * Formatting and initializing the audio data info
+	 * Putting the audio stream into the hashmap
+	 * Returning true if the audio stream loaded successfully else returning false 
+	 * @param soundName - {String} the name to give this audio stream
+	 * @param audioInputStream - {AudioInputStream} the name of the file to load the audio stream from
+	 * @return retVal
 	 */
-
 	public boolean loadStream(int soundName, AudioInputStream audioInputStream) {
 		boolean retVal = true;
 
@@ -97,15 +95,11 @@ public class AudioPlayer {
 	}
 
 	/**
-	 * Plays a sound that has already been loaded by one of the sound loading
-	 * methods. The sound can be played once or looped forever. If the specified
-	 * sound name does not exist, this method does nothing.
-	 *
-	 * @param soundName
-	 *                      the name of the sound to play
-	 * @param loop
-	 *                      <code>true</code> if the sound should loop forever,
-	 *                      <code>false</code> if the sound should play once
+	 * Plays a sound that has already been loaded by one of the sound loading methods
+	 * The sound can be played once or looped forever
+	 * If the specified sound name does not exist, this method does nothing
+	 * @param soundName - {String} the name of the sound to play
+	 * @param loop - {boolean} determinant if the sound should loop forever or play once
 	 */
 	public void play(int soundName, boolean loop) {
 		ad = soundMap.get(soundName);
@@ -128,14 +122,21 @@ public class AudioPlayer {
 			}
 		}
 	}
-
+	
+	/**
+	 * Resume the current song
+	 * Method to play song at a certain time interval
+	 */
 	public void resume() {
 		resume(currentSong);
 	}
 
+	/**
+	 * Resume the current song based on the sound name in thread
+	 * @param soundName - {int} the name of the sound to resume
+	 */
 	public void resume(int soundName) {
 		currentSong = soundName;
-
 		ad = soundMap.get(soundName);
 		if (ad != null) {
 			if ((ad.thread == null) || (!ad.thread.isAlive())) {
@@ -155,15 +156,17 @@ public class AudioPlayer {
 		}
 	}
 
+	/**
+	 * Stop the current song
+	 * Method to stop song at a certain time interval
+	 */
 	public void stop() {
 		stop(currentSong);
 	}
 
 	/**
-	 * Stops playing the specified sound.
-	 *
-	 * @param soundName
-	 *                      the name of the sound to stop
+	 * Stops playing the current song based on the sound name in thread
+	 * @param soundName - {String} the name of the sound to stop
 	 */
 	public void stop(int soundName) {
 		currentSong = soundName;
@@ -177,8 +180,8 @@ public class AudioPlayer {
 	}
 
 	/**
-	 * Stops all playing sounds and closes all lines and audio input streams. Any
-	 * previously loaded sounds will have to be re-loaded to be played again.
+	 * Stops all playing sounds and closes all lines and audio input streams
+	 * Any previously loaded sounds will have to be re-loaded to be played again
 	 */
 	public void shutdown() {
 		for (AudioData ad : soundMap.values()) {

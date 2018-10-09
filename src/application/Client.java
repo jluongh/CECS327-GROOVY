@@ -12,6 +12,11 @@ import data.models.*;
 
 public class Client {
 
+	/**
+	 * Created a client socket and streaming the playlist to play the playlist's songs 
+	 * @param args
+	 * @throws IOException if input or output is invalid.
+	 */
 	public static void main(String[] args) throws IOException {
 		// get a datagram socket
 		DatagramSocket socket = new DatagramSocket();

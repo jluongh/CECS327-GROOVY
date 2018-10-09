@@ -8,6 +8,12 @@ import application.ClientHandler;
 import data.constants.Net;
 
 public class Server {
+	
+	/**
+	 * Created a server socket
+	 * @param args
+	 * @throws IOException if input or output is invalid.
+	 */
 	public static void main(String[] args) throws IOException {
 
 		//new PlaylistThread().start();

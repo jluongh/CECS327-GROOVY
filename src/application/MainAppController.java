@@ -683,7 +683,11 @@ public class MainAppController implements Initializable {
         					{
         						if (playlist.get(i).getName().equals(result.get()))
         						{
-        							pc.AddToPlaylistBySongInfo(playlist.get(i).getPlaylistID(), newSong);
+        							try {
+        								upc.AddToPlaylistBySongInfo(playlist.get(i).getPlaylistID(), newSong);
+        							} catch(IOException e) {
+        								e.printStackTrace();
+        							}
         						}
         					}
                     		

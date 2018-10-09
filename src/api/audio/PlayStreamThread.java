@@ -44,7 +44,6 @@ public class PlayStreamThread extends PlayThread {
 		if (playing) {
 			return;
 		}
-		
 		try {
 			sourceDataLine.start();
 			playing = true;

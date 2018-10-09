@@ -28,11 +28,13 @@ public class PlayerController {
 		this.socket = socket;
 	}
 	
-	public List<AudioInputStream> LoadSongs(List<Song> songs) throws IOException {
-		List<AudioInputStream> streams = new ArrayList<AudioInputStream>();
+	public HashMap <Integer, AudioInputStream> LoadSongs(List<Song> songs) throws IOException {
+		HashMap <Integer, AudioInputStream> streams= new HashMap<Integer, AudioInputStream>();
+		
 		for(int i = 0; i < songs.size(); i++) {
-			AudioInputStream stream = LoadSong(songs.get(i).getSongID());
-			streams.add(stream);
+			int songId = songs.get(i).getSongID();
+			AudioInputStream stream = LoadSong(songId);
+			streams.put(songId, stream);
 		}
 		return streams;
 	}

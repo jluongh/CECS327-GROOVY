@@ -36,25 +36,13 @@ public class Client {
 			songs.add(playlist.getSongInfos().get(i).getSong());
 		}
 
-		List<AudioInputStream> streams = pc.LoadSongs(songs);
-
-		AudioPlayer player = new AudioPlayer();
-		player.playSongs(streams);
+//		List<AudioInputStream> streams = pc.LoadSongs(songs);
+//
+//		AudioPlayer player = new AudioPlayer();
+//		player.playSongs(streams);
 		
 		
 		System.out.println("Done");
-		//		AudioInputStream audioStream = pc.LoadSong(2);
-//
-//		if (audioStream != null) {
-//			AudioPlayer.loadStream("1", audioStream);
-//			audioStream = pc.LoadSong(3);
-//			AudioPlayer.loadStream("3", audioStream);
-//
-//			boolean loop = false;
-//			AudioPlayer.play("1", loop);
-////			AudioPlayer.play("3", loop);
-//
-//		}
 
 
 		socket.close();

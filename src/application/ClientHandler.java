@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import data.constants.Packet;
 import data.models.FileEvent;
 import data.models.Song;
 import data.models.UserProfile;
@@ -19,9 +20,6 @@ public class ClientHandler extends Thread {
 
 	//global variables
 	final DatagramSocket socket;
-	final static int REQUEST_ID_GETPROFILE = 1;
-	final static int REQUEST_ID_ADDSONGTOPLAYLIST = 2;
-	final static int REQUEST_ID_LOADSONG = 4;
 	
 	/**
 	 * Setter for socket for ClientHandler
@@ -67,19 +65,19 @@ public class ClientHandler extends Thread {
 //						case 0:
 //							buffer = LoadUser(received);
 //							break;
-						case REQUEST_ID_GETPROFILE:
-							requestId = REQUEST_ID_GETPROFILE;
+						case Packet.REQUEST_ID_GETPROFILE:
+							requestId = Packet.REQUEST_ID_GETPROFILE;
 							buffer = LoadUserProfile(new String(data));
 							break;
-						case REQUEST_ID_ADDSONGTOPLAYLIST:
-							requestId = REQUEST_ID_ADDSONGTOPLAYLIST;
+						case Packet.REQUEST_ID_ADDSONGTOPLAYLIST:
+							requestId = Packet.REQUEST_ID_ADDSONGTOPLAYLIST;
 							buffer = AddSongToPlaylist(new String(data));
 							break;
 //						case 3:
 //							buffer = DeleteSongFromPlaylist(received);
 //							break;
-						case REQUEST_ID_LOADSONG:
-							requestId = REQUEST_ID_LOADSONG;
+						case Packet.REQUEST_ID_LOADSONG:
+							requestId = Packet.REQUEST_ID_LOADSONG;
 							buffer = LoadSong(new String(data));
 							  break;
 //						case 5:

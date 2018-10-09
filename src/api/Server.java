@@ -11,7 +11,7 @@ public class Server {
 	
 	/**
 	 * Created a server socket
-	 * @param args
+	 * @param args - arguments
 	 * @throws IOException if input or output is invalid.
 	 */
 	public static void main(String[] args) throws IOException {

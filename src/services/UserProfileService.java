@@ -33,9 +33,9 @@ public class UserProfileService {
 	}
 	
 	/**
-	 * 
-	 * @param up
-	 * @return
+	 * Save user profile updates
+	 * @param up - {UserProfile} user profile object
+	 * @return boolean when json file is created and serialized 
 	 */
 	public boolean SaveUserProfile(UserProfile up) {
 		String filePath = "./src/data/userprofile/" + up.getUserID() + ".json";

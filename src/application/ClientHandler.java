@@ -35,8 +35,6 @@ public class ClientHandler extends Thread {
 	 * Run the client handler to handle the datagrampacket requests
 	 * Sending the data packets 
 	 * Divides the packets into smaller packet chunks 
-	 * @param args
-	 * @throws IOException if input or output is invalid.
 	 */
 	public void run() {
 		while (true) {
@@ -225,7 +223,7 @@ public class ClientHandler extends Thread {
 	 * Setting the path of the song file
 	 * Creating a stream for the song by setting the file size and bytes to play the song
 	 * @param songID - {int} unique identification for song
-	 * @throws IOException if input or output is invalid.
+	 * @return fileBytes
 	 */
 	public byte[] getFileEvent(int songID) {
 		FileEvent fileEvent = new FileEvent();

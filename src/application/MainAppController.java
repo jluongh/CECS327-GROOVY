@@ -8,10 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import javax.sound.sampled.AudioInputStream;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import api.AlbumController;
 import api.ArtistController;
@@ -112,6 +115,7 @@ public class MainAppController implements Initializable {
 	
 	private boolean isSearch = false;
 	
+	private boolean isPlaying = false;
 	// Search bar 
 	@FXML
 	private TextField txtSearch;
@@ -247,12 +251,17 @@ public class MainAppController implements Initializable {
 				Result.setItems(userSong);
 				Result.refresh();
 				//load playlist to the audio player
-		        List<AudioInputStream> streams;
+		        HashMap<Integer, AudioInputStream> streams;
 				try {
 					streams = player.LoadSongs(songPlay);
 			        if(streams != null) {
-				        ap.playSongs(streams);
-
+			        	Set keys = streams.keySet();
+			        	Iterator<Integer> iterator = keys.iterator();
+			        	while(iterator.hasNext()) {
+			        		Integer key = iterator.next();
+			        		ap.loadStream(key, streams.get(key));
+			        		System.out.println(key + " -- YES -- " + streams.get(key));
+			        	}
 			        }
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -293,8 +302,11 @@ public class MainAppController implements Initializable {
 			if(isSearch== true)
 			{
 				Song userSong = (Song) Result.getSelectionModel().getSelectedItem();
-				player.LoadSong(userSong.getSongID());
-				ap.play(userSong.getTitle(), false);
+				if (!ap.soundMap.containsKey(userSong.getSongID())) {
+					System.out.println("Checked---");
+					player.LoadSong(userSong.getSongID());
+				}
+				ap.play(userSong.getSongID(), false);
 				songName.setText(userSong.getTitle());
 				String artist = atc.GetArtistBySongTitle(userSong.getTitle()).getName();
 				artistName.setText(artist);
@@ -302,8 +314,12 @@ public class MainAppController implements Initializable {
 			else
 			{
 				SongInfo userSong = (SongInfo) Result.getSelectionModel().getSelectedItem();
-				player.LoadSong(userSong.getSong().getSongID());
-				ap.play(userSong.getSong().getTitle(),false);
+				if (!ap.soundMap.containsKey(userSong.getSong().getSongID())) {
+					player.LoadSong(userSong.getSong().getSongID());
+					System.out.println("Checked");
+
+				}
+				ap.play(userSong.getSong().getSongID(),false);
 				songName.setText(userSong.getSong().getTitle());
 				String artist = atc.GetArtistBySongTitle(userSong.getSong().getTitle()).getName();
 				artistName.setText(artist);
@@ -598,12 +614,16 @@ public class MainAppController implements Initializable {
                 public void handle(ActionEvent t) 
                 {
                 	SongInfo currentsong = (SongInfo) ButtonCellPlaySong.this.getTableView().getItems().get(ButtonCellPlaySong.this.getIndex());
+                	int currentSongId = currentsong.getSong().getSongID();
                 	try {
-						player.LoadSong(currentsong.getSong().getSongID());
+                		if(!ap.soundMap.containsKey(currentSongId)) {
+    						AudioInputStream stream = player.LoadSong(currentSongId);
+    						ap.loadStream(currentSongId, stream);
+                		}
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-        			ap.play(currentsong.getSong().getTitle(), false);
+        			ap.play(currentSongId, false);
         			songName.setText(currentsong.getSong().getTitle());
         			String artist = atc.GetArtistBySongTitle(currentsong.getSong().getTitle()).getName();
         			artistName.setText(artist);

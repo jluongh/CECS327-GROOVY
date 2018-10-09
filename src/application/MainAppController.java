@@ -64,6 +64,8 @@ import javafx.util.Callback;
 import com.sun.prism.impl.Disposer;
 
 public class MainAppController implements Initializable {
+	
+	//global variables
 	@FXML
 	private ListView playlistScreen;
 	@FXML
@@ -145,6 +147,14 @@ public class MainAppController implements Initializable {
 	api.audio.AudioPlayer ap = new api.audio.AudioPlayer();
 	private Searcher search = new Searcher();
 	
+	/**
+	 * Initializing server/client sockets
+	 * Initializing the display for the user based on the username
+	 * Displaying the user's playlist profile
+	 * Inserting buttons
+	 * @param arg0 - {URL} the first argument
+	 * @param arg1 - {ResourceBundle} the second argument
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1)
 	{
@@ -161,7 +171,6 @@ public class MainAppController implements Initializable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 		
 		// Change the label to the username
 		userNameText.setText(currentUser.getUsername());
@@ -197,7 +206,10 @@ public class MainAppController implements Initializable {
 		playlistTable.setItems(playlists);
 	}
 
-	//when user double click the playlist, it will display the songs in the playlist on the right
+	/**
+	 * When user double click the playlist, it will display the songs in the playlist on the right
+	 * @param event - {MouseEvent} the action
+	 */
 	@FXML
 	public void clickItem(MouseEvent event)
 	{
@@ -272,28 +284,44 @@ public class MainAppController implements Initializable {
 	    }
 	}
 	
-	//make if song button is clicked then
+	/**
+	 * Search if song button is clicked then
+	 * @param event - {MouseEvent} the action
+	 */
 	@FXML
 	public void btnSongClick(MouseEvent event) 
 	{
 		search(txtSearch.getText(), "song");
 		
 	}
-	// make if album button is clicked then 
+	
+	/**
+	 * Search if album button is clicked then
+	 * @param event - {MouseEvent} the action
+	 * @throws IOException if input or output is invalid.
+	 */
 	@FXML
 	public void btnAlbumClick(MouseEvent event) throws IOException 
 	{
 		search(txtSearch.getText(), "album");
 	}
 	
-	// make if artist button is clicked then 
+	/**
+	 * Search if artist button is clicked then
+	 * @param event - {MouseEvent} the action
+	 * @throws IOException if input or output is invalid.
+	 */ 
 	@FXML
 	public void btnArtistClick(MouseEvent event) throws IOException 
 	{
 		search(txtSearch.getText(), "artist");
 	}
 	
-	//when row in table isClicked
+	/**
+	 * When row in table isClicked
+	 * @param event - {MouseEvent} the action
+	 * @throws IOException if input or output is invalid.
+	 */
 	@FXML
 	public void playTable(MouseEvent event) throws IOException
 	{
@@ -331,6 +359,11 @@ public class MainAppController implements Initializable {
 	    }
 	}
 	
+	/**
+	 * Searching for the user's input in the list of of all songs
+	 * @param text - {String} the name of the object being searched
+	 * @param type - {String} the type of object that is searched
+	 */
 	private void search(String text, String type) {
 		isSearch=true;
 		if(type == "song") {
@@ -348,7 +381,11 @@ public class MainAppController implements Initializable {
 		}
 	}
 	
-	//search song according to song name
+	/**
+	 * Search song according to song name
+	 * Displaying the song results based on the user's search
+	 * @param song - {List} list of song objects
+	 */
 	public void setSearchSong(List<Song> song)
 	{
 		for(int i = 0; i<Result.getItems().size();i++)
@@ -394,7 +431,11 @@ public class MainAppController implements Initializable {
 		Result.refresh();
 	}
 	
-	//search by album
+	/**
+	 * Search album according to album name
+	 * Displaying the album results based on the user's search
+	 * @param album - {List} list of album objects
+	 */
 	public void setSearchAlbum(List<Album> album)
 	{
 		for(int i = 0; i<Result.getItems().size();i++)
@@ -442,7 +483,11 @@ public class MainAppController implements Initializable {
 		Result.refresh();
 	}
 	
-	//search according to artist
+	/**
+	 * Search artist according to artist name
+	 * Displaying the artist results based on the user's search
+	 * @param artist - {List} list of artist objects
+	 */
 	public void setSearchArtist(List<Artist> artist)
 	{
 		for(int i = 0; i<Result.getItems().size();i++)
@@ -493,7 +538,9 @@ public class MainAppController implements Initializable {
 		Result.refresh();
 	}
 	
-	//set center panel to be playlist panel
+	/**
+	 * Set center panel to be playlist panel
+	 */
 	public void setTabletoPlaylist()
 	{
 		col1.setText("Name");
@@ -502,16 +549,20 @@ public class MainAppController implements Initializable {
 		col4.setText("DateAdded");
 		col5.setText("Play");
 	}
-	
 
-	// Event Listener on ImageView[#addPlaylist].onMouseClicked
+	/**
+	 * Event Listener on ImageView[#addPlaylist].onMouseClicked to add the song to the playlist
+	 * @param event - {MouseEvent} the action
+	 */
 	@FXML
 	public void addPlaylistClicked(MouseEvent event) 
 	{
 		showInputBox();
 	}
 	
-	//prompt user to input new playlist name
+	/**
+	 * Prompt user to input new playlist name
+	 */
 	public void showInputBox()
 	{
 		TextInputDialog dialog = new TextInputDialog("");
@@ -535,40 +586,74 @@ public class MainAppController implements Initializable {
 		}
 	}
 	
-	// Event Listener on ImageView[#playMusic].onMouseClicked
+	/**
+	 * Event Listener on ImageView[#playMusic].onMouseClicked to play the song at specific time
+	 * @param event - {MouseEvent} the action
+	 */
 	@FXML
 	public void playMusicClicked(MouseEvent event) 
 	{
 		ap.resume();
 	}
-	// Event Listener on ImageView[#previousMusic].onMouseClicked
+	
+	/**
+	 * Event Listener on ImageView[#previousMusic].onMouseClicked to play previous song
+	 * @param event - {MouseEvent} the action
+	 */
 	@FXML
 	public void previousIsClicked(MouseEvent event) 
 	{
 		//player.Previous();
 	}
-	// Event Listener on ImageView[#nextMusic].onMouseClicked
+	
+	/**
+	 * Event Listener on ImageView[#nextMusic].onMouseClicked to play the next song
+	 * @param event - {MouseEvent} the action
+	 */
 	@FXML
 	public void nextIsClicked(MouseEvent event) 
 	{
 		//player.Next();
 	
 	}
-	// Event Listener on ImageView[#stopMusic].onMouseClicked
+	
+	/**
+	 * Event Listener on ImageView[#stopMusic].onMouseClicked to stop the song at the current time
+	 * @param event - {MouseEvent} the action
+	 */
 	@FXML
 	public void musicStopClicked(MouseEvent event) 
 	{
 		ap.stop();
 	}
-	// Event Listener on ImageView[#Mute].onMouseClicked
+	
+	/**
+	 * Event Listener on ImageView[#Mute].onMouseClicked to mute the song
+	 * @param event - {MouseEvent} the action
+	 */
 	@FXML
 	public void muteIsClicked(MouseEvent event) 
 	{
 		//player.setVolume(0);
 	}
 	// Event Listener on ImageView[#exit].onMouseClicked
-
-	//delete button constructor
+	
+	@FXML
+	public void shuffleClicked(MouseEvent event) 
+	{
+		
+	}
+	@FXML
+	public void repeatClicked(MouseEvent event) 
+	{
+		
+	}
+	
+	
+	/**
+	 * Event Listener on ImageView[#exit].onMouseClicked to delet the playlist
+	 * Delete button constructor
+	 */
 	private class ButtonCelldeletePlaylist extends TableCell<Disposer.Record, Boolean> {
         Button cellButton = new Button("Delete");
         
@@ -603,7 +688,9 @@ public class MainAppController implements Initializable {
         }
 	}
 	
-	//play song button constructor
+	/**
+	 * Play song button constructor
+	 */
 	private class ButtonCellPlaySong extends TableCell<Disposer.Record, Boolean> {
         Button cellButton = new Button("Play");
         
@@ -648,7 +735,9 @@ public class MainAppController implements Initializable {
         }
 	}
 	
-	//add song button constructor
+	/**
+	 * Add song button constructor
+	 */
 	private class ButtonCelladdSong extends TableCell<Disposer.Record, Boolean> {
         Button cellButton = new Button("Add");
         
@@ -704,11 +793,6 @@ public class MainAppController implements Initializable {
                         error.showAndWait();
                 	}
                 	
-             	
-            		
-
-                	    
-                	
                 }
             });
         }
@@ -738,7 +822,10 @@ public class MainAppController implements Initializable {
 //	}
 //	
 //	
-	// The volume slider is not working yet 
+	/**
+	 * The volume slider is not working yet
+	 * @param event - {MouseEvent} the action
+	 */
 	@FXML
 	public void onSliderChanged(MouseEvent event) {
 
@@ -756,7 +843,4 @@ public class MainAppController implements Initializable {
 	    
 	    
 	}
-		
-	
-	
 }

@@ -1,5 +1,6 @@
 package application;
 	
+import java.io.IOException;
 import java.util.*;
 
 import com.google.gson.Gson;
@@ -16,6 +17,12 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+	
+	/**
+	 * Loading the main.fxml file
+	 * Setting and showing the primary stage 
+	 * @param primaryStage- {Stage} main stage
+	 */
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -28,6 +35,11 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Lauching the application
+	 * @param args
+	 */
 	public static void main(String[] args) {
 
 		

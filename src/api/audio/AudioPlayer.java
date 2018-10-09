@@ -79,6 +79,10 @@ public class AudioPlayer {
 		return retVal;
 	}
 
+	/**
+	 * Plays songs in the list of AudioInputStreams objects
+	 * @param streams - {List} the list of AudioInputStreams to be played
+	 */
 	public void playSongs(List<AudioInputStream> streams) {
 		if (streams != null) {
 			for (int i = 0; i < streams.size(); i++) {

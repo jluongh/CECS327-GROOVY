@@ -1,18 +1,22 @@
 package application;
 
 import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.SocketException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import javax.sound.sampled.AudioInputStream;
 
 import java.util.Date;
 
 import api.AlbumController;
 import api.ArtistController;
 import api.AudioPlayer;
+import api.PlayerController;
 import api.PlaylistController;
 import api.Searcher;
 import api.SongController;
@@ -116,8 +120,13 @@ public class MainAppController implements Initializable {
 	private static User currentUser = MainController.getUser();
 //	private UserProfileController uc = new UserProfileController();
 //	private UserProfile up= uc.GetUserProfile(currentUser.getUserID());;
+//	private List<Playlist> playlist = pc.GetPlaylists();	
+	private DatagramSocket socket;
 	private PlaylistController pc = new PlaylistController(currentUser.getUserID());
-	private List<Playlist> playlist = pc.GetPlaylists();
+	
+	private UserProfileController upc ;
+	private UserProfile user;
+	private List<Playlist> playlist;
 	private ObservableList<Playlist> playlists = FXCollections.observableArrayList();
     private ObservableList<Object> userSong = FXCollections.observableArrayList();
 	private ObservableList<Object> songs = FXCollections.observableArrayList();
@@ -128,12 +137,28 @@ public class MainAppController implements Initializable {
 	private SongController sc = new SongController();
 	
 	// Audio player
-	AudioPlayer player = new AudioPlayer();
-	Searcher search = new Searcher();
+	PlayerController player;
+	api.audio.AudioPlayer ap = new api.audio.AudioPlayer();
+	private Searcher search = new Searcher();
 	
 	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) 
+	public void initialize(URL arg0, ResourceBundle arg1)
 	{
+		try {
+			socket = new DatagramSocket();
+			socket.setSoTimeout(5000);
+			socket.setReceiveBufferSize(60011 * 30 * 100);
+			player= new PlayerController(socket);
+			upc = new UserProfileController();
+			user = upc.GetUserProfile(socket, currentUser.getUserID());
+			playlist = user.getPlaylists();
+		} catch (SocketException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
 		// Change the label to the username
 		userNameText.setText(currentUser.getUsername());
 		setTabletoPlaylist();
@@ -191,9 +216,8 @@ public class MainAppController implements Initializable {
 		        	userSong.add(userChoose.getSongInfos().get(i));
 		        	
 		        }
-		        //load playlist to the audio player
-		        player.LoadSongs(songPlay);
-		        player.Play();
+		        
+
 		        //display object to the table
 				col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
 				col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
@@ -222,6 +246,18 @@ public class MainAppController implements Initializable {
 				
 				Result.setItems(userSong);
 				Result.refresh();
+				//load playlist to the audio player
+		        List<AudioInputStream> streams;
+				try {
+					streams = player.LoadSongs(songPlay);
+			        if(streams != null) {
+				        ap.playSongs(streams);
+
+			        }
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	        }
 	        
 	    }
@@ -250,15 +286,15 @@ public class MainAppController implements Initializable {
 	
 	//when row in table isClicked
 	@FXML
-	public void playTable(MouseEvent event)
+	public void playTable(MouseEvent event) throws IOException
 	{
 		if (event.getClickCount() == 2) //Checking double click
 	    {
 			if(isSearch== true)
 			{
 				Song userSong = (Song) Result.getSelectionModel().getSelectedItem();
-				player.Load(userSong);
-				player.Play();
+				player.LoadSong(userSong.getSongID());
+				ap.play(userSong.getTitle(), false);
 				songName.setText(userSong.getTitle());
 				String artist = atc.GetArtistBySongTitle(userSong.getTitle()).getName();
 				artistName.setText(artist);
@@ -266,8 +302,8 @@ public class MainAppController implements Initializable {
 			else
 			{
 				SongInfo userSong = (SongInfo) Result.getSelectionModel().getSelectedItem();
-				player.Load(userSong.getSong());
-				player.Play();
+				player.LoadSong(userSong.getSong().getSongID());
+				ap.play(userSong.getSong().getTitle(),false);
 				songName.setText(userSong.getSong().getTitle());
 				String artist = atc.GetArtistBySongTitle(userSong.getSong().getTitle()).getName();
 				artistName.setText(artist);
@@ -484,32 +520,32 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void playMusicClicked(MouseEvent event) 
 	{
-		player.Play();
+		ap.resume();
 	}
 	// Event Listener on ImageView[#previousMusic].onMouseClicked
 	@FXML
 	public void previousIsClicked(MouseEvent event) 
 	{
-		player.Previous();
+		//player.Previous();
 	}
 	// Event Listener on ImageView[#nextMusic].onMouseClicked
 	@FXML
 	public void nextIsClicked(MouseEvent event) 
 	{
-		player.Next();
+		//player.Next();
 	
 	}
 	// Event Listener on ImageView[#stopMusic].onMouseClicked
 	@FXML
 	public void musicStopClicked(MouseEvent event) 
 	{
-		player.Pause();
+		ap.stop();
 	}
 	// Event Listener on ImageView[#Mute].onMouseClicked
 	@FXML
 	public void muteIsClicked(MouseEvent event) 
 	{
-		player.setVolume(0);
+		//player.setVolume(0);
 	}
 	// Event Listener on ImageView[#exit].onMouseClicked
 
@@ -562,8 +598,12 @@ public class MainAppController implements Initializable {
                 public void handle(ActionEvent t) 
                 {
                 	SongInfo currentsong = (SongInfo) ButtonCellPlaySong.this.getTableView().getItems().get(ButtonCellPlaySong.this.getIndex());
-                	player.Load(currentsong.getSong());
-        			player.Play();
+                	try {
+						player.LoadSong(currentsong.getSong().getSongID());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+        			ap.play(currentsong.getSong().getTitle(), false);
         			songName.setText(currentsong.getSong().getTitle());
         			String artist = atc.GetArtistBySongTitle(currentsong.getSong().getTitle()).getName();
         			artistName.setText(artist);
@@ -657,34 +697,34 @@ public class MainAppController implements Initializable {
         }
 	}
 	
-	
-	public void updateInfo() {
-		
-		// Have not tested this!
-		songName = new Text(player.currentSong.getTitle());
-
-		
-		// The function in song.java is commented out
-		
-		//artistName = new Text(player.currentSong.getArtist());
-	}
-	
-	
+//	
+//	public void updateInfo() {
+//		
+//		// Have not tested this!
+//		songName = new Text(player.currentSong.getTitle());
+//
+//		
+//		// The function in song.java is commented out
+//		
+//		//artistName = new Text(player.currentSong.getArtist());
+//	}
+//	
+//	
 	// The volume slider is not working yet 
 	@FXML
 	public void onSliderChanged(MouseEvent event) {
 
-	    sldVolume.valueProperty().addListener(new ChangeListener() {
-
-            @Override
-            public void changed(ObservableValue arg0, Object arg1, Object arg2) {
-            	
-            	float sliderValue = (float) sldVolume.getValue();
-            	
-            	player.setVolume(sliderValue);
-                System.out.println("here: "+ sliderValue );
-            }
-        });
+//	    sldVolume.valueProperty().addListener(new ChangeListener() {
+//
+//            @Override
+//            public void changed(ObservableValue arg0, Object arg1, Object arg2) {
+//            	
+//            	float sliderValue = (float) sldVolume.getValue();
+//            	
+//            	player.setVolume(sliderValue);
+//                System.out.println("here: "+ sliderValue );
+//            }
+//        });
 	    
 	    
 	}

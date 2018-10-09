@@ -13,11 +13,13 @@ import data.models.FileEvent;
 import data.models.Song;
 import data.models.UserProfile;
 import services.UserProfileService;
+import data.models.Playlist;
 
 public class ClientHandler extends Thread {
 
 	final DatagramSocket socket;
 	final static int REQUEST_ID_GETPROFILE = 1;
+	final static int REQUEST_ID_ADDSONGTOPLAYLIST = 2;
 	final static int REQUEST_ID_LOADSONG = 4;
 
 	public ClientHandler(DatagramSocket socket) {
@@ -59,9 +61,10 @@ public class ClientHandler extends Thread {
 							requestId = REQUEST_ID_GETPROFILE;
 							buffer = LoadUserProfile(new String(data));
 							break;
-//						case 2:
-//							buffer = AddSongToPlaylist(received);
-//							break;
+						case REQUEST_ID_ADDSONGTOPLAYLIST:
+							requestId = REQUEST_ID_ADDSONGTOPLAYLIST;
+							buffer = AddSongToPlaylist(new String(data));
+							break;
 //						case 3:
 //							buffer = DeleteSongFromPlaylist(received);
 //							break;
@@ -171,6 +174,18 @@ public class ClientHandler extends Thread {
 		return data;
 	}
 
+	private byte[] AddSongToPlaylist(String request) {
+		UserProfileService ups = new UserProfileService();
+		Gson gson = new GsonBuilder().create();
+		UserProfile userProfile = gson.fromJson(request, UserProfile.class);
+		byte[] data = null;
+		if (userProfile != null && ups.SaveUserProfile(userProfile)) {
+			data = "1".getBytes();
+		} else
+			data = "0".getBytes();
+		return data;
+	}
+	
 	public byte[] getFileEvent(int songID) {
 		FileEvent fileEvent = new FileEvent();
 

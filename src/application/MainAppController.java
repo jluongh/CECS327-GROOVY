@@ -153,8 +153,8 @@ public class MainAppController implements Initializable {
 			socket.setSoTimeout(5000);
 			socket.setReceiveBufferSize(60011 * 30 * 100);
 			player= new PlayerController(socket);
-			upc = new UserProfileController();
-			user = upc.GetUserProfile(socket, currentUser.getUserID());
+			upc = new UserProfileController(socket);
+			user = upc.GetUserProfile(currentUser.getUserID());
 			playlist = user.getPlaylists();
 		} catch (SocketException e) {
 			e.printStackTrace();

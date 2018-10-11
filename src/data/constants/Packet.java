@@ -11,7 +11,9 @@ public class Packet {
 	public static final int REQUEST_ID_ADDSONGTOPLAYLIST = 2;
 	public static final int REQUEST_ID_DELETESONGFROMPLAYLIST = 3;
 	public static final int REQUEST_ID_LOADSONG = 4;
-	public static final int REQUEST_ID_SEACRH = 5;
-	public static final int REQUEST_ID_CREATEPLAYLIST = 6;
-	public static final int REQUEST_ID_DELETEPLAYLIST = 7;
+	public static final int REQUEST_ID_SEACRHBYARTIST = 5;
+	public static final int REQUEST_ID_SEACRHBYALBUM = 6;
+	public static final int REQUEST_ID_SEACRHBYSONG = 7;
+	public static final int REQUEST_ID_CREATEPLAYLIST = 8;
+	public static final int REQUEST_ID_DELETEPLAYLIST = 9;
 }

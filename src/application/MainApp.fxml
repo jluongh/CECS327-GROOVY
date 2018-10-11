@@ -107,11 +107,11 @@
       <AnchorPane layoutX="269.0" layoutY="85.0" prefHeight="473.0" prefWidth="696.0">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="559.0" layoutY="-85.0" stroke="BLACK" strokeType="INSIDE" width="696.0" />
-            <Label layoutX="29.0" prefHeight="48.0" prefWidth="107.0" text="Result:" textFill="#223a44">
+            <Text fx:id="txtResult" fill="#223a44" layoutX="22.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Result:" wrappingWidth="142.00001707673073">
                <font>
                   <Font name="Arial" size="28.0" />
                </font>
-            </Label>
+            </Text>
             <TableView fx:id="Result" layoutX="22.0" layoutY="50.0" onMouseClicked="#playTable" prefHeight="397.0" prefWidth="653.0">
               <columns>
                 <TableColumn fx:id="col1" prefWidth="119.0" text="C1" />

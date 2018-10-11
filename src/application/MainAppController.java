@@ -106,21 +106,23 @@ public class MainAppController implements Initializable {
 	private TableColumn<Disposer.Record,Boolean> delete;
 	@FXML
 	private TableColumn<Playlist,String> playlistName;
-	
-	// search buttons
 	@FXML
 	private ImageView btnAlbum;
 	@FXML
 	private ImageView btnSong;
 	@FXML
 	private ImageView btnArtist;
+	@FXML
+	private TextField txtSearch;
+	@FXML
+	private Text txtResult;
 	
 	private boolean isSearch = false;
 	
 	private boolean isPlaying = false;
-	// Search bar 
-	@FXML
-	private TextField txtSearch;
+
+	
+	
 
 	
 	private static User currentUser = MainController.getUser();
@@ -232,8 +234,10 @@ public class MainAppController implements Initializable {
 		        	userSong.add(userChoose.getSongInfos().get(i));
 		        	
 		        }
-		        
-
+	        	// _________________** this should work but its not **__________________
+	        	
+	        	// txtResult.setText(userChoose.getName());
+	        	
 		        //display object to the table
 				col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
 				col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
@@ -262,6 +266,7 @@ public class MainAppController implements Initializable {
 				
 				Result.setItems(userSong);
 				Result.refresh();
+				
 				//load playlist to the audio player
 		        HashMap<Integer, AudioInputStream> streams;
 				try {
@@ -638,15 +643,20 @@ public class MainAppController implements Initializable {
 	}
 	// Event Listener on ImageView[#exit].onMouseClicked
 	
+	
+	
+	// _____________**** Still not working ****_____________
+	
+	
 	@FXML
 	public void shuffleClicked(MouseEvent event) 
 	{
-		
+		//call the shuffle function 
 	}
 	@FXML
 	public void repeatClicked(MouseEvent event) 
 	{
-		
+		//call the repeat function 
 	}
 	
 	

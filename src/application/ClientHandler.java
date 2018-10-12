@@ -1,20 +1,17 @@
 package application;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.util.*;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-
 import data.constants.Packet;
-import data.models.FileEvent;
-import data.models.Song;
-import data.models.UserProfile;
+import data.models.*;
+import services.SearchService;
 import services.UserProfileService;
-import data.models.Playlist;
 
 public class ClientHandler extends Thread {
 
@@ -37,8 +34,8 @@ public class ClientHandler extends Thread {
 	public void run() {
 		while (true) {
 			try {
-				byte[] message = new byte[1024 * 1000];
-				int sizeOfPacket = 63000;
+				byte[] message = new byte[4096];
+				int sizeOfPacket = 4096;
 
 				// receive request
 				DatagramPacket request = new DatagramPacket(message, message.length);
@@ -80,9 +77,15 @@ public class ClientHandler extends Thread {
 							requestId = Packet.REQUEST_ID_LOADSONG;
 							buffer = LoadSong(new String(data));
 							  break;
-//						case 5:
-//							buffer = Search(received);
-//							break;
+						case Packet.REQUEST_ID_SEACRHBYARTIST:
+							buffer = SearchByArtist(new String(data));
+							break;
+						case Packet.REQUEST_ID_SEACRHBYALBUM:
+							buffer = SearchByAlbum(new String(data));
+							break;
+						case Packet.REQUEST_ID_SEACRHBYSONG:
+							buffer = SearchBySong(new String(data));
+							break;
 //						case 6:
 //							buffer = CreatePlaylist(received);
 //							break;
@@ -257,5 +260,49 @@ public class ClientHandler extends Thread {
 			fileEvent.setStatus("Error");
 		}
 		return null;
+	}
+	
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 */
+	private byte[] SearchByArtist(String query) {
+		SearchService ss = new SearchService();
+		
+		List<Artist> artists = ss.GetArtistsByQuery(query);
+		Type listType = new TypeToken<List<Artist>>() {}.getType();
+		String send = new Gson().toJson(artists, listType);
+		
+		return send.getBytes();
+	}
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 */
+	private byte[] SearchByAlbum(String query) {
+		SearchService ss = new SearchService();
+		
+		List<Album> albums = ss.GetAlbumsByQuery(query);
+		Type listType = new TypeToken<List<Album>>() {}.getType();
+		String send = new Gson().toJson(albums, listType);
+		
+		return send.getBytes();
+	}
+	
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 */
+	private byte[] SearchBySong(String query) {
+		SearchService ss = new SearchService();
+		
+		List<Song> songs = ss.GetSongsByQuery(query);
+		Type listType = new TypeToken<List<Song>>() {}.getType();
+		String send = new Gson().toJson(songs, listType);
+		
+		return send.getBytes();
 	}
 }

@@ -31,8 +31,7 @@
             </ImageView>
             <TableView fx:id="playlistTable" layoutX="12.0" layoutY="130.0" onMouseClicked="#clickItem" prefHeight="422.0" prefWidth="246.0">
               <columns>
-                <TableColumn fx:id="delete" prefWidth="93.0" text="Delete" />
-                <TableColumn fx:id="playlistName" prefWidth="152.0" text="Playlist" />
+                <TableColumn fx:id="playlistName" prefWidth="245.0" text="Playlist" />
               </columns>
             </TableView>
             <ImageView fitHeight="67.0" fitWidth="58.0" layoutX="12.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
@@ -114,11 +113,10 @@
             </Text>
             <TableView fx:id="Result" layoutX="22.0" layoutY="50.0" onMouseClicked="#playTable" prefHeight="397.0" prefWidth="653.0">
               <columns>
-                <TableColumn fx:id="col1" prefWidth="119.0" text="C1" />
-                <TableColumn fx:id="col2" prefWidth="130.0" text="C2" />
-                  <TableColumn fx:id="col3" prefWidth="134.0" text="C3" />
-                  <TableColumn fx:id="col4" prefWidth="122.0" text="C4" />
-                  <TableColumn fx:id="col5" prefWidth="147.0" text="C5" />
+                <TableColumn fx:id="col1" prefWidth="159.0" text="C1" />
+                <TableColumn fx:id="col2" prefWidth="158.0" text="C2" />
+                  <TableColumn fx:id="col3" prefWidth="170.0" text="C3" />
+                  <TableColumn fx:id="col4" prefWidth="165.0" text="C4" />
               </columns>
             </TableView>
          </children>

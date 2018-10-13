@@ -15,17 +15,28 @@ import data.constants.Net;
 import data.constants.Packet;
 import data.models.Message;
 
-
 public class PlayerController {
 
 	private static final String HOST = "localhost";
 
 	private DatagramSocket socket;
-
+	private SourceDataLine sdl;
+	private AudioFormat audioFormat;
 	public boolean playing;
-	
+
 	public PlayerController(DatagramSocket socket) {
 		this.socket = socket;
+
+		audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 2, 4, 44100, false);
+		DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
+		try {
+			sdl = (SourceDataLine) AudioSystem.getLine(info);
+			sdl.open();
+			sdl.start();
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	// public HashMap <Integer, AudioInputStream> LoadSongs(List<Song> songs) throws
@@ -70,55 +81,53 @@ public class PlayerController {
 			case Packet.REQUEST_ID_BYTECOUNT:
 				int count = msg.count;
 				int offset = 0;
-				
-				AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 2, 4, 44100, false);
-				try {
-					DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-					SourceDataLine sdl = (SourceDataLine) AudioSystem.getLine(info);
-					sdl.open();
-					sdl.start();
-					while (offset < count && playing) {
-						msg = new Message();
-						msg.messageType = Packet.REQUEST;
-						msg.requestID = Packet.REQUEST_ID_LOADSONG;
-						msg.offset = offset;
-						msg.objectID = songID;
-						msg.count = count;
 
-						String sendJson = gson.toJson(msg);
-						byte[] message = sendJson.getBytes();
-						request = new DatagramPacket(message, message.length, address, Net.PORT);
-						socket.send(request);
+				while (offset < count && playing) {
+					msg = new Message();
+					msg.messageType = Packet.REQUEST;
+					msg.requestID = Packet.REQUEST_ID_LOADSONG;
+					msg.offset = offset;
+					msg.objectID = songID;
+					msg.count = count;
 
-						// Get reply back and play
-						DatagramPacket reply1 = new DatagramPacket(buffer, buffer.length);
-						socket.receive(reply1);
+					String sendJson = gson.toJson(msg);
+					byte[] message = sendJson.getBytes();
+					request = new DatagramPacket(message, message.length, address, Net.PORT);
+					socket.send(request);
 
-						// Translate it back into a message
-						msg = new Message();
-						bitString = new String(reply1.getData(), 0, reply1.getLength());
-						msg = gson.fromJson(bitString, Message.class);
+					// Get reply back and play
+					DatagramPacket reply1 = new DatagramPacket(buffer, buffer.length);
+					socket.receive(reply1);
 
-						ByteArrayInputStream bis = new ByteArrayInputStream(msg.fragment);
-						AudioInputStream audioStream = new AudioInputStream(bis, audioFormat, msg.fragment.length);
+					// Translate it back into a message
+					msg = new Message();
+					bitString = new String(reply1.getData(), 0, reply1.getLength());
+					msg = gson.fromJson(bitString, Message.class);
 
-						int bytesRead;
-						try {
-							if ((bytesRead = audioStream.read(msg.fragment, 0, msg.fragment.length)) != -1) {
-								sdl.write(msg.fragment, 0, bytesRead);
-							}
-						} catch (IOException e) {
-							e.printStackTrace();
+					ByteArrayInputStream bis = new ByteArrayInputStream(msg.fragment);
+					AudioInputStream audioStream = new AudioInputStream(bis, audioFormat, msg.fragment.length);
+
+					int bytesRead;
+					try {
+						sdl.start();
+						if ((bytesRead = audioStream.read(msg.fragment, 0, msg.fragment.length)) != -1) {
+							sdl.write(msg.fragment, 0, bytesRead);
 						}
-						offset++;
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
-				} catch (LineUnavailableException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					offset++;
 				}
 
 			}
 
 		}
+	}
+
+	public void stopSong() {
+		playing = false;
+		sdl.stop();
+		sdl.flush();
+		System.out.println("Stopping song");
 	}
 }

@@ -322,6 +322,9 @@ public class MainAppController implements Initializable {
 					@Override
 					public void run() {
 						try {
+							if (player.playing) {
+								player.stopSong();
+							}
 							player.playing = true;
 							player.playSong(songId);
 						} catch (IOException e) {
@@ -345,9 +348,12 @@ public class MainAppController implements Initializable {
 					@Override
 					public void run() {
 						try {
+							if (player.playing) {
+								player.stopSong();
+							}
+							player.playing = true;
 							player.playSong(songId);
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 
@@ -705,19 +711,23 @@ public class MainAppController implements Initializable {
         
         ButtonCellPlaySong()
         {
-            
         	//Action when the button is pressed
             cellButton.setOnAction(new EventHandler<ActionEvent>()
             {
                 @Override
                 public void handle(ActionEvent t) 
                 {
+                    System.out.println("TEST1234");
                 	SongInfo currentsong = (SongInfo) ButtonCellPlaySong.this.getTableView().getItems().get(ButtonCellPlaySong.this.getIndex());
                 	int currentSongId = currentsong.getSong().getSongID();
+					if (player.playing) {
+						player.stopSong();
+					}
                 	new Thread(new Runnable() {
 						@Override
 						public void run() {
 							try {
+								player.playing = true;
 								player.playSong(currentSongId);
 							} catch (IOException e) {
 								// TODO Auto-generated catch block

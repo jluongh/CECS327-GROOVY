@@ -9,74 +9,63 @@ import java.util.*;
 
 import javax.sound.sampled.*;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 
 import data.constants.Net;
 import data.constants.Packet;
-import data.models.Song;
+import data.models.Message;
+
 
 public class PlayerController {
 
 	private static final String HOST = "localhost";
 
 	private DatagramSocket socket;
-	
-	
-	public PlayerController (DatagramSocket socket)  {
+
+	public PlayerController(DatagramSocket socket) {
 		this.socket = socket;
 	}
-	
-	public HashMap <Integer, AudioInputStream> LoadSongs(List<Song> songs) throws IOException {
-		HashMap <Integer, AudioInputStream> streams= new HashMap<Integer, AudioInputStream>();
-		
-		for(int i = 0; i < songs.size(); i++) {
-			int songId = songs.get(i).getSongID();
-			AudioInputStream stream = LoadSong(songId);
-			streams.put(songId, stream);
-		}
-		return streams;
-	}
-	
-	public AudioInputStream LoadSong(int songID) throws IOException {
-		Song song = new Song();
-		song.setSongID(songID);
-		String songJson = new Gson().toJson(song);
 
-		byte[] messageType = ByteBuffer.allocate(4).putInt(Packet.REQUEST).array();
-		byte[] requestIdSend = ByteBuffer.allocate(4).putInt(Packet.REQUEST_ID_LOADSONG).array();
-		byte[] fragment = songJson.getBytes();
+	// public HashMap <Integer, AudioInputStream> LoadSongs(List<Song> songs) throws
+	// IOException {
+	// HashMap <Integer, AudioInputStream> streams= new HashMap<Integer,
+	// AudioInputStream>();
+	//
+	// for(int i = 0; i < songs.size(); i++) {
+	// int songId = songs.get(i).getSongID();
+	// AudioInputStream stream = LoadSong(songId);
+	// streams.put(songId, stream);
+	// }
+	// return streams;
+	// }
 
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		baos.write(messageType);
-		baos.write(requestIdSend);
-		baos.write(fragment);
+	public void LoadSong(int songID) throws IOException {
+		Gson gson = new GsonBuilder().setLenient().create();
+		Message send = new Message();
+		send.messageType = Packet.REQUEST;
+		send.objectID = songID;
+		send.requestID = Packet.REQUEST_ID_BYTECOUNT;
 
+		String sendString = new Gson().toJson(send);
+		byte[] sendByte = sendString.getBytes();
 		// send request
-		byte[] message = baos.toByteArray();
 		InetAddress address = InetAddress.getByName(HOST);
-		DatagramPacket request = new DatagramPacket(message, message.length, address, Net.PORT);
+		DatagramPacket request = new DatagramPacket(sendByte, sendByte.length, address, Net.PORT);
 		socket.send(request);
 
-		// while (true) {
 		// get reply
 		byte[] buffer = new byte[1024 * 1000];
 		DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
 		socket.receive(reply);
 
-		// display response
-		// String received = new String(reply.getData(), 0, reply.getLength());
-		// System.out.println(received);
-
 		// read response
-		// 0 = request, 1 = reply
-		ByteBuffer wrapped = ByteBuffer.wrap(reply.getData(), 0, 4);
-		int messageTypeReceive = wrapped.getInt();
-		wrapped = ByteBuffer.wrap(reply.getData(), 4, 4);
-		int requestIdReceive = wrapped.getInt();
-		fragment = Arrays.copyOfRange(reply.getData(), 8, reply.getLength());
+		Message msg = new Message();
+		String bitString = new String(reply.getData(), 0, reply.getLength());
+		msg = gson.fromJson(bitString, Message.class);
+		System.out.println("Response: " + msg.messageType);
 
-		if (messageTypeReceive == Packet.REPLY) {
-			switch (requestIdReceive) {
+		if (msg.messageType == Packet.REPLY) {
+			switch (msg.requestID) {
 			// Loading User Profile
 			case 0:
 				buffer = "Test".getBytes("UTF-8");
@@ -84,49 +73,58 @@ public class PlayerController {
 			// case 1:
 			// buffer = AddSongToPlaylist(received);
 			// break;
-			case 4:
-				boolean receiving = true;
-				int receivedCount = 0, count = 0;
-				byte[] received1 = null;
-				baos = new ByteArrayOutputStream();
+			case Packet.REQUEST_ID_BYTECOUNT:
+				int count = msg.count;
+				int offset = 0;
+				
+				AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 2, 4, 44100, false);
+				try {
+					DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
+					SourceDataLine sdl = (SourceDataLine) AudioSystem.getLine(info);
+					sdl.open();
+					sdl.start();
+					while (offset < count) {
+						msg = new Message();
+						msg.messageType = Packet.REQUEST;
+						msg.requestID = Packet.REQUEST_ID_LOADSONG;
+						msg.offset = offset;
+						msg.objectID = songID;
+						msg.count = count;
 
-				while (receiving) {
-					wrapped = ByteBuffer.wrap(fragment, 0, 4); // big-endian by default
-					int offset = wrapped.getInt();
-					wrapped = ByteBuffer.wrap(fragment, 4, 4);
-					count = wrapped.getInt();
-					byte[] data = Arrays.copyOfRange(fragment, 12, fragment.length);
+						String sendJson = gson.toJson(msg);
+						byte[] message = sendJson.getBytes();
+						request = new DatagramPacket(message, message.length, address, Net.PORT);
+						socket.send(request);
 
-					System.out.println(offset + "/" + count);
-					if (offset < count) {
-						System.out.println("Writing fragment to bytes with length: " + data.length);
-						baos.write(data);
-						receivedCount++;
+						// Get reply back and play
+						DatagramPacket reply1 = new DatagramPacket(buffer, buffer.length);
+						socket.receive(reply1);
 
-						socket.receive(reply);
-						fragment = Arrays.copyOfRange(reply.getData(), 8, reply.getLength());
+						// Translate it back into a message
+						msg = new Message();
+						bitString = new String(reply1.getData(), 0, reply1.getLength());
+						msg = gson.fromJson(bitString, Message.class);
 
-					} else if (offset == count) {
-						// if the packet is empty or null, then the server is done sending?
-						receiving = false;
-						System.out.println("Receiving done");
+						ByteArrayInputStream bis = new ByteArrayInputStream(msg.fragment);
+						AudioInputStream audioStream = new AudioInputStream(bis, audioFormat, msg.fragment.length);
+
+						int bytesRead;
+						try {
+							if ((bytesRead = audioStream.read(msg.fragment, 0, msg.fragment.length)) != -1) {
+								sdl.write(msg.fragment, 0, bytesRead);
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						offset++;
 					}
-				}
-				received1 = baos.toByteArray();
-
-				int percent = (int) (((double) receivedCount / (double) count) * 100);
-				System.out.println(percent);
-				if (percent > 50) {
-					ByteArrayInputStream bis = new ByteArrayInputStream(received1);
-					AudioFormat audioFormat = new AudioFormat(44100, 16, 2, true, false);
-					AudioInputStream audioStream = new AudioInputStream(bis, audioFormat, received1.length);
-					return audioStream;
+				} catch (LineUnavailableException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 
-				break;
 			}
 
 		}
-		return null;
 	}
 }

@@ -14,8 +14,6 @@ public class Server {
 	 * @throws IOException if input or output is invalid.
 	 */
 	public static void main(String[] args) throws IOException {
-
-		//new PlaylistThread().start();
 		
 		DatagramSocket socket = null;
 		

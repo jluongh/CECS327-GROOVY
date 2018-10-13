@@ -322,6 +322,7 @@ public class MainAppController implements Initializable {
 					@Override
 					public void run() {
 						try {
+							player.playing = true;
 							player.playSong(songId);
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
@@ -627,7 +628,7 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void musicStopClicked(MouseEvent event) 
 	{
-		ap.stop();
+		player.playing = false;
 	}
 	
 	/**

@@ -22,6 +22,8 @@ public class PlayerController {
 
 	private DatagramSocket socket;
 
+	public boolean playing;
+	
 	public PlayerController(DatagramSocket socket) {
 		this.socket = socket;
 	}
@@ -75,7 +77,7 @@ public class PlayerController {
 					SourceDataLine sdl = (SourceDataLine) AudioSystem.getLine(info);
 					sdl.open();
 					sdl.start();
-					while (offset < count) {
+					while (offset < count && playing) {
 						msg = new Message();
 						msg.messageType = Packet.REQUEST;
 						msg.requestID = Packet.REQUEST_ID_LOADSONG;

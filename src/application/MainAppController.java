@@ -687,164 +687,164 @@ public class MainAppController implements Initializable {
 	}
 
 
-	/**
-	 * Event Listener on ImageView[#exit].onMouseClicked to delet the playlist
-	 * Delete button constructor
-	 */
-	private class ButtonCelldeletePlaylist extends TableCell<Disposer.Record, Boolean> {
-        Button cellButton = new Button("Delete");
+//	/**
+//	 * Event Listener on ImageView[#exit].onMouseClicked to delet the playlist
+//	 * Delete button constructor
+//	 */
+//	private class ButtonCelldeletePlaylist extends TableCell<Disposer.Record, Boolean> {
+//        Button cellButton = new Button("Delete");
+//
+//        ButtonCelldeletePlaylist()
+//        {
+//
+//        	//Action when the button is pressed
+//            cellButton.setOnAction(new EventHandler<ActionEvent>()
+//            {
+//                @Override
+//                public void handle(ActionEvent t)
+//                {
+//                    //TODO:handle delete action
+//                	Playlist currentPlaylist = (Playlist) ButtonCelldeletePlaylist.this.getTableView().getItems().get(ButtonCelldeletePlaylist.this.getIndex());
+//                	pc.DeletePlaylist(currentPlaylist.getPlaylistID());
+//                	playlists.remove(currentPlaylist);
+//                	playlistTable.refresh();
+//                }
+//            });
+//
+//        }
+//        //display the button when there is an object associate with it
+//        @Override
+//        protected void updateItem(Boolean t, boolean empty) {
+//            super.updateItem(t, empty);
+//            if(!empty){
+//                setGraphic(cellButton);
+//            }else {
+//        setText(null);
+//        setGraphic(null);
+//            }
+//        }
+//	}
 
-        ButtonCelldeletePlaylist()
-        {
+//	/**
+//	 * Play song button constructor
+//	 */
+//	private class ButtonCellPlaySong extends TableCell<Disposer.Record, Boolean> {
+//        Button cellButton = new Button("Play");
+//
+//        ButtonCellPlaySong()
+//        {
+//
+//        	//Action when the button is pressed
+//            cellButton.setOnAction(new EventHandler<ActionEvent>()
+//            {
+//                @Override
+//                public void handle(ActionEvent t)
+//                {
+//                	SongInfo currentsong = (SongInfo) ButtonCellPlaySong.this.getTableView().getItems().get(ButtonCellPlaySong.this.getIndex());
+//                	int currentSongId = currentsong.getSong().getSongID();
+//                	try {
+//                		if(!ap.soundMap.containsKey(currentSongId)) {
+//    						AudioInputStream stream = player.LoadSong(currentSongId);
+//    						ap.loadStream(currentSongId, stream);
+//                		}
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+//    				ap.stop();
+//        			ap.play(currentSongId, false);
+//        			songName.setText(currentsong.getSong().getTitle());
+//        			String artist = atc.GetArtistBySongTitle(currentsong.getSong().getTitle()).getName();
+//        			artistName.setText(artist);
+//                }
+//            });
+//
+//        }
+//        //display the button when there is an object associate with it
+//        @Override
+//        protected void updateItem(Boolean t, boolean empty) {
+//            super.updateItem(t, empty);
+//            if(!empty){
+//                setGraphic(cellButton);
+//            }else {
+//        setText(null);
+//        setGraphic(null);
+//            }
+//        }
+//	}
 
-        	//Action when the button is pressed
-            cellButton.setOnAction(new EventHandler<ActionEvent>()
-            {
-                @Override
-                public void handle(ActionEvent t)
-                {
-                    //TODO:handle delete action
-                	Playlist currentPlaylist = (Playlist) ButtonCelldeletePlaylist.this.getTableView().getItems().get(ButtonCelldeletePlaylist.this.getIndex());
-                	pc.DeletePlaylist(currentPlaylist.getPlaylistID());
-                	playlists.remove(currentPlaylist);
-                	playlistTable.refresh();
-                }
-            });
-
-        }
-        //display the button when there is an object associate with it
-        @Override
-        protected void updateItem(Boolean t, boolean empty) {
-            super.updateItem(t, empty);
-            if(!empty){
-                setGraphic(cellButton);
-            }else {
-        setText(null);
-        setGraphic(null);
-            }
-        }
-	}
-
-	/**
-	 * Play song button constructor
-	 */
-	private class ButtonCellPlaySong extends TableCell<Disposer.Record, Boolean> {
-        Button cellButton = new Button("Play");
-
-        ButtonCellPlaySong()
-        {
-
-        	//Action when the button is pressed
-            cellButton.setOnAction(new EventHandler<ActionEvent>()
-            {
-                @Override
-                public void handle(ActionEvent t)
-                {
-                	SongInfo currentsong = (SongInfo) ButtonCellPlaySong.this.getTableView().getItems().get(ButtonCellPlaySong.this.getIndex());
-                	int currentSongId = currentsong.getSong().getSongID();
-                	try {
-                		if(!ap.soundMap.containsKey(currentSongId)) {
-    						AudioInputStream stream = player.LoadSong(currentSongId);
-    						ap.loadStream(currentSongId, stream);
-                		}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-    				ap.stop();
-        			ap.play(currentSongId, false);
-        			songName.setText(currentsong.getSong().getTitle());
-        			String artist = atc.GetArtistBySongTitle(currentsong.getSong().getTitle()).getName();
-        			artistName.setText(artist);
-                }
-            });
-
-        }
-        //display the button when there is an object associate with it
-        @Override
-        protected void updateItem(Boolean t, boolean empty) {
-            super.updateItem(t, empty);
-            if(!empty){
-                setGraphic(cellButton);
-            }else {
-        setText(null);
-        setGraphic(null);
-            }
-        }
-	}
-
-	/**
-	 * Add song button constructor
-	 */
-	private class ButtonCelladdSong extends TableCell<Disposer.Record, Boolean> {
-        Button cellButton = new Button("Add");
-
-        ButtonCelladdSong()
-        {
-
-        	//Action when the button is pressed
-            cellButton.setOnAction(new EventHandler<ActionEvent>()
-            {
-                @Override
-                public void handle(ActionEvent t)
-                {
-
-                	Song currentSong = (Song) ButtonCelladdSong.this.getTableView().getItems().get(ButtonCelladdSong.this.getIndex());
-                	ArrayList<String> dropDown = new ArrayList<String>();
-                	if (playlist!=null && !playlist.isEmpty())
-                	{
-                		for(int i = 0; i<playlist.size();i++)
-            			{
-                    		dropDown.add(playlist.get(i).getName());
-            			}
-                		ChoiceDialog<String> dialog = new ChoiceDialog<>(dropDown.get(0), dropDown);
-                    	dialog.setTitle("Playlist");
-                    	dialog.setHeaderText("Select Playlist");
-                    	dialog.setContentText("Please select the playlist you wish to add to");
-                    	Optional<String> result = dialog.showAndWait();
-                    	if (result.isPresent())
-                    	{
-                    		Date date = new Date();
-        					SongInfo newSong = new SongInfo(currentSong, date);
-        					for (int i = 0; i < playlist.size(); i++)
-        					{
-        						if (playlist.get(i).getName().equals(result.get()))
-        						{
-        							try {
-        								upc.AddToPlaylistBySongInfo(playlist.get(i).getPlaylistID(), newSong);
-        							} catch(IOException e) {
-        								e.printStackTrace();
-        							}
-        						}
-        					}
-
-                    	}
-
-                	}
-                	else
-                	{
-                		Alert error = new Alert(Alert.AlertType.ERROR);
-            			error.setTitle("No playlist");
-            			error.setHeaderText("There is no playlist");
-                        error.setContentText("Please create a new playlist before you add a song");
-                        Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
-                        error.showAndWait();
-                	}
-
-                }
-            });
-        }
-        //display the button when there is an object associate with it
-        @Override
-        protected void updateItem(Boolean t, boolean empty) {
-            super.updateItem(t, empty);
-            if(!empty){
-                setGraphic(cellButton);
-            }else {
-        setText(null);
-        setGraphic(null);
-            }
-        }
-	}
+//	/**
+//	 * Add song button constructor
+//	 */
+//	private class ButtonCelladdSong extends TableCell<Disposer.Record, Boolean> {
+//        Button cellButton = new Button("Add");
+//
+//        ButtonCelladdSong()
+//        {
+//
+//        	//Action when the button is pressed
+//            cellButton.setOnAction(new EventHandler<ActionEvent>()
+//            {
+//                @Override
+//                public void handle(ActionEvent t)
+//                {
+//
+//                	Song currentSong = (Song) ButtonCelladdSong.this.getTableView().getItems().get(ButtonCelladdSong.this.getIndex());
+//                	ArrayList<String> dropDown = new ArrayList<String>();
+//                	if (playlist!=null && !playlist.isEmpty())
+//                	{
+//                		for(int i = 0; i<playlist.size();i++)
+//            			{
+//                    		dropDown.add(playlist.get(i).getName());
+//            			}
+//                		ChoiceDialog<String> dialog = new ChoiceDialog<>(dropDown.get(0), dropDown);
+//                    	dialog.setTitle("Playlist");
+//                    	dialog.setHeaderText("Select Playlist");
+//                    	dialog.setContentText("Please select the playlist you wish to add to");
+//                    	Optional<String> result = dialog.showAndWait();
+//                    	if (result.isPresent())
+//                    	{
+//                    		Date date = new Date();
+//        					SongInfo newSong = new SongInfo(currentSong, date);
+//        					for (int i = 0; i < playlist.size(); i++)
+//        					{
+//        						if (playlist.get(i).getName().equals(result.get()))
+//        						{
+//        							try {
+//        								upc.AddToPlaylistBySongInfo(playlist.get(i).getPlaylistID(), newSong);
+//        							} catch(IOException e) {
+//        								e.printStackTrace();
+//        							}
+//        						}
+//        					}
+//
+//                    	}
+//
+//                	}
+//                	else
+//                	{
+//                		Alert error = new Alert(Alert.AlertType.ERROR);
+//            			error.setTitle("No playlist");
+//            			error.setHeaderText("There is no playlist");
+//                        error.setContentText("Please create a new playlist before you add a song");
+//                        Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
+//                        error.showAndWait();
+//                	}
+//
+//                }
+//            });
+//        }
+//        //display the button when there is an object associate with it
+//        @Override
+//        protected void updateItem(Boolean t, boolean empty) {
+//            super.updateItem(t, empty);
+//            if(!empty){
+//                setGraphic(cellButton);
+//            }else {
+//        setText(null);
+//        setGraphic(null);
+//            }
+//        }
+//	}
 
 
 	/**

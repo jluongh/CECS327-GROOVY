@@ -1,24 +1,24 @@
 package application;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-
 import data.constants.Packet;
+import data.models.*;
+import services.SearchService;
 import data.models.FileEvent;
 import data.models.Message;
 import data.models.Song;
 import data.models.UserProfile;
 import services.UserProfileService;
-import data.models.Playlist;
 
 public class ClientHandler extends Thread {
 
@@ -55,11 +55,18 @@ public class ClientHandler extends Thread {
 				if (received != null) {
 					if (receivedMsg.messageType == Packet.REQUEST) {
 						switch (receivedMsg.requestID) {
+						case Packet.REQUEST_ID_GETPROFILE:
+							sendMsg = new Message();
+							sendMsg.messageType = Packet.REPLY;
+							sendMsg.requestID = Packet.REQUEST_ID_GETPROFILE;
+							sendMsg.objectID = receivedMsg.objectID;
+							sendMsg.fragment = GetUserProfile(receivedMsg.objectID);
+							break;
 						case Packet.REQUEST_ID_BYTECOUNT:
 							sendMsg = new Message();
 							sendMsg.messageType = Packet.REPLY;
 							sendMsg.requestID = Packet.REQUEST_ID_BYTECOUNT;
-							byte[] bytes = getFileEvent(receivedMsg.objectID);
+							byte[] bytes = GetFileBytes(receivedMsg.objectID);
 							int count = bytes.length / Packet.BYTESIZE;
 							sendMsg.count = count;
 							break;
@@ -73,7 +80,6 @@ public class ClientHandler extends Thread {
 							int start = receivedMsg.offset * Packet.BYTESIZE;
 							int end = start + Packet.BYTESIZE;
 							bytes = GetFileBytes(receivedMsg.objectID, start, end);
-							System.out.println("HELLO: " + bytes.length);
 							sendMsg.fragment = bytes;
 //							try {
 //								currentThread().sleep(2000);
@@ -82,8 +88,27 @@ public class ClientHandler extends Thread {
 //								e.printStackTrace();
 //							}
 							break;
-
-						}
+//						case 3:
+//							buffer = DeleteSongFromPlaylist(received);
+//							break;
+//						case Packet.REQUEST_ID_SEARCHBYARTIST:
+//							buffer = SearchByArtist(new String(data));
+//							break;
+//						case Packet.REQUEST_ID_SEARCHBYALBUM:
+//							buffer = SearchByAlbum(new String(data));
+//							break;
+//						case Packet.REQUEST_ID_SEARCHBYSONG:
+//							buffer = SearchBySong(new String(data));
+//							break;
+//						case 6:
+//							buffer = CreatePlaylist(received);
+//							break;
+//						case 7:
+//							buffer = DeletePlaylist(received);
+//							break;
+//						case Packet.REQUEST_ID_GETSONG:
+//							buffer = 
+//						}
 
 					}
 
@@ -93,11 +118,9 @@ public class ClientHandler extends Thread {
 
 						String sendMsgS = new Gson().toJson(sendMsg);
 						byte[] send = sendMsgS.getBytes();
-//						System.out.println("Server:\n" + sendMsgS);
 
 						DatagramPacket packet = new DatagramPacket(send, send.length, address, port);
 						socket.send(packet);
-						System.out.println("Sent");
 					}
 					// // read header
 					// // 0 = request, 1 = reply
@@ -200,39 +223,16 @@ public class ClientHandler extends Thread {
 					// }
 					// }
 					// }
+					}
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println("Server: Done");
-
 			// } catch (IOException e) {
 			// System.out.println("Error: " + e.getMessage());
 			// }
 		}
-	}
-
-	/**
-	 * Loading Song Creating a json and for the list of songs Getting the bytes of
-	 * the json for the list of songs
-	 * 
-	 * @param request
-	 *                    - {String} the text to be serialized
-	 * @return data
-	 * @throws IOException
-	 *                         if input or output is invalid.
-	 */
-	private byte[] LoadSong(String request) {
-		Gson gson = new GsonBuilder().create();
-		Song song = gson.fromJson(request, new TypeToken<Song>() {
-		}.getType());
-
-		byte[] data = null;
-		if (song != null) {
-			data = getFileEvent(song.getSongID());
-		}
-		return data;
 	}
 
 	/**
@@ -245,17 +245,12 @@ public class ClientHandler extends Thread {
 	 * @throws IOException
 	 *                         if input or output is invalid.
 	 */
-	private byte[] LoadUserProfile(String request) {
+	private byte[] GetUserProfile(int userId) {
 		UserProfileService ups = new UserProfileService();
-		Gson gson = new GsonBuilder().create();
-		UserProfile userProfile = gson.fromJson(request, UserProfile.class);
-		byte[] data = null;
-		if (userProfile != null) {
-			userProfile = ups.GetUserProfile(userProfile.getUserID());
-			String send = gson.toJson(userProfile);
-			data = send.getBytes();
-		}
-		return data;
+		UserProfile userProfile = ups.GetUserProfile(userId);
+		String send = new Gson().toJson(userProfile);
+
+		return send.getBytes();
 	}
 
 	/**
@@ -278,7 +273,15 @@ public class ClientHandler extends Thread {
 		return data;
 	}
 
-	private byte[] GetFileBytes (int songID, int start, int end) {
+	/**
+	 * Setting the path of the song file Creating a stream for the song by setting
+	 * the file size and bytes to play the song
+	 * 
+	 * @param songID
+	 *                   - {int} unique identification for song
+	 * @return fileBytes
+	 */
+	private byte[] GetFileBytes(int songID, int start, int end) {
 		String fileName = songID + "";
 		String path = "music/" + fileName + ".wav";
 		Path fileLocation = Paths.get(path);
@@ -289,9 +292,10 @@ public class ClientHandler extends Thread {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}		
+		}
 		return null;
 	}
+
 	/**
 	 * Setting the path of the song file Creating a stream for the song by setting
 	 * the file size and bytes to play the song
@@ -300,39 +304,67 @@ public class ClientHandler extends Thread {
 	 *                   - {int} unique identification for song
 	 * @return fileBytes
 	 */
-	public byte[] getFileEvent(int songID) {
-		FileEvent fileEvent = new FileEvent();
-
+	private byte[] GetFileBytes(int songID) {
 		String fileName = songID + "";
 		String path = "music/" + fileName + ".wav";
-		fileEvent.setPath(path);
-		fileEvent.setfileName(fileName);
-		File file = new File(path);
-		if (file.isFile()) {
-			try {
-				DataInputStream diStream = new DataInputStream(new FileInputStream(file));
-				long len = (int) file.length();
-				byte[] fileBytes = new byte[(int) len];
-				int read = 0;
-				int numRead = 0;
-				while (read < fileBytes.length
-						&& (numRead = diStream.read(fileBytes, read, fileBytes.length - read)) >= 0) {
-					read = read + numRead;
-				}
-				fileEvent.setFileSize(len);
-				fileEvent.setFileData(fileBytes);
-
-				return fileBytes;
-
-			} catch (Exception e) {
-				e.printStackTrace();
-				fileEvent.setStatus("Error");
-			}
-		} else {
-			System.out.println("path specified is not pointing to a file");
-			fileEvent.setStatus("Error");
+		Path fileLocation = Paths.get(path);
+		try {
+			byte[] buffer = Files.readAllBytes(fileLocation);
+			return buffer;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return null;
+	}
+
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 */
+	private byte[] SearchByArtist(String query) {
+		SearchService ss = new SearchService();
+
+		List<Artist> artists = ss.GetArtistsByQuery(query);
+		Type listType = new TypeToken<List<Artist>>() {
+		}.getType();
+		String send = new Gson().toJson(artists, listType);
+
+		return send.getBytes();
+	}
+
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 */
+	private byte[] SearchByAlbum(String query) {
+		SearchService ss = new SearchService();
+
+		List<Album> albums = ss.GetAlbumsByQuery(query);
+		Type listType = new TypeToken<List<Album>>() {
+		}.getType();
+		String send = new Gson().toJson(albums, listType);
+
+		return send.getBytes();
+	}
+
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 */
+	private byte[] SearchBySong(String query) {
+		SearchService ss = new SearchService();
+
+		List<Song> songs = ss.GetSongsByQuery(query);
+		Type listType = new TypeToken<List<Song>>() {
+		}.getType();
+		String send = new Gson().toJson(songs, listType);
+
+		return send.getBytes();
 	}
 
 	/**
@@ -353,7 +385,7 @@ public class ClientHandler extends Thread {
 		File file = new File(path);
 		if (file.isFile()) {
 			try {
-				DataInputStream diStream= new DataInputStream(new FileInputStream(file));
+				DataInputStream diStream = new DataInputStream(new FileInputStream(file));
 				long len = (int) file.length();
 				byte[] fileBytes = new byte[(int) len];
 				int read = 0;

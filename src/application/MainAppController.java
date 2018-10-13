@@ -16,11 +16,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import api.AlbumController;
-import api.ArtistController;
+
 import api.AudioPlayer;
 import api.PlayerController;
-import api.PlaylistController;
 import api.Searcher;
 import api.SongController;
 import api.UserProfileController;
@@ -128,7 +126,7 @@ public class MainAppController implements Initializable {
 //	private UserProfile up= uc.GetUserProfile(currentUser.getUserID());;
 //	private List<Playlist> playlist = pc.GetPlaylists();	
 	private DatagramSocket socket;
-	private PlaylistController pc = new PlaylistController(currentUser.getUserID());
+//	private PlaylistController pc = new PlaylistController(currentUser.getUserID());
 	
 	private UserProfileController upc ;
 	private UserProfile user;
@@ -138,8 +136,7 @@ public class MainAppController implements Initializable {
 	private ObservableList<Object> songs = FXCollections.observableArrayList();
 	private ObservableList<Object> artistSong = FXCollections.observableArrayList();
 	private ObservableList<Object> albumSong = FXCollections.observableArrayList();
-	private AlbumController amc = new AlbumController();
-	private ArtistController atc = new ArtistController();
+
 	private SongController sc = new SongController();
 	
 	// Audio player
@@ -236,8 +233,8 @@ public class MainAppController implements Initializable {
 
 		        //display object to the table
 				col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
-				col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
-				col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
+//				col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
+//				col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
 				col4.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getAddedDate().toString()));
 				col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() 
 				{
@@ -263,22 +260,7 @@ public class MainAppController implements Initializable {
 				Result.setItems(userSong);
 				Result.refresh();
 				//load playlist to the audio player
-		        HashMap<Integer, AudioInputStream> streams;
-				try {
-					streams = player.LoadSongs(songPlay);
-			        if(streams != null) {
-			        	Set keys = streams.keySet();
-			        	Iterator<Integer> iterator = keys.iterator();
-			        	while(iterator.hasNext()) {
-			        		Integer key = iterator.next();
-			        		ap.loadStream(key, streams.get(key));
-			        		System.out.println(key + " -- YES -- " + streams.get(key));
-			        	}
-			        }
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+
 	        }
 	        
 	    }
@@ -331,29 +313,45 @@ public class MainAppController implements Initializable {
 			{
 				Song userSong = (Song) Result.getSelectionModel().getSelectedItem();
 				int songId = userSong.getSongID();
-				if (!ap.soundMap.containsKey(songId)) {
-					AudioInputStream stream = player.LoadSong(songId);
-					ap.loadStream(songId, stream);
-				}
-				ap.stop();
-				ap.play(songId, false);
-				songName.setText(userSong.getTitle());
-				String artist = atc.GetArtistBySongTitle(userSong.getTitle()).getName();
-				artistName.setText(artist);
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							player.playSong(songId);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+					}
+				}).start();
+//				ap.stop();
+//				ap.play(songId, false);
+//				songName.setText(userSong.getTitle());
+//				String artist = atc.GetArtistBySongTitle(userSong.getTitle()).getName();
+//				artistName.setText(artist);
 			}
 			else
 			{
 				SongInfo userSong = (SongInfo) Result.getSelectionModel().getSelectedItem();
 				int songId = userSong.getSong().getSongID();
-				if (!ap.soundMap.containsKey(songId)) {
-					AudioInputStream stream = player.LoadSong(songId);
-					ap.loadStream(songId, stream);
-				}
-				ap.stop();
-				ap.play(songId, false);
-				songName.setText(userSong.getSong().getTitle());
-				String artist = atc.GetArtistBySongTitle(userSong.getSong().getTitle()).getName();
-				artistName.setText(artist);
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							player.playSong(songId);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+					}
+				}).start();
+				//				ap.stop();
+//				ap.play(songId, false);
+//				songName.setText(userSong.getSong().getTitle());
+//				String artist = atc.GetArtistBySongTitle(userSong.getSong().getTitle()).getName();
+//				artistName.setText(artist);
 			}
 			
 	    }
@@ -403,10 +401,10 @@ public class MainAppController implements Initializable {
 		col4.setText("Duration");
 		col5.setText("Add");
 		//display object to the table
-		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
-		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
+//		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
+//		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
+//		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
+//		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
 		
 		col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
 			
@@ -456,10 +454,10 @@ public class MainAppController implements Initializable {
 		col4.setText("Duration");
 		col5.setText("Add");
 		//display object to the table
-		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
-		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
+//		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
+//		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
+//		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
+//		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
 		
 		col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
 			
@@ -511,10 +509,10 @@ public class MainAppController implements Initializable {
 		col4.setText("Duration");
 		col5.setText("Add");
 		//display object to the table
-		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
-		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
+//		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
+//		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
+//		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
+//		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
 		System.out.print(sc.FormatDuration(artist.get(0).getAlbums().get(0).getSongs().get(0).getDuration()));
 		col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
 			
@@ -574,14 +572,14 @@ public class MainAppController implements Initializable {
 		//create new playlist
 		if(result.isPresent())
 		{
-			String playlistName = result.get();
-			playlists.removeAll(playlists);
-			pc.CreatePlaylist(playlistName);
-			playlist=pc.GetPlaylists();
-			for(int i = 0; i<playlist.size();i++)
-			{
-				playlists.add(playlist.get(i));
-			}
+//			String playlistName = result.get();
+//			playlists.removeAll(playlists);
+//			pc.CreatePlaylist(playlistName);
+//			playlist=pc.GetPlaylists();
+//			for(int i = 0; i<playlist.size();i++)
+//			{
+//				playlists.add(playlist.get(i));
+//			}
 			playlistTable.refresh();
 		}
 	}
@@ -668,7 +666,7 @@ public class MainAppController implements Initializable {
                 {
                     //TODO:handle delete action
                 	Playlist currentPlaylist = (Playlist) ButtonCelldeletePlaylist.this.getTableView().getItems().get(ButtonCelldeletePlaylist.this.getIndex());
-                	pc.DeletePlaylist(currentPlaylist.getPlaylistID());
+//                	pc.DeletePlaylist(currentPlaylist.getPlaylistID());
                 	playlists.remove(currentPlaylist);
                 	playlistTable.refresh();
                 }
@@ -705,19 +703,22 @@ public class MainAppController implements Initializable {
                 {
                 	SongInfo currentsong = (SongInfo) ButtonCellPlaySong.this.getTableView().getItems().get(ButtonCellPlaySong.this.getIndex());
                 	int currentSongId = currentsong.getSong().getSongID();
-                	try {
-                		if(!ap.soundMap.containsKey(currentSongId)) {
-    						AudioInputStream stream = player.LoadSong(currentSongId);
-    						ap.loadStream(currentSongId, stream);
-                		}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-    				ap.stop();
-        			ap.play(currentSongId, false);
-        			songName.setText(currentsong.getSong().getTitle());
-        			String artist = atc.GetArtistBySongTitle(currentsong.getSong().getTitle()).getName();
-        			artistName.setText(artist);
+                	new Thread(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								player.playSong(currentSongId);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+
+						}
+					}).start();
+
+//        			songName.setText(currentsong.getSong().getTitle());
+//        			String artist = atc.GetArtistBySongTitle(currentsong.getSong().getTitle()).getName();
+//        			artistName.setText(artist);
                 }
             });
             

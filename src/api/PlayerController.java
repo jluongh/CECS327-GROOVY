@@ -39,7 +39,7 @@ public class PlayerController {
 	// return streams;
 	// }
 
-	public void LoadSong(int songID) throws IOException {
+	public void playSong(int songID) throws IOException {
 		Gson gson = new GsonBuilder().setLenient().create();
 		Message send = new Message();
 		send.messageType = Packet.REQUEST;
@@ -62,17 +62,9 @@ public class PlayerController {
 		Message msg = new Message();
 		String bitString = new String(reply.getData(), 0, reply.getLength());
 		msg = gson.fromJson(bitString, Message.class);
-		System.out.println("Response: " + msg.messageType);
 
 		if (msg.messageType == Packet.REPLY) {
 			switch (msg.requestID) {
-			// Loading User Profile
-			case 0:
-				buffer = "Test".getBytes("UTF-8");
-				break;
-			// case 1:
-			// buffer = AddSongToPlaylist(received);
-			// break;
 			case Packet.REQUEST_ID_BYTECOUNT:
 				int count = msg.count;
 				int offset = 0;

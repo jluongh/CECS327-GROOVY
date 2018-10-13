@@ -124,10 +124,18 @@ public class PlayerController {
 		}
 	}
 
-	public void stopSong() {
+	public void reset() {
 		playing = false;
 		sdl.stop();
 		sdl.flush();
-		System.out.println("Stopping song");
+	}
+	
+	public void pause() {
+		playing = false;
+		sdl.stop();
+	}
+	
+	public void resume() {
+		sdl.start();
 	}
 }

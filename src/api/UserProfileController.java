@@ -13,15 +13,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import data.constants.Net;
+import data.constants.Packet;
 import data.models.*;
 
 public class UserProfileController {
 
-	//global variables
-	private final static int REQUEST = 0;
-	private final static int REPLY = 1;
-	private final static int REQUEST_ID_GETPROFILE = 1;
-	private final static int REQUEST_ID_ADDSONGTOPLAYLIST = 2;
 	private static final String HOST = "localhost";
 
 	private UserProfile userProfile;
@@ -46,23 +42,18 @@ public class UserProfileController {
 	 * @throws IOException if input or output is invalid.
 	 */
 	public UserProfile GetUserProfile(int userID) throws IOException {
-		UserProfile userProfile = new UserProfile();
-		userProfile.setUserID(userID);
-		String profileJson = new Gson().toJson(userProfile);
-
-		byte[] messageType = ByteBuffer.allocate(4).putInt(REQUEST).array();
-		byte[] requestIdSend = ByteBuffer.allocate(4).putInt(REQUEST_ID_GETPROFILE).array();
-		byte[] fragment = profileJson.getBytes();
-
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		baos.write(messageType);
-		baos.write(requestIdSend);
-		baos.write(fragment);
-
+		Message requestMessage = new Message();
+		requestMessage.messageType = Packet.REQUEST;
+		requestMessage.requestID = Packet.REQUEST_ID_GETPROFILE;
+		requestMessage.objectID = userID;
+		
+		String requestString = new Gson().toJson(requestMessage);
+		byte[] requestBytes = requestString.getBytes();
+		
+		
 		// send request
-		byte[] message = baos.toByteArray();
 		InetAddress address = InetAddress.getByName(HOST);
-		DatagramPacket request = new DatagramPacket(message, message.length, address, Net.PORT);
+		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
 		socket.send(request);
 
 		// get reply
@@ -70,34 +61,18 @@ public class UserProfileController {
 		DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
 		socket.receive(reply);
 
-		// display response
-		// String received = new String(reply.getData(), 0, reply.getLength());
-		// System.out.println(received);
-
-		// read response
-		// 0 = request, 1 = reply
-		ByteBuffer wrapped = ByteBuffer.wrap(reply.getData(), 0, 4);
-		int messageTypeReceive = wrapped.getInt();
-		wrapped = ByteBuffer.wrap(reply.getData(), 4, 4);
-		int requestIdReceive = wrapped.getInt();
-		fragment = Arrays.copyOfRange(reply.getData(), 8, reply.getLength());
-		//System.out.println(messageTypeReceive);
-		if (messageTypeReceive == REPLY) {
-
-			switch (requestIdReceive) {
-			// Loading User Profile
-			
-			case REQUEST_ID_GETPROFILE:
-				String data = new String(fragment);
+		String replyString = new String(reply.getData(), 0, reply.getLength());
+		Message replyMessage = new Gson().fromJson(replyString, Message.class);
+		if (replyMessage.messageType == Packet.REPLY) {
+			switch (replyMessage.requestID) {			
+			case Packet.REQUEST_ID_GETPROFILE:
+				String data = new String(replyMessage.fragment);
 				userProfile = new Gson().fromJson(data, UserProfile.class);
 				break;
-			// case 1:
-			// buffer = AddSongToPlaylist(received);
-			// break;
+
 			}
 
 		}
-		this.userProfile = userProfile;
 		return userProfile;
 	}
 	
@@ -142,8 +117,8 @@ public class UserProfileController {
 			String userProfileJson = new Gson().toJson(userProfile);
 
 			// Write to byte array
-			byte[] messageType = ByteBuffer.allocate(4).putInt(REQUEST).array();
-			byte[] requestIdSend = ByteBuffer.allocate(4).putInt(REQUEST_ID_ADDSONGTOPLAYLIST).array();
+			byte[] messageType = ByteBuffer.allocate(4).putInt(Packet.REQUEST).array();
+			byte[] requestIdSend = ByteBuffer.allocate(4).putInt(Packet.REQUEST_ID_ADDSONGTOPLAYLIST).array();
 			byte[] fragment = userProfileJson.getBytes();
 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -171,10 +146,10 @@ public class UserProfileController {
 
 			//System.out.println(messageTypeReceive);
 			
-			if (messageTypeReceive == REPLY) {
+			if (messageTypeReceive == Packet.REPLY) {
 				switch (requestIdReceive) {
 				
-				case REQUEST_ID_ADDSONGTOPLAYLIST:
+				case Packet.REQUEST_ID_ADDSONGTOPLAYLIST:
 					String data = new String(fragment);
 					if (data.equals("1"))
 						saveSuccessful = true;

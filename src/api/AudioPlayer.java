@@ -133,6 +133,11 @@ public class AudioPlayer {
 	    gainControl.setValue(20f * (float) Math.log10(volume));
 	}
 	
+	
+	/**
+	 * will set a temp list to the same song
+	 * @return a playlist with all same song 
+	 */
 	public ListIterator<Song> repeat() {
 		ListIterator<Song> temp;
 		temp = iterator;
@@ -143,7 +148,10 @@ public class AudioPlayer {
 		}
 		return temp;
 	}
-	
+	/**
+	 * will set a shuffle the lists 
+	 * @return a playlist that is shuffled 
+	 */
 	public ListIterator<Song> shuffle() {
 		ListIterator<Song> temp;
 		temp = iterator;

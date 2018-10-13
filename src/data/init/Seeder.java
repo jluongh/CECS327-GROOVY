@@ -16,7 +16,7 @@ public class Seeder {
 	
 	/**
 	 * 
-	 * @param args
+	 * @param args - arguments
 	 */
 	public static void main(String[] args) {
 		seedLibrary();

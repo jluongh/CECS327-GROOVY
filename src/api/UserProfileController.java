@@ -13,56 +13,48 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import data.constants.Net;
+import data.constants.Packet;
 import data.models.*;
 
 public class UserProfileController {
 
-	//global variables
-	private final static int REQUEST = 0;
-	private final static int REPLY = 1;
-	private final static int REQUEST_ID_GETPROFILE = 1;
-	private final static int REQUEST_ID_ADDSONGTOPLAYLIST = 2;
 	private static final String HOST = "localhost";
 
 	private UserProfile userProfile;
 	private DatagramSocket socket = null;
-	
+
 	/**
 	 * Setter for socket for UserProfileController
-	 * @param socket - {DatagramSocket} 
+	 * 
+	 * @param socket
+	 *                   - {DatagramSocket}
 	 */
 	public UserProfileController(DatagramSocket socket) {
 		this.socket = socket;
 	}
-	
+
 	/**
-	 * Writing into the json file the UserProfile 
-	 * Sending requests
-	 * Getting replies
-	 * Reading the response
-	 * Loading the User Profile
-	 * @param userID - {int} unique identification for user
+	 * Writing into the json file the UserProfile Sending requests Getting replies
+	 * Reading the response Loading the User Profile
+	 * 
+	 * @param userID
+	 *                   - {int} unique identification for user
 	 * @return userProfile
-	 * @throws IOException if input or output is invalid.
+	 * @throws IOException
+	 *                         if input or output is invalid.
 	 */
 	public UserProfile GetUserProfile(int userID) throws IOException {
-		UserProfile userProfile = new UserProfile();
-		userProfile.setUserID(userID);
-		String profileJson = new Gson().toJson(userProfile);
+		Message requestMsg = new Message();
+		requestMsg.messageType = Packet.REQUEST;
+		requestMsg.requestID = Packet.REQUEST_ID_GETPROFILE;
+		requestMsg.objectID = userID;
 
-		byte[] messageType = ByteBuffer.allocate(4).putInt(REQUEST).array();
-		byte[] requestIdSend = ByteBuffer.allocate(4).putInt(REQUEST_ID_GETPROFILE).array();
-		byte[] fragment = profileJson.getBytes();
-
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		baos.write(messageType);
-		baos.write(requestIdSend);
-		baos.write(fragment);
+		String requestString = new Gson().toJson(requestMsg);
+		byte[] requestBytes = requestString.getBytes();
 
 		// send request
-		byte[] message = baos.toByteArray();
 		InetAddress address = InetAddress.getByName(HOST);
-		DatagramPacket request = new DatagramPacket(message, message.length, address, Net.PORT);
+		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
 		socket.send(request);
 
 		// get reply
@@ -70,120 +62,202 @@ public class UserProfileController {
 		DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
 		socket.receive(reply);
 
-		// display response
-		// String received = new String(reply.getData(), 0, reply.getLength());
-		// System.out.println(received);
-
-		// read response
-		// 0 = request, 1 = reply
-		ByteBuffer wrapped = ByteBuffer.wrap(reply.getData(), 0, 4);
-		int messageTypeReceive = wrapped.getInt();
-		wrapped = ByteBuffer.wrap(reply.getData(), 4, 4);
-		int requestIdReceive = wrapped.getInt();
-		fragment = Arrays.copyOfRange(reply.getData(), 8, reply.getLength());
-		//System.out.println(messageTypeReceive);
-		if (messageTypeReceive == REPLY) {
-
-			switch (requestIdReceive) {
-			// Loading User Profile
-			
-			case REQUEST_ID_GETPROFILE:
-				String data = new String(fragment);
+		String replyString = new String(reply.getData(), 0, reply.getLength());
+		Message replyMsg = new Gson().fromJson(replyString, Message.class);
+		if (replyMsg.messageType == Packet.REPLY) {
+			switch (replyMsg.requestID) {
+			case Packet.REQUEST_ID_GETPROFILE:
+				String data = new String(replyMsg.fragment);
 				userProfile = new Gson().fromJson(data, UserProfile.class);
 				break;
-			// case 1:
-			// buffer = AddSongToPlaylist(received);
-			// break;
+
 			}
 
 		}
-		this.userProfile = userProfile;
 		return userProfile;
 	}
-	
+
 	/**
 	 * Getter method for Playlists
+	 * 
 	 * @return playlists
 	 */
 	public List<Playlist> GetPlaylists() {
 		return this.userProfile.getPlaylists();
 	}
 
+	public boolean CreatePlaylist(String name) throws IOException {
+		Message requestMsg = new Message();
+		requestMsg.messageType = Packet.REQUEST;
+		requestMsg.requestID = Packet.REQUEST_ID_CREATEPLAYLIST;
+		requestMsg.objectID = userProfile.getUserID();
 
-	/**
-	 * Add song to playlist based on song information
-	 * @param playlistID - {int} ID of playlist to delete
-	 * @param songInfo - {SongInfo} song information
-	 * @return saveSuccessful
-	 * @throws IOException if input or output is invalid.
-	 */
-	public boolean AddToPlaylistBySongInfo(int playlistID, SongInfo songInfo) throws IOException {
-		boolean saveSuccessful = false;
-		
-		if (this.userProfile != null) {
-			
-			// Update new playlist
-			Playlist playlist = userProfile.getPlaylists().stream().filter(p -> p.getPlaylistID() == playlistID)
-					.findFirst().get();
-			List<SongInfo> songInfos = playlist.getSongInfos();
-			songInfos.add(songInfo);
-			playlist.setSongInfos(songInfos);
+		String requestString = new Gson().toJson(requestMsg);
+		byte[] requestBytes = requestString.getBytes();
 
-			// Update user profile
-			List<Playlist> playlists = userProfile.getPlaylists();
-			for (int i = 0; i < playlists.size(); i++) {
-				if (playlists.get(i).getPlaylistID() == playlist.getPlaylistID()) {
-					playlists.set(i, playlist);
-				}
-			}
-			this.userProfile.setPlaylists(playlists);
-			
-			// Get userprofile JSON
-			String userProfileJson = new Gson().toJson(userProfile);
+		// send request
+		InetAddress address = InetAddress.getByName(HOST);
+		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
+		socket.send(request);
 
-			// Write to byte array
-			byte[] messageType = ByteBuffer.allocate(4).putInt(REQUEST).array();
-			byte[] requestIdSend = ByteBuffer.allocate(4).putInt(REQUEST_ID_ADDSONGTOPLAYLIST).array();
-			byte[] fragment = userProfileJson.getBytes();
+		// get reply
+		byte[] buffer = new byte[1024 * 1000];
+		DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
+		socket.receive(reply);
 
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			baos.write(messageType);
-			baos.write(requestIdSend);
-			baos.write(fragment);
-			
-			// Send request
-			byte[] message = baos.toByteArray();
-			InetAddress address = InetAddress.getByName(HOST);
-			DatagramPacket request = new DatagramPacket(message, message.length, address, Net.PORT);
-			socket.send(request);
-			
-			// Receive reply 
-			byte[] buffer = new byte[1024 * 1000];
-			DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
-			socket.receive(reply);
-			
-			// Read reply
-			ByteBuffer wrapped = ByteBuffer.wrap(reply.getData(), 0, 4);
-			int messageTypeReceive = wrapped.getInt();
-			wrapped = ByteBuffer.wrap(reply.getData(), 4, 4);
-			int requestIdReceive = wrapped.getInt();
-			fragment = Arrays.copyOfRange(reply.getData(), 8, reply.getLength());
-
-			//System.out.println(messageTypeReceive);
-			
-			if (messageTypeReceive == REPLY) {
-				switch (requestIdReceive) {
-				
-				case REQUEST_ID_ADDSONGTOPLAYLIST:
-					String data = new String(fragment);
-					if (data.equals("1"))
-						saveSuccessful = true;
-					else
-						saveSuccessful = false;
-					break;
+		String replyString = new String(reply.getData(), 0, reply.getLength());
+		Message replyMsg = new Gson().fromJson(replyString, Message.class);
+		if (replyMsg.messageType == Packet.REPLY) {
+			switch (replyMsg.requestID) {
+			case Packet.REQUEST_ID_CREATEPLAYLIST:
+				byte[] data = replyMsg.fragment;
+				if (data == Packet.SUCCESS) {
+					return true;
 				}
 			}
 		}
-		return saveSuccessful;
+		return false;
+	}
+	
+	public boolean DeletePlaylist(int playlistID) throws IOException {
+		Message requestMsg = new Message();
+		requestMsg.messageType = Packet.REQUEST;
+		requestMsg.requestID = Packet.REQUEST_ID_DELETEPLAYLIST;
+		requestMsg.objectID = userProfile.getUserID();
+		byte [] playlist = ByteBuffer.allocate(4).putInt(playlistID).array();
+		requestMsg.fragment = playlist;
+		String requestString = new Gson().toJson(requestMsg);
+		byte[] requestBytes = requestString.getBytes();
+
+		// send request
+		InetAddress address = InetAddress.getByName(HOST);
+		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
+		socket.send(request);
+
+		// get reply
+		byte[] buffer = new byte[1024 * 1000];
+		DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
+		socket.receive(reply);
+
+		String replyString = new String(reply.getData(), 0, reply.getLength());
+		Message replyMsg = new Gson().fromJson(replyString, Message.class);
+		if (replyMsg.messageType == Packet.REPLY) {
+			switch (replyMsg.requestID) {
+			case Packet.REQUEST_ID_DELETEPLAYLIST:
+				byte[] data = replyMsg.fragment;
+				if (data == Packet.SUCCESS) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Add song to playlist based on song information
+	 * 
+	 * @param playlistID
+	 *                       - {int} ID of playlist to delete
+	 * @param songInfo
+	 *                       - {SongInfo} song information
+	 * @return saveSuccessful
+	 * @throws IOException
+	 *                         if input or output is invalid.
+	 */
+	public boolean AddSongToPlaylist (int playlistID, int songID) throws IOException {
+		// prepare message
+		Message requestMsg = new Message();
+		requestMsg.messageType = Packet.REQUEST;
+		requestMsg.requestID = Packet.REQUEST_ID_ADDSONGTOPLAYLIST;
+		requestMsg.objectID = userProfile.getUserID();
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		baos.write(playlistID);
+		baos.write(songID);
+		requestMsg.fragment = baos.toByteArray();
+		
+		// convert to json
+		String requestString = new Gson().toJson(requestMsg);
+		byte[] requestBytes = requestString.getBytes();
+
+		// send request
+		InetAddress address = InetAddress.getByName(HOST);
+		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
+		socket.send(request);
+
+		// get reply
+		byte[] buffer = new byte[1024 * 1000];
+		DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
+		socket.receive(reply);
+
+		String replyString = new String(reply.getData(), 0, reply.getLength());
+		Message replyMsg = new Gson().fromJson(replyString, Message.class);
+		if (replyMsg.messageType == Packet.REPLY) {
+			switch (replyMsg.requestID) {
+			case Packet.REQUEST_ID_ADDSONGTOPLAYLIST:
+				byte[] data = replyMsg.fragment;
+				if (data == Packet.SUCCESS) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Delete song to playlist based on song information
+	 * 
+	 * @param playlistID
+	 *                       - {int} ID of playlist to delete
+	 * @param songInfo
+	 *                       - {SongInfo} song information
+	 * @return saveSuccessful
+	 * @throws IOException
+	 *                         if input or output is invalid.
+	 */
+	public boolean DeleteSongFromPlaylist(int playlistID, int songID) throws IOException {
+		// prepare message
+		Message requestMsg = new Message();
+		requestMsg.messageType = Packet.REQUEST;
+		requestMsg.requestID = Packet.REQUEST_ID_DELETESONGFROMPLAYLIST;
+		requestMsg.objectID = userProfile.getUserID();
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		baos.write(playlistID);
+		baos.write(songID);
+		requestMsg.fragment = baos.toByteArray();
+		
+		// convert to json
+		String requestString = new Gson().toJson(requestMsg);
+		byte[] requestBytes = requestString.getBytes();
+
+		// send request
+		InetAddress address = InetAddress.getByName(HOST);
+		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
+		socket.send(request);
+
+		// get reply
+		byte[] buffer = new byte[1024 * 1000];
+		DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
+		socket.receive(reply);
+
+		String replyString = new String(reply.getData(), 0, reply.getLength());
+		Message replyMsg = new Gson().fromJson(replyString, Message.class);
+		if (replyMsg.messageType == Packet.REPLY) {
+			switch (replyMsg.requestID) {
+			case Packet.REQUEST_ID_DELETESONGFROMPLAYLIST:
+				byte[] data = replyMsg.fragment;
+				if (data == Packet.SUCCESS) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Telling whether a playist is empty or not
+	 * @return boolean
+	 */
+	public boolean IsPlaylistEmpty() {
+		return userProfile.getPlaylists().isEmpty();
 	}
 }

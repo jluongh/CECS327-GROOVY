@@ -85,11 +85,16 @@ public class UserProfileController {
 	}
 
 	public boolean CreatePlaylist(String name) throws IOException {
+		Playlist playlist = new Playlist();
+		playlist.setName(name);
+		String playlistString = new Gson().toJson(playlist);
+		
 		Message requestMsg = new Message();
 		requestMsg.messageType = Packet.REQUEST;
 		requestMsg.requestID = Packet.REQUEST_ID_CREATEPLAYLIST;
 		requestMsg.objectID = userProfile.getUserID();
-
+		requestMsg.fragment = playlistString.getBytes();
+		
 		String requestString = new Gson().toJson(requestMsg);
 		byte[] requestBytes = requestString.getBytes();
 

@@ -24,4 +24,7 @@ public class Packet {
 	// Uploading User Profile
 	public static final byte[] FAIL = {0};
 	public static final byte[] SUCCESS = {1};
+	
+	// Requests with Acknowledgement
+	public static final int[] RRA = { REQUEST_ID_ADDSONGTOPLAYLIST, REQUEST_ID_DELETESONGFROMPLAYLIST, REQUEST_ID_CREATEPLAYLIST, REQUEST_ID_DELETEPLAYLIST };
 }

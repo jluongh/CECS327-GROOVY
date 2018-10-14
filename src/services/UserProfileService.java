@@ -109,7 +109,9 @@ public class UserProfileService {
 	 *                 - {String} name of the playlist to create
 	 */
 	public UserProfile CreatePlaylist(String name) {
-		Playlist playlist = new Playlist(name);
+		
+		Playlist playlist = new Playlist();
+		playlist.setName(name);
 		// Get new playlist ID
 		int playlistID = GetLatestPlaylistID() + 1;
 

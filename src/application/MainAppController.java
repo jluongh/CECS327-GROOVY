@@ -114,21 +114,14 @@ public class MainAppController implements Initializable {
 	private TextField txtSearch;
 	@FXML
 	private Text txtResult;
+	
 
 	private boolean isSearch = false;
-
+	private int table = 0; //0 for playlist table, 1 for search table 
 	private boolean isPlaying = false;
 
-
-
-
-
 	private static User currentUser = MainController.getUser();
-//	private UserProfileController uc = new UserProfileController();
-//	private UserProfile up= uc.GetUserProfile(currentUser.getUserID());;
-//	private List<Playlist> playlist = pc.GetPlaylists();
 	private DatagramSocket socket;
-	
 	private UserProfileController upc ;
 	private UserProfile user;
 	private List<Playlist> playlist;
@@ -141,7 +134,7 @@ public class MainAppController implements Initializable {
 	private SongController sc = new SongController();
 
 	// Audio player
-	PlayerController player;
+	private PlayerController player;
 	api.audio.AudioPlayer ap = new api.audio.AudioPlayer();
 	private Searcher search = new Searcher();
 
@@ -180,36 +173,6 @@ public class MainAppController implements Initializable {
 
 		//display playlist name on sidebar
 		playlistName.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getName()));
-
-
-		//TODO: PLAYLIST BUTTON REMOVED, REPLACE WITH A DROPDOWN HAVING DELETE PLAYLIST
-
-		//When right clicked, get the playlist name, then display dropdown with delete option
-		//When user click delete, delete it.
-
-
-
-
-        //Insert Button
-//		delete.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
-//
-//            @Override
-//            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Disposer.Record, Boolean> p)
-//            {
-//                return new SimpleBooleanProperty(p.getValue() != null);
-//            }
-//
-//		});
-//		//display delete button
-//		delete.setCellFactory(new Callback<TableColumn<Disposer.Record, Boolean>, TableCell<Disposer.Record, Boolean>>() {
-//
-//            @Override
-//            public TableCell<Disposer.Record, Boolean> call(TableColumn<Disposer.Record, Boolean> p) {
-//                return new ButtonCelldeletePlaylist();
-//            }
-//
-//        });
-
 		playlistTable.setItems(playlists);
 	}
 
@@ -220,19 +183,24 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void clickItem(MouseEvent event)
 	{
+		table=0;
 		Playlist userChoose = playlistTable.getSelectionModel().getSelectedItem();
 		if (event.getButton()==MouseButton.SECONDARY)
 		{
 			MenuItem delete = new MenuItem("Delete");
 			ContextMenu contextMenu = new ContextMenu();
 	        contextMenu.getItems().addAll(delete);
-	        contextMenu.show(playlistTable,event.getX(),event.getY());
+	        contextMenu.show(playlistTable,event.getScreenX(),event.getScreenY());
 
 			delete.setOnAction(new EventHandler<ActionEvent>() {
 
 	            @Override
 	            public void handle(ActionEvent event) {
-//	            	pc.DeletePlaylist(userChoose.getPlaylistID());
+	            	try {
+						upc.DeletePlaylist(userChoose.getPlaylistID());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
                 	playlists.remove(userChoose);
                 	playlistTable.refresh();
 	            }
@@ -260,38 +228,16 @@ public class MainAppController implements Initializable {
 		        }
 	        	// _________________** this should work but its not **__________________
 
-	        	// txtResult.setText(userChoose.getName());
+	        	txtResult.setText(userChoose.getName());
 
 		        //display object to the table
 				col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
 //				col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
 //				col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
 				col4.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getAddedDate().toString()));
-//				col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>()
-//				{
-//
-//		            @Override
-//		            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Disposer.Record, Boolean> p)
-//		            {
-//		                return new SimpleBooleanProperty(p.getValue() != null);
-//		            }
-//
-//				});
-//				col5.setCellFactory(new Callback<TableColumn<Disposer.Record, Boolean>, TableCell<Disposer.Record, Boolean>>()
-//				{
-//
-//		            @Override
-//		            public TableCell<Disposer.Record, Boolean> call(TableColumn<Disposer.Record, Boolean> p)
-//		            {
-//		                return new ButtonCellPlaySong();
-//		            }
-//
-//		        });
 
 				Result.setItems(userSong);
 				Result.refresh();
-
-				//load playlist to the audio player
 
 	        }
 
@@ -305,6 +251,7 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void btnSongClick(MouseEvent event)
 	{
+		table=1;
 		search(txtSearch.getText(), "song");
 
 	}
@@ -317,6 +264,7 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void btnAlbumClick(MouseEvent event) throws IOException
 	{
+		table=1;
 		search(txtSearch.getText(), "album");
 	}
 
@@ -328,6 +276,7 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void btnArtistClick(MouseEvent event) throws IOException
 	{
+		table=1;
 		search(txtSearch.getText(), "artist");
 	}
 
@@ -339,12 +288,72 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void playTable(MouseEvent event) throws IOException
 	{
+		if (event.getButton()==MouseButton.SECONDARY)
+		{
+			if (table==1)
+			{
+				Song userChoose = (Song) Result.getSelectionModel().getSelectedItem();
+				MenuItem add = new MenuItem("Add");
+				ContextMenu contextMenu = new ContextMenu();
+		        contextMenu.getItems().addAll(add);
+		        contextMenu.show(playlistTable,event.getScreenX(),event.getScreenY());
+
+				add.setOnAction(new EventHandler<ActionEvent>() {
+
+		            @Override
+		            public void handle(ActionEvent event) {
+		            	ArrayList<String> dropDown = new ArrayList<String>();
+	                	if (playlist!=null && !playlist.isEmpty())
+	                	{
+	                		for(int i = 0; i<playlist.size();i++)
+	            			{
+	                    		dropDown.add(playlist.get(i).getName());
+	            			}
+	                		ChoiceDialog<String> dialog = new ChoiceDialog<>(dropDown.get(0), dropDown);
+	                    	dialog.setTitle("Playlist");
+	                    	dialog.setHeaderText("Select Playlist");
+	                    	dialog.setContentText("Please select the playlist you wish to add to");
+	                    	Optional<String> result = dialog.showAndWait();
+	                    	if (result.isPresent())
+	                    	{
+	                    		Date date = new Date();
+	        					SongInfo newSong = new SongInfo(userChoose, date);
+	        					for (int i = 0; i < playlist.size(); i++)
+	        					{
+	        						if (playlist.get(i).getName().equals(result.get()))
+	        						{
+	        							try {
+	        								upc.AddSongToPlaylist(playlist.get(i).getPlaylistID(), userChoose.getSongID());
+	        							} catch(IOException e) {
+	        								e.printStackTrace();
+	        							}
+	        						}
+	        					}
+	
+	                    	}
+	
+	                	}
+	                	else
+	                	{
+	                		Alert error = new Alert(Alert.AlertType.ERROR);
+	            			error.setTitle("No playlist");
+	            			error.setHeaderText("There is no playlist");
+	                        error.setContentText("Please create a new playlist before you add a song");
+	                        Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
+	                        error.showAndWait();
+	                	}
+		            }
+		        });
+			}
+		}
+		
 		if (event.getClickCount() == 2) //Checking double click
 	    {
 			if(isSearch== true)
 			{
 				Song userSong = (Song) Result.getSelectionModel().getSelectedItem();
 				int songId = userSong.getSongID();
+				
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
@@ -355,12 +364,12 @@ public class MainAppController implements Initializable {
 							player.playing = true;
 							player.playSong(songId);
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 
 					}
 				}).start();
+				
 //				ap.stop();
 //				ap.play(songId, false);
 //				songName.setText(userSong.getTitle());
@@ -438,31 +447,13 @@ public class MainAppController implements Initializable {
 		col2.setText("Artist");
 		col3.setText("Album");
 		col4.setText("Duration");
-		//col5.setText("Add");
+		
 		//display object to the table
 		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
 //		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
 //		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
 		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
 
-//		col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
-//
-//            @Override
-//            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Disposer.Record, Boolean> p)
-//            {
-//                return new SimpleBooleanProperty(p.getValue() != null);
-//            }
-//
-//		});
-//		//display delete button
-//		col5.setCellFactory(new Callback<TableColumn<Disposer.Record, Boolean>, TableCell<Disposer.Record, Boolean>>() {
-//
-//            @Override
-//            public TableCell<Disposer.Record, Boolean> call(TableColumn<Disposer.Record, Boolean> p) {
-//                return new ButtonCelladdSong();
-//            }
-//
-//        });
 
 		Result.setItems(songs);
 		Result.refresh();
@@ -487,35 +478,21 @@ public class MainAppController implements Initializable {
 				albumSong.add(album.get(i).getSongs().get(j));
 			}
 		}
-		col1.setText("Album");
-		col2.setText("Song");
-		col3.setText("Artist");
+		col1.setText("Song");
+		col2.setText("Artist");
+		col3.setText("Album");
+		
 		col4.setText("Duration");
-		//col5.setText("Add");
+
 		//display object to the table
-//		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
-//		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
+
+		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
+//		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
+//		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
+
 		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
 
-//		col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
-//
-//            @Override
-//            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Disposer.Record, Boolean> p)
-//            {
-//                return new SimpleBooleanProperty(p.getValue() != null);
-//            }
-//
-//		});
-//		//display delete button
-//		col5.setCellFactory(new Callback<TableColumn<Disposer.Record, Boolean>, TableCell<Disposer.Record, Boolean>>() {
-//
-//            @Override
-//            public TableCell<Disposer.Record, Boolean> call(TableColumn<Disposer.Record, Boolean> p) {
-//                return new ButtonCelladdSong();
-//            }
-//
-//        });
+
 		Result.setItems(albumSong);
 		Result.refresh();
 	}
@@ -542,35 +519,19 @@ public class MainAppController implements Initializable {
 				}
 			}
 		}
-		col1.setText("Artist");
 		col2.setText("Song");
+		col1.setText("Artist");
 		col3.setText("Album");
 		col4.setText("Duration");
-//		col5.setText("Add");
+
 		//display object to the table
-//		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-//		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
+		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
+//		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
 //		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
 //		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
+		
 		System.out.print(sc.FormatDuration(artist.get(0).getAlbums().get(0).getSongs().get(0).getDuration()));
-//		col5.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disposer.Record, Boolean>, ObservableValue<Boolean>>() {
-//
-//            @Override
-//            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Disposer.Record, Boolean> p)
-//            {
-//                return new SimpleBooleanProperty(p.getValue() != null);
-//            }
-//
-//		});
-//		//display delete button
-//		col5.setCellFactory(new Callback<TableColumn<Disposer.Record, Boolean>, TableCell<Disposer.Record, Boolean>>() {
-//
-//            @Override
-//            public TableCell<Disposer.Record, Boolean> call(TableColumn<Disposer.Record, Boolean> p) {
-//                return new ButtonCelladdSong();
-//            }
-//
-//        });
+
 		Result.setItems(artistSong);
 		Result.refresh();
 	}
@@ -584,7 +545,6 @@ public class MainAppController implements Initializable {
 		col2.setText("Artist");
 		col3.setText("Album");
 		col4.setText("DateAdded");
-	//	col5.setText("Play");
 	}
 
 	/**
@@ -611,14 +571,18 @@ public class MainAppController implements Initializable {
 		//create new playlist
 		if(result.isPresent())
 		{
-//			String playlistName = result.get();
-//			playlists.removeAll(playlists);
-//			pc.CreatePlaylist(playlistName);
-//			playlist=pc.GetPlaylists();
-//			for(int i = 0; i<playlist.size();i++)
-//			{
-//				playlists.add(playlist.get(i));
-//			}
+			String playlistName = result.get();
+			playlists.removeAll(playlists);
+			try {
+				upc.CreatePlaylist(playlistName);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			playlist=upc.GetPlaylists();
+			for(int i = 0; i<playlist.size();i++)
+			{
+				playlists.add(playlist.get(i));
+			}
 			playlistTable.refresh();
 		}
 	}
@@ -690,167 +654,6 @@ public class MainAppController implements Initializable {
 	{
 		//call the repeat function
 	}
-
-
-//	/**
-//	 * Event Listener on ImageView[#exit].onMouseClicked to delet the playlist
-//	 * Delete button constructor
-//	 */
-//	private class ButtonCelldeletePlaylist extends TableCell<Disposer.Record, Boolean> {
-//        Button cellButton = new Button("Delete");
-//
-//        ButtonCelldeletePlaylist()
-//        {
-//
-//        	//Action when the button is pressed
-//            cellButton.setOnAction(new EventHandler<ActionEvent>()
-//            {
-//                @Override
-//                public void handle(ActionEvent t)
-//                {
-//                    //TODO:handle delete action
-//                	Playlist currentPlaylist = (Playlist) ButtonCelldeletePlaylist.this.getTableView().getItems().get(ButtonCelldeletePlaylist.this.getIndex());
-//                	pc.DeletePlaylist(currentPlaylist.getPlaylistID());
-//                	playlists.remove(currentPlaylist);
-//                	playlistTable.refresh();
-//                }
-//            });
-//
-//        }
-//        //display the button when there is an object associate with it
-//        @Override
-//        protected void updateItem(Boolean t, boolean empty) {
-//            super.updateItem(t, empty);
-//            if(!empty){
-//                setGraphic(cellButton);
-//            }else {
-//        setText(null);
-//        setGraphic(null);
-//            }
-//        }
-//	}
-
-//	/**
-//	 * Play song button constructor
-//	 */
-//	private class ButtonCellPlaySong extends TableCell<Disposer.Record, Boolean> {
-//        Button cellButton = new Button("Play");
-//
-//        ButtonCellPlaySong()
-//        {
-//
-//        	//Action when the button is pressed
-//            cellButton.setOnAction(new EventHandler<ActionEvent>()
-//            {
-//                @Override
-//                public void handle(ActionEvent t)
-//                {
-//                	SongInfo currentsong = (SongInfo) ButtonCellPlaySong.this.getTableView().getItems().get(ButtonCellPlaySong.this.getIndex());
-//                	int currentSongId = currentsong.getSong().getSongID();
-//                	try {
-//                		if(!ap.soundMap.containsKey(currentSongId)) {
-//    						AudioInputStream stream = player.LoadSong(currentSongId);
-//    						ap.loadStream(currentSongId, stream);
-//                		}
-//					} catch (IOException e) {
-//						e.printStackTrace();
-//					}
-//    				ap.stop();
-//        			ap.play(currentSongId, false);
-//        			songName.setText(currentsong.getSong().getTitle());
-//        			String artist = atc.GetArtistBySongTitle(currentsong.getSong().getTitle()).getName();
-//        			artistName.setText(artist);
-//                }
-//            });
-//
-//        }
-//        //display the button when there is an object associate with it
-//        @Override
-//        protected void updateItem(Boolean t, boolean empty) {
-//            super.updateItem(t, empty);
-//            if(!empty){
-//                setGraphic(cellButton);
-//            }else {
-//        setText(null);
-//        setGraphic(null);
-//            }
-//        }
-//	}
-
-//	/**
-//	 * Add song button constructor
-//	 */
-//	private class ButtonCelladdSong extends TableCell<Disposer.Record, Boolean> {
-//        Button cellButton = new Button("Add");
-//
-//        ButtonCelladdSong()
-//        {
-//
-//        	//Action when the button is pressed
-//            cellButton.setOnAction(new EventHandler<ActionEvent>()
-//            {
-//                @Override
-//                public void handle(ActionEvent t)
-//                {
-//
-//                	Song currentSong = (Song) ButtonCelladdSong.this.getTableView().getItems().get(ButtonCelladdSong.this.getIndex());
-//                	ArrayList<String> dropDown = new ArrayList<String>();
-//                	if (playlist!=null && !playlist.isEmpty())
-//                	{
-//                		for(int i = 0; i<playlist.size();i++)
-//            			{
-//                    		dropDown.add(playlist.get(i).getName());
-//            			}
-//                		ChoiceDialog<String> dialog = new ChoiceDialog<>(dropDown.get(0), dropDown);
-//                    	dialog.setTitle("Playlist");
-//                    	dialog.setHeaderText("Select Playlist");
-//                    	dialog.setContentText("Please select the playlist you wish to add to");
-//                    	Optional<String> result = dialog.showAndWait();
-//                    	if (result.isPresent())
-//                    	{
-//                    		Date date = new Date();
-//        					SongInfo newSong = new SongInfo(currentSong, date);
-//        					for (int i = 0; i < playlist.size(); i++)
-//        					{
-//        						if (playlist.get(i).getName().equals(result.get()))
-//        						{
-//        							try {
-//        								upc.AddToPlaylistBySongInfo(playlist.get(i).getPlaylistID(), newSong);
-//        							} catch(IOException e) {
-//        								e.printStackTrace();
-//        							}
-//        						}
-//        					}
-//
-//                    	}
-//
-//                	}
-//                	else
-//                	{
-//                		Alert error = new Alert(Alert.AlertType.ERROR);
-//            			error.setTitle("No playlist");
-//            			error.setHeaderText("There is no playlist");
-//                        error.setContentText("Please create a new playlist before you add a song");
-//                        Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
-//                        error.showAndWait();
-//                	}
-//
-//                }
-//            });
-//        }
-//        //display the button when there is an object associate with it
-//        @Override
-//        protected void updateItem(Boolean t, boolean empty) {
-//            super.updateItem(t, empty);
-//            if(!empty){
-//                setGraphic(cellButton);
-//            }else {
-//        setText(null);
-//        setGraphic(null);
-//            }
-//        }
-//	}
-
 
 	/**
 	 * The volume slider is not working yet

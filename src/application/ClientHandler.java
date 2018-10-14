@@ -17,6 +17,7 @@ import data.models.Message;
 import data.models.Song;
 import data.models.UserProfile;
 import services.UserProfileService;
+import services.UserService;
 
 public class ClientHandler extends Thread {
 
@@ -53,6 +54,15 @@ public class ClientHandler extends Thread {
 				if (received != null) {
 					if (receivedMsg.messageType == Packet.REQUEST) {
 						switch (receivedMsg.requestID) {
+						case Packet.REQUEST_ID_GETUSER:
+							sendMsg = new Message();
+							sendMsg.messageType = Packet.REPLY;
+							sendMsg.requestID = Packet.REQUEST_ID_GETUSER;
+							String userString = new String(receivedMsg.fragment, 0, receivedMsg.fragment.length);
+							User user = new Gson().fromJson(userString, User.class);
+							sendMsg.fragment = GetUser(user.getUsername(), user.getPassword());
+							System.out.println("1: " + sendMsg.fragment);
+							break;
 						case Packet.REQUEST_ID_GETPROFILE:
 							sendMsg = new Message();
 							sendMsg.messageType = Packet.REPLY;
@@ -152,17 +162,16 @@ public class ClientHandler extends Thread {
 		}
 	}
 
-
-
-	private byte[] DeletePlaylist(int userID, int playlistId) {
-		UserProfileService ups = new UserProfileService(userID);
-		UserProfile userProfile = ups.DeletePlaylist(playlistId);
-		if (userProfile != null && ups.SaveUserProfile(userProfile)) {
-			return Packet.SUCCESS;
+	private byte[] GetUser(String username, String password) {
+		UserService us = new UserService();
+		User user = us.getUser(username, password);
+		if (user != null) {
+			String send = new Gson().toJson(user);
+			return send.getBytes();
+		} else {
+			return null;
 		}
-		else {
-			return Packet.FAIL;
-		}
+
 	}
 
 	/**
@@ -179,7 +188,6 @@ public class ClientHandler extends Thread {
 		UserProfileService ups = new UserProfileService(userID);
 		UserProfile userProfile = ups.GetUserProfile();
 		String send = new Gson().toJson(userProfile);
-
 		return send.getBytes();
 	}
 
@@ -188,8 +196,17 @@ public class ClientHandler extends Thread {
 		UserProfile userProfile = ups.CreatePlaylist(name);
 		if (userProfile != null && ups.SaveUserProfile(userProfile)) {
 			return Packet.SUCCESS;
+		} else {
+			return Packet.FAIL;
 		}
-		else {
+	}
+
+	private byte[] DeletePlaylist(int userID, int playlistId) {
+		UserProfileService ups = new UserProfileService(userID);
+		UserProfile userProfile = ups.DeletePlaylist(playlistId);
+		if (userProfile != null && ups.SaveUserProfile(userProfile)) {
+			return Packet.SUCCESS;
+		} else {
 			return Packet.FAIL;
 		}
 	}
@@ -207,8 +224,7 @@ public class ClientHandler extends Thread {
 		UserProfile userProfile = ups.AddSongToPlaylist(playlistID, songID);
 		if (userProfile != null && ups.SaveUserProfile(userProfile)) {
 			return Packet.SUCCESS;
-		}
-		else {
+		} else {
 			return Packet.FAIL;
 		}
 	}
@@ -218,7 +234,7 @@ public class ClientHandler extends Thread {
 	 * Returing the bytes
 	 * 
 	 * @param userID
-	 *                    - {int} Id of user
+	 *                   - {int} Id of user
 	 * @return data
 	 */
 	private byte[] DeleteSongFromPlaylist(int userID, int playlistID, int songID) {
@@ -226,11 +242,11 @@ public class ClientHandler extends Thread {
 		UserProfile userProfile = ups.DeleteSongFromPlaylist(playlistID, songID);
 		if (userProfile != null && ups.SaveUserProfile(userProfile)) {
 			return Packet.SUCCESS;
-		}
-		else {
+		} else {
 			return Packet.FAIL;
 		}
 	}
+
 	/**
 	 * Setting the path of the song file Creating a stream for the song by setting
 	 * the file size and bytes to play the song

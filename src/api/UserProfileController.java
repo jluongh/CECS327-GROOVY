@@ -18,8 +18,6 @@ import data.models.*;
 
 public class UserProfileController {
 
-	private static final String HOST = "localhost";
-
 	private UserProfile userProfile;
 	private DatagramSocket socket = null;
 
@@ -53,7 +51,7 @@ public class UserProfileController {
 		byte[] requestBytes = requestString.getBytes();
 
 		// send request
-		InetAddress address = InetAddress.getByName(HOST);
+		InetAddress address = InetAddress.getByName(Net.HOST);
 		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
 		socket.send(request);
 
@@ -96,7 +94,7 @@ public class UserProfileController {
 		byte[] requestBytes = requestString.getBytes();
 
 		// send request
-		InetAddress address = InetAddress.getByName(HOST);
+		InetAddress address = InetAddress.getByName(Net.HOST);
 		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
 		socket.send(request);
 
@@ -130,7 +128,7 @@ public class UserProfileController {
 		byte[] requestBytes = requestString.getBytes();
 
 		// send request
-		InetAddress address = InetAddress.getByName(HOST);
+		InetAddress address = InetAddress.getByName(Net.HOST);
 		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
 		socket.send(request);
 
@@ -180,7 +178,7 @@ public class UserProfileController {
 		byte[] requestBytes = requestString.getBytes();
 
 		// send request
-		InetAddress address = InetAddress.getByName(HOST);
+		InetAddress address = InetAddress.getByName(Net.HOST);
 		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
 		socket.send(request);
 
@@ -230,7 +228,7 @@ public class UserProfileController {
 		byte[] requestBytes = requestString.getBytes();
 
 		// send request
-		InetAddress address = InetAddress.getByName(HOST);
+		InetAddress address = InetAddress.getByName(Net.HOST);
 		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
 		socket.send(request);
 

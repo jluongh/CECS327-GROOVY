@@ -1,4 +1,4 @@
-package application;
+package api.server;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import data.constants.Packet;
 import data.models.*;
+import services.LogService;
 import services.SearchService;
 import data.models.Message;
 import data.models.Song;
@@ -95,11 +96,11 @@ public class ClientHandler extends Thread {
 							sendMsg.messageType = Packet.REPLY;
 							sendMsg.requestID = Packet.REQUEST_ID_CREATEPLAYLIST;
 							int userID = receivedMsg.objectID;
-							String playlistName = new String(receivedMsg.fragment, 0, receivedMsg.fragment.length);
-							byte[] fragment = CreatePlaylist(userID, playlistName);
+							String playlistString = new String(receivedMsg.fragment, 0, receivedMsg.fragment.length);
+							Playlist playlist = new Gson().fromJson(playlistString, Playlist.class);
+							byte[] fragment = CreatePlaylist(userID, playlist.getName());
 							sendMsg.fragment = fragment;
 							break;
-
 						case Packet.REQUEST_ID_DELETEPLAYLIST:
 							sendMsg = new Message();
 							sendMsg.messageType = Packet.REPLY;
@@ -153,6 +154,24 @@ public class ClientHandler extends Thread {
 
 							DatagramPacket packet = new DatagramPacket(send, send.length, address, port);
 							socket.send(packet);
+							
+							for(int i = 0; i < Packet.RRA.length; i++) {
+								if (sendMsg.requestID == Packet.RRA[i]) {
+									Log log = new Log();
+									log.setClientAddress(address);
+									log.setPort(port);
+									log.setRequestID(sendMsg.requestID);
+									if (sendMsg.fragment == Packet.SUCCESS) {
+										log.setSuccess(true);
+									}
+									else {
+										log.setSuccess(false);
+									}
+									LogService ls = new LogService();
+									ls.CreateLog(log);
+									break;
+								}
+							}
 						}
 					}
 				}

@@ -3,7 +3,7 @@ package data.models;
 import java.io.*;
 import java.util.*;
 
-public class Playlist implements Comparable, Serializable {
+public class Playlist implements Comparable<Object>, Serializable {
 	
 	//global variables
 	private int playlistID;
@@ -17,8 +17,7 @@ public class Playlist implements Comparable, Serializable {
 	 * Initializing the name of the playlist and date created 
 	 * @param name - name of the playlist 
 	 */
-	public Playlist(String name) {
-		this.name = name;
+	public Playlist() {
 //		this.songInfos = songInfos;
 //		this.songCount = songCount;
 //		this.totalDuration = totalDuration;

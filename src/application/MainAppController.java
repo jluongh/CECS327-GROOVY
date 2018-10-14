@@ -114,9 +114,10 @@ public class MainAppController implements Initializable {
 	private TextField txtSearch;
 	@FXML
 	private Text txtResult;
+	
 
 	private boolean isSearch = false;
-
+	private int table = 0; //0 for playlist table, 1 for search table 
 	private boolean isPlaying = false;
 
 	private static User currentUser = MainController.getUser();
@@ -182,13 +183,14 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void clickItem(MouseEvent event)
 	{
+		table=0;
 		Playlist userChoose = playlistTable.getSelectionModel().getSelectedItem();
 		if (event.getButton()==MouseButton.SECONDARY)
 		{
 			MenuItem delete = new MenuItem("Delete");
 			ContextMenu contextMenu = new ContextMenu();
 	        contextMenu.getItems().addAll(delete);
-	        contextMenu.show(playlistTable,event.getX(),event.getY());
+	        contextMenu.show(playlistTable,event.getScreenX(),event.getScreenY());
 
 			delete.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -249,6 +251,7 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void btnSongClick(MouseEvent event)
 	{
+		table=1;
 		search(txtSearch.getText(), "song");
 
 	}
@@ -261,6 +264,7 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void btnAlbumClick(MouseEvent event) throws IOException
 	{
+		table=1;
 		search(txtSearch.getText(), "album");
 	}
 
@@ -272,6 +276,7 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void btnArtistClick(MouseEvent event) throws IOException
 	{
+		table=1;
 		search(txtSearch.getText(), "artist");
 	}
 
@@ -283,12 +288,72 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void playTable(MouseEvent event) throws IOException
 	{
+		if (event.getButton()==MouseButton.SECONDARY)
+		{
+			if (table==1)
+			{
+				Song userChoose = (Song) Result.getSelectionModel().getSelectedItem();
+				MenuItem add = new MenuItem("Add");
+				ContextMenu contextMenu = new ContextMenu();
+		        contextMenu.getItems().addAll(add);
+		        contextMenu.show(playlistTable,event.getScreenX(),event.getScreenY());
+
+				add.setOnAction(new EventHandler<ActionEvent>() {
+
+		            @Override
+		            public void handle(ActionEvent event) {
+		            	ArrayList<String> dropDown = new ArrayList<String>();
+	                	if (playlist!=null && !playlist.isEmpty())
+	                	{
+	                		for(int i = 0; i<playlist.size();i++)
+	            			{
+	                    		dropDown.add(playlist.get(i).getName());
+	            			}
+	                		ChoiceDialog<String> dialog = new ChoiceDialog<>(dropDown.get(0), dropDown);
+	                    	dialog.setTitle("Playlist");
+	                    	dialog.setHeaderText("Select Playlist");
+	                    	dialog.setContentText("Please select the playlist you wish to add to");
+	                    	Optional<String> result = dialog.showAndWait();
+	                    	if (result.isPresent())
+	                    	{
+	                    		Date date = new Date();
+	        					SongInfo newSong = new SongInfo(userChoose, date);
+	        					for (int i = 0; i < playlist.size(); i++)
+	        					{
+	        						if (playlist.get(i).getName().equals(result.get()))
+	        						{
+	        							try {
+	        								upc.AddSongToPlaylist(playlist.get(i).getPlaylistID(), userChoose.getSongID());
+	        							} catch(IOException e) {
+	        								e.printStackTrace();
+	        							}
+	        						}
+	        					}
+	
+	                    	}
+	
+	                	}
+	                	else
+	                	{
+	                		Alert error = new Alert(Alert.AlertType.ERROR);
+	            			error.setTitle("No playlist");
+	            			error.setHeaderText("There is no playlist");
+	                        error.setContentText("Please create a new playlist before you add a song");
+	                        Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
+	                        error.showAndWait();
+	                	}
+		            }
+		        });
+			}
+		}
+		
 		if (event.getClickCount() == 2) //Checking double click
 	    {
 			if(isSearch== true)
 			{
 				Song userSong = (Song) Result.getSelectionModel().getSelectedItem();
 				int songId = userSong.getSongID();
+				
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
@@ -304,6 +369,7 @@ public class MainAppController implements Initializable {
 
 					}
 				}).start();
+				
 //				ap.stop();
 //				ap.play(songId, false);
 //				songName.setText(userSong.getTitle());
@@ -479,7 +545,6 @@ public class MainAppController implements Initializable {
 		col2.setText("Artist");
 		col3.setText("Album");
 		col4.setText("DateAdded");
-	//	col5.setText("Play");
 	}
 
 	/**

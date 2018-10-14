@@ -12,9 +12,9 @@ public class QueueController {
 	private Song current;
 	private Song previous;
 	private Song next;
-	private int random;
 	private Stack<Song> stack;
 	Random rand = new Random();
+	
 	
 	/**
 	 * Adds a song to the queue
@@ -53,11 +53,10 @@ public class QueueController {
 	 * Shuffle the songs in the queue
 	 * @param songQ - {SongQueue} the queue of songs
 	 */
-	public void shuffle(SongQueue songQ) {
-		random = rand.nextInt();
+	public void shuffle() {
 	    for (int i = 0; i < sq.getSongs().size(); i++) {
 	    	int change = i + rand.nextInt(sq.getSongs().size() - i);
-	        swap(songQ, i, change);
+	        swap(sq, i, change);
 	    }
 	}
 
@@ -83,5 +82,14 @@ public class QueueController {
 			current = sq.getSongs().get(0);
 		}
 		return current;
+	}
+	
+	/**
+	 * Remove songs from queue
+	 */
+	public void clear() {
+		if (!sq.getSongs().isEmpty()){
+			sq.getSongs().clear();
+		}
 	}
 }

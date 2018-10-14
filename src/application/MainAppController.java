@@ -41,6 +41,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -113,6 +114,8 @@ public class MainAppController implements Initializable {
 	@FXML
 	private TextField txtSearch;
 	@FXML
+	private ImageView btnPlayList;
+	@FXML
 	private Text txtResult;
 	
 
@@ -174,6 +177,10 @@ public class MainAppController implements Initializable {
 		//display playlist name on sidebar
 		playlistName.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getName()));
 		playlistTable.setItems(playlists);
+		
+		
+		//disable the playlist button 
+		btnPlayList.setVisible(false);
 	}
 
 	/**
@@ -183,10 +190,13 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void clickItem(MouseEvent event)
 	{
+		
 		table=0;
 		Playlist userChoose = playlistTable.getSelectionModel().getSelectedItem();
 		if (event.getButton()==MouseButton.SECONDARY)
 		{
+			
+			
 			MenuItem delete = new MenuItem("Delete");
 			ContextMenu contextMenu = new ContextMenu();
 	        contextMenu.getItems().addAll(delete);
@@ -210,6 +220,8 @@ public class MainAppController implements Initializable {
 		isSearch=false;
 	    if (event.getClickCount() == 2) //Checking double click
 	    {
+	    	// set the playlist btn to be visible
+	    	btnPlayList.setVisible(true);
 	    	setTabletoPlaylist();
 	    	for(int i = 0; i<Result.getItems().size();i++)
 			{
@@ -279,6 +291,36 @@ public class MainAppController implements Initializable {
 		table=1;
 		search(txtSearch.getText(), "artist");
 	}
+	
+	
+	// ____________________________________________________________ HERE ______________________________________________________________
+	
+
+
+	// when btn is clicked > image
+	Image pic1 = new Image("file:resources/if-close.png");
+	
+	// when btn is unclicked > img
+	Image pic2 = new Image("file:/resources/if-play.png");
+
+	boolean isPlayListClicked = false;
+	
+	@FXML
+	public void btnPlayListClicked(MouseEvent event)
+	{
+		if(isPlayListClicked == false) {
+			btnPlayList.setImage(pic2);
+			
+		}else if(isPlayListClicked == true) {
+			btnPlayList.setImage(pic1);
+			
+		}
+		
+	}
+	
+	
+	
+	
 
 	/**
 	 * When row in table isClicked
@@ -655,6 +697,8 @@ public class MainAppController implements Initializable {
 		//call the repeat function
 	}
 
+	
+	
 	/**
 	 * The volume slider is not working yet
 	 * @param event - {MouseEvent} the action

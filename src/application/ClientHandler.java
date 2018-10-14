@@ -9,16 +9,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import data.constants.Packet;
 import data.models.*;
 import services.SearchService;
-import data.models.FileEvent;
 import data.models.Message;
 import data.models.Song;
 import data.models.UserProfile;
 import services.UserProfileService;
+import services.UserService;
 
 public class ClientHandler extends Thread {
 
@@ -55,6 +54,15 @@ public class ClientHandler extends Thread {
 				if (received != null) {
 					if (receivedMsg.messageType == Packet.REQUEST) {
 						switch (receivedMsg.requestID) {
+						case Packet.REQUEST_ID_GETUSER:
+							sendMsg = new Message();
+							sendMsg.messageType = Packet.REPLY;
+							sendMsg.requestID = Packet.REQUEST_ID_GETUSER;
+							String userString = new String(receivedMsg.fragment, 0, receivedMsg.fragment.length);
+							User user = new Gson().fromJson(userString, User.class);
+							sendMsg.fragment = GetUser(user.getUsername(), user.getPassword());
+							System.out.println("1: " + sendMsg.fragment);
+							break;
 						case Packet.REQUEST_ID_GETPROFILE:
 							sendMsg = new Message();
 							sendMsg.messageType = Packet.REPLY;
@@ -81,158 +89,89 @@ public class ClientHandler extends Thread {
 							int end = start + Packet.BYTESIZE;
 							bytes = GetFileBytes(receivedMsg.objectID, start, end);
 							sendMsg.fragment = bytes;
-//							try {
-//								currentThread().sleep(2000);
-//							} catch (InterruptedException e) {
-//								// TODO Auto-generated catch block
-//								e.printStackTrace();
-//							}
 							break;
-//						case 3:
-//							buffer = DeleteSongFromPlaylist(received);
-//							break;
-//						case Packet.REQUEST_ID_SEARCHBYARTIST:
-//							buffer = SearchByArtist(new String(data));
-//							break;
-//						case Packet.REQUEST_ID_SEARCHBYALBUM:
-//							buffer = SearchByAlbum(new String(data));
-//							break;
-//						case Packet.REQUEST_ID_SEARCHBYSONG:
-//							buffer = SearchBySong(new String(data));
-//							break;
-//						case 6:
-//							buffer = CreatePlaylist(received);
-//							break;
-//						case 7:
-//							buffer = DeletePlaylist(received);
-//							break;
-//						case Packet.REQUEST_ID_GETSONG:
-//							buffer = 
-//						}
+						case Packet.REQUEST_ID_CREATEPLAYLIST:
+							sendMsg = new Message();
+							sendMsg.messageType = Packet.REPLY;
+							sendMsg.requestID = Packet.REQUEST_ID_CREATEPLAYLIST;
+							int userID = receivedMsg.objectID;
+							String playlistName = new String(receivedMsg.fragment, 0, receivedMsg.fragment.length);
+							byte[] fragment = CreatePlaylist(userID, playlistName);
+							sendMsg.fragment = fragment;
+							break;
 
-					}
+						case Packet.REQUEST_ID_DELETEPLAYLIST:
+							sendMsg = new Message();
+							sendMsg.messageType = Packet.REPLY;
+							sendMsg.requestID = Packet.REQUEST_ID_DELETEPLAYLIST;
+							userID = receivedMsg.objectID;
+							ByteBuffer wrapped = ByteBuffer.wrap(receivedMsg.fragment, 0, 4);
+							int playlistId = wrapped.getInt();
+							fragment = DeletePlaylist(userID, playlistId);
+							sendMsg.fragment = fragment;
+							break;
+						case Packet.REQUEST_ID_ADDSONGTOPLAYLIST:
+							sendMsg = new Message();
+							sendMsg.messageType = Packet.REPLY;
+							sendMsg.requestID = Packet.REQUEST_ID_ADDSONGTOPLAYLIST;
+							userID = receivedMsg.objectID;
+							ByteArrayInputStream bais = new ByteArrayInputStream(receivedMsg.fragment);
+							playlistId = bais.read();
+							int songId = bais.read();
+							fragment = AddSongToPlaylist(userID, playlistId, songId);
+							sendMsg.fragment = fragment;
+							break;
+						case Packet.REQUEST_ID_DELETESONGFROMPLAYLIST:
+							sendMsg = new Message();
+							sendMsg.messageType = Packet.REPLY;
+							sendMsg.requestID = Packet.REQUEST_ID_ADDSONGTOPLAYLIST;
+							userID = receivedMsg.objectID;
+							bais = new ByteArrayInputStream(receivedMsg.fragment);
+							playlistId = bais.read();
+							songId = bais.read();
+							fragment = DeleteSongFromPlaylist(userID, playlistId, songId);
+							sendMsg.fragment = fragment;
+							break;
+						// case Packet.REQUEST_ID_SEARCHBYARTIST:
+						// buffer = SearchByArtist(new String(data));
+						// break;
+						// case Packet.REQUEST_ID_SEARCHBYALBUM:
+						// buffer = SearchByAlbum(new String(data));
+						// break;
+						// case Packet.REQUEST_ID_SEARCHBYSONG:
+						// buffer = SearchBySong(new String(data));
+						// break;
 
-					if (sendMsg != null) {
-						InetAddress address = request.getAddress();
-						int port = request.getPort();
+						}
 
-						String sendMsgS = new Gson().toJson(sendMsg);
-						byte[] send = sendMsgS.getBytes();
+						if (sendMsg != null) {
+							InetAddress address = request.getAddress();
+							int port = request.getPort();
 
-						DatagramPacket packet = new DatagramPacket(send, send.length, address, port);
-						socket.send(packet);
-					}
-					// // read header
-					// // 0 = request, 1 = reply
-					// ByteBuffer wrapped = ByteBuffer.wrap(request.getData(), 0, 4);
-					// int messageTypeReceive = wrapped.getInt();
-					// wrapped = ByteBuffer.wrap(request.getData(), 4, 4);
-					// int requestIdReceive = wrapped.getInt();
-					// byte[] data = Arrays.copyOfRange(request.getData(), 8, request.getLength());
-					// if (messageTypeReceive == 0) {
-					// byte[] buffer = null;
-					//
-					// switch (requestIdReceive) {
-					// // Loading User Profile
-					//// case 0:
-					//// buffer = LoadUser(received);
-					//// break;
-					// case Packet.REQUEST_ID_GETPROFILE:
-					// requestId = Packet.REQUEST_ID_GETPROFILE;
-					// buffer = LoadUserProfile(new String(data));
-					// break;
-					// case Packet.REQUEST_ID_ADDSONGTOPLAYLIST:
-					// requestId = Packet.REQUEST_ID_ADDSONGTOPLAYLIST;
-					// buffer = AddSongToPlaylist(new String(data));
-					// break;
-					//// case 3:
-					//// buffer = DeleteSongFromPlaylist(received);
-					//// break;
-					// case Packet.REQUEST_ID_LOADSONG:
-					//
-					// requestId = Packet.REQUEST_ID_LOADSONG;
-					//
-					// buffer = LoadSong(new String(data));
-					// break;
-					//// case 5:
-					//// buffer = Search(received);
-					//// break;
-					//// case 6:
-					//// buffer = CreatePlaylist(received);
-					//// break;
-					//// case 7:
-					//// buffer = DeletePlaylist(received);
-					//// break;
-					// case Packet.REQUEST_ID_BYTECOUNT:
-					// requestId = Packet.REQUEST_ID_BYTECOUNT;
-					// byte[] bytes = LoadSong(new String(data));
-					// int count = bytes.length / Packet.BYTESIZE;
-					// buffer = ByteBuffer.allocate(4).putInt(count).array();
-					// }
-					//
-					// if (buffer != null) {
-					// InetAddress address = request.getAddress();
-					// int port = request.getPort();
-					//
-					// byte[] messageTypeSend = ByteBuffer.allocate(4).putInt(1).array();
-					// byte[] requestIdSend = ByteBuffer.allocate(4).putInt(requestId).array();
-					//
-					//
-					// if (buffer.length > sizeOfPacket) {
-					// // divide the data into chunks
-					// int packetcount = buffer.length / sizeOfPacket;
-					// int start = 0;
-					//
-					// for (int j = 1; j <= packetcount; j++) {
-					// int end = sizeOfPacket * j;
-					//
-					// byte[] offset = ByteBuffer.allocate(4).putInt(j).array();
-					// byte[] count = ByteBuffer.allocate(4).putInt(packetcount).array();
-					// byte[] fragment = Arrays.copyOfRange(buffer, start, end);
-					//
-					// ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					// baos.write(messageTypeSend);
-					// baos.write(requestIdSend);
-					// baos.write(offset);
-					// baos.write(count);
-					// baos.write(fragment);
-					//
-					// byte[] send = baos.toByteArray();
-					// System.out.println("Sending message with: " + j + "/" + packetcount );
-					// start = end;
-					//
-					// DatagramPacket packet = new DatagramPacket(send, send.length, address, port);
-					// socket.send(packet);
-					//
-					// if (j % 100 == 0) {
-					// Thread.sleep(1000);
-					// }
-					// }
-					// }
-					// else {
-					// ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					// baos.write(messageTypeSend);
-					// baos.write(requestIdSend);
-					// baos.write(buffer);
-					//
-					// byte[] send = baos.toByteArray();
-					//
-					// DatagramPacket reply = new DatagramPacket(send, send.length, address, port);
-					// socket.send(reply);
-					// }
-					// }
-					// }
-					// }
+							String sendMsgS = new Gson().toJson(sendMsg);
+							byte[] send = sendMsgS.getBytes();
+
+							DatagramPacket packet = new DatagramPacket(send, send.length, address, port);
+							socket.send(packet);
+						}
 					}
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			// } catch (IOException e) {
-			// System.out.println("Error: " + e.getMessage());
-			// }
 		}
+	}
+
+	private byte[] GetUser(String username, String password) {
+		UserService us = new UserService();
+		User user = us.getUser(username, password);
+		if (user != null) {
+			String send = new Gson().toJson(user);
+			return send.getBytes();
+		} else {
+			return null;
+		}
+
 	}
 
 	/**
@@ -245,12 +184,31 @@ public class ClientHandler extends Thread {
 	 * @throws IOException
 	 *                         if input or output is invalid.
 	 */
-	private byte[] GetUserProfile(int userId) {
-		UserProfileService ups = new UserProfileService();
-		UserProfile userProfile = ups.GetUserProfile(userId);
+	private byte[] GetUserProfile(int userID) {
+		UserProfileService ups = new UserProfileService(userID);
+		UserProfile userProfile = ups.GetUserProfile();
 		String send = new Gson().toJson(userProfile);
-
 		return send.getBytes();
+	}
+
+	private byte[] CreatePlaylist(int userID, String name) {
+		UserProfileService ups = new UserProfileService(userID);
+		UserProfile userProfile = ups.CreatePlaylist(name);
+		if (userProfile != null && ups.SaveUserProfile(userProfile)) {
+			return Packet.SUCCESS;
+		} else {
+			return Packet.FAIL;
+		}
+	}
+
+	private byte[] DeletePlaylist(int userID, int playlistId) {
+		UserProfileService ups = new UserProfileService(userID);
+		UserProfile userProfile = ups.DeletePlaylist(playlistId);
+		if (userProfile != null && ups.SaveUserProfile(userProfile)) {
+			return Packet.SUCCESS;
+		} else {
+			return Packet.FAIL;
+		}
 	}
 
 	/**
@@ -261,16 +219,32 @@ public class ClientHandler extends Thread {
 	 *                    - {String} the text to be serialized
 	 * @return data
 	 */
-	private byte[] AddSongToPlaylist(String request) {
-		UserProfileService ups = new UserProfileService();
-		Gson gson = new GsonBuilder().create();
-		UserProfile userProfile = gson.fromJson(request, UserProfile.class);
-		byte[] data = null;
+	private byte[] AddSongToPlaylist(int userID, int playlistID, int songID) {
+		UserProfileService ups = new UserProfileService(userID);
+		UserProfile userProfile = ups.AddSongToPlaylist(playlistID, songID);
 		if (userProfile != null && ups.SaveUserProfile(userProfile)) {
-			data = "1".getBytes();
-		} else
-			data = "0".getBytes();
-		return data;
+			return Packet.SUCCESS;
+		} else {
+			return Packet.FAIL;
+		}
+	}
+
+	/**
+	 * Add song to playlist Creating a userProfileService to be serialized in a json
+	 * Returing the bytes
+	 * 
+	 * @param userID
+	 *                   - {int} Id of user
+	 * @return data
+	 */
+	private byte[] DeleteSongFromPlaylist(int userID, int playlistID, int songID) {
+		UserProfileService ups = new UserProfileService(userID);
+		UserProfile userProfile = ups.DeleteSongFromPlaylist(playlistID, songID);
+		if (userProfile != null && ups.SaveUserProfile(userProfile)) {
+			return Packet.SUCCESS;
+		} else {
+			return Packet.FAIL;
+		}
 	}
 
 	/**
@@ -365,48 +339,5 @@ public class ClientHandler extends Thread {
 		String send = new Gson().toJson(songs, listType);
 
 		return send.getBytes();
-	}
-
-	/**
-	 * Setting the path of the song file Creating a stream for the song by setting
-	 * the file size and bytes to play the song
-	 * 
-	 * @param songID
-	 *                   - {int} unique identification for song
-	 * @return fileBytes
-	 */
-	public byte[] getFileEvent(int songID, int start, int end) {
-		FileEvent fileEvent = new FileEvent();
-
-		String fileName = songID + "";
-		String path = "music/" + fileName + ".wav";
-		fileEvent.setPath(path);
-		fileEvent.setfileName(fileName);
-		File file = new File(path);
-		if (file.isFile()) {
-			try {
-				DataInputStream diStream = new DataInputStream(new FileInputStream(file));
-				long len = (int) file.length();
-				byte[] fileBytes = new byte[(int) len];
-				int read = 0;
-				int numRead = 0;
-				while (read < fileBytes.length
-						&& (numRead = diStream.read(fileBytes, read, fileBytes.length - read)) >= 0) {
-					read = read + numRead;
-				}
-				fileEvent.setFileSize(len);
-				fileEvent.setFileData(fileBytes);
-
-				return Arrays.copyOfRange(fileBytes, start, end);
-
-			} catch (Exception e) {
-				e.printStackTrace();
-				fileEvent.setStatus("Error");
-			}
-		} else {
-			System.out.println("path specified is not pointing to a file");
-			fileEvent.setStatus("Error");
-		}
-		return null;
 	}
 }

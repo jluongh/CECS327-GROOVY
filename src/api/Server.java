@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.*;
 
 import application.ClientHandler;
-import data.constants.Net;
 
 public class Server {
 	

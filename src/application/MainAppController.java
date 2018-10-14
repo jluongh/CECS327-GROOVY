@@ -128,7 +128,6 @@ public class MainAppController implements Initializable {
 //	private UserProfile up= uc.GetUserProfile(currentUser.getUserID());;
 //	private List<Playlist> playlist = pc.GetPlaylists();
 	private DatagramSocket socket;
-//	private PlaylistController pc = new PlaylistController(currentUser.getUserID());
 	
 	private UserProfileController upc ;
 	private UserProfile user;

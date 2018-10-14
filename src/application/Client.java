@@ -24,10 +24,18 @@ public class Client {
 		socket.setReceiveBufferSize(60011 * 30 * 100);
 
 		
-		PlayerController pc = new PlayerController(socket);
-		pc.playSong(1);
-		System.out.println("Done");
+//		PlayerController pc = new PlayerController(socket);
+//		pc.playSong(1);
+//		System.out.println("Done");
 
+		UserController uc = new UserController(socket);
+		User user = uc.getUser("user23", "cecs327");
+		if (user != null) {
+			System.out.println(user.getUserID());
+		}
+		else {
+			System.out.println("Not Found");
+		}
 		socket.close();
 	}
 

@@ -48,6 +48,30 @@
       ],
       "songCount": 0,
       "creationDate": "Sep 15, 2018 9:27:25 PM"
+    },
+    {
+      "playlistID": 2,
+      "name": "test",
+      "songInfos": [
+        {
+          "song": {
+            "songID": 1,
+            "title": "Everybody Wants To Rule The World",
+            "duration": 4.13
+          },
+          "addedDate": "Oct 8, 2018 9:48:17 PM"
+        },
+        {
+          "song": {
+            "songID": 6,
+            "title": "Let\u0027s Groovy",
+            "duration": 3.55
+          },
+          "addedDate": "Oct 8, 2018 9:48:47 PM"
+        }
+      ],
+      "songCount": 0,
+      "creationDate": "Oct 8, 2018 9:48:04 PM"
     }
   ]
 }

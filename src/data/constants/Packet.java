@@ -7,18 +7,21 @@ public class Packet {
 	
 	// Request IDs
 	public static final int REQUEST_ID_GETUSER = 0;
-	public static final int REQUEST_ID_GETPROFILE = 1;
-	public static final int REQUEST_ID_ADDSONGTOPLAYLIST = 2;
-	public static final int REQUEST_ID_DELETESONGFROMPLAYLIST = 3;
-	public static final int REQUEST_ID_LOADSONG = 4;
+	public static final int REQUEST_ID_GETPROFILE = 1; // done
+	public static final int REQUEST_ID_ADDSONGTOPLAYLIST = 2; // done
+	public static final int REQUEST_ID_DELETESONGFROMPLAYLIST = 3; // done
+	public static final int REQUEST_ID_LOADSONG = 4; // done
 	public static final int REQUEST_ID_SEARCHBYARTIST = 5;
 	public static final int REQUEST_ID_SEARCHBYALBUM = 6;
 	public static final int REQUEST_ID_SEARCHBYSONG = 7;
-	public static final int REQUEST_ID_CREATEPLAYLIST = 8;
-	public static final int REQUEST_ID_DELETEPLAYLIST = 9;
-	public static final int REQUEST_ID_BYTECOUNT = 10;
-	public static final int REQUEST_ID_GETSONG = 11;
-	// BYTE SIZE
+	public static final int REQUEST_ID_CREATEPLAYLIST = 8; // done
+	public static final int REQUEST_ID_DELETEPLAYLIST = 9; // done
+	public static final int REQUEST_ID_BYTECOUNT = 10; // done
+
+	// Byte Size
 	public static final int BYTESIZE = 10000;
 
+	// Uploading User Profile
+	public static final byte[] FAIL = {0};
+	public static final byte[] SUCCESS = {1};
 }

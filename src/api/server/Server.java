@@ -1,9 +1,7 @@
-package api;
+package api.server;
 
 import java.io.IOException;
 import java.net.*;
-
-import application.ClientHandler;
 
 public class Server {
 	

@@ -99,9 +99,7 @@ public class MainController implements Initializable
             Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
             error.showAndWait();
 		}
-		//if the user enter the correct credential, transit into new stage: the main application
-		System.out.println(userID.getText());
-		
+		//if the user enter the correct credential, transit into new stage: the main application		
 		User user = uv.getUser(userID.getText(), password.getText());
 		if(user != null)
 		{

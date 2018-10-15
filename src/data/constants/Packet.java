@@ -4,6 +4,7 @@ public class Packet {
 	// Message Types
 	public static final int REQUEST = 0;
 	public static final int REPLY = 1;
+	public static final int ACKNOWLEDGEMENT = 2;
 	
 	// Request IDs
 	public static final int REQUEST_ID_GETUSER = 0;
@@ -22,8 +23,8 @@ public class Packet {
 	public static final int BYTESIZE = 10000;
 
 	// Uploading User Profile
-	public static final byte[] FAIL = {0};
-	public static final byte[] SUCCESS = {1};
+	public static final int FAIL = 0;
+	public static final int SUCCESS = 1;
 	
 	// Requests with Acknowledgement
 	public static final int[] RRA = { REQUEST_ID_ADDSONGTOPLAYLIST, REQUEST_ID_DELETESONGFROMPLAYLIST, REQUEST_ID_CREATEPLAYLIST, REQUEST_ID_DELETEPLAYLIST };

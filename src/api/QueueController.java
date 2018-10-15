@@ -14,8 +14,7 @@ public class QueueController {
 	private Song next;
 	private Stack<Song> stack;
 	Random rand = new Random();
-	
-	
+		
 	/**
 	 * Adds a song to the queue
 	 * @param songs - {Songs} list of song objects

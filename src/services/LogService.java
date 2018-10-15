@@ -36,9 +36,7 @@ public class LogService {
 		List<Log> logs = GetLogs();
 		if (logs == null) {
 			logs = new ArrayList<Log>();
-		}
-		
-		System.out.println(logs.size());
+		}		
 		logs.add(log);
 		SaveLogFile(logs);
 	}

@@ -24,11 +24,12 @@ public class PlayerController {
 	private DataLine.Info info;
 
 	public boolean playing;
-	public int pos;
-
+	public boolean repeat;
 	public int current;
 
 	private SongQueue sq;
+	Random rand = new Random();
+
 
 	public PlayerController(DatagramSocket socket) {
 		this.socket = socket;
@@ -42,7 +43,6 @@ public class PlayerController {
 		} catch (LineUnavailableException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public void loadSongs(List<Song> songs) {
@@ -55,7 +55,6 @@ public class PlayerController {
 			@Override
 			public void run() {
 				while (current < sq.getSongs().size()) {
-					System.out.println("Current: " + current);
 					Song song = sq.getSongs().get(current);
 					try {
 						playing = true;
@@ -63,6 +62,10 @@ public class PlayerController {
 						current++;						
 					} catch (IOException e) {
 						e.printStackTrace();
+					}
+					
+					if (repeat) {
+						current = 0;
 					}
 				}
 			}
@@ -154,8 +157,6 @@ public class PlayerController {
 	/**
 	 * Plays the next song
 	 * 
-	 * @return next
-	 * @throws IOException
 	 */
 	public void next() {
 		if (!playing) {
@@ -164,6 +165,10 @@ public class PlayerController {
 		reset();
 	}
 	
+	/**
+	 * Plays the previous song
+	 * 
+	 */
 	public void previous() {
 		if (playing) {
 			current-=2;
@@ -171,18 +176,62 @@ public class PlayerController {
 		reset();
 	}
 
+	/**
+	 * Resets dataline
+	 * 
+	 */
 	public void reset() {
 		playing = false;
 		sdl.stop();
 		sdl.flush();
 	}
 
+	/**
+	 * Pauses a song
+	 * 
+	 */
 	public void pause() {
 		playing = false;
 		sdl.stop();
 	}
 
+	/**
+	 * Resume song
+	 * 
+	 */
 	public void resume() {
 		sdl.start();
+	}
+	
+	/**
+	 * Shuffle the songs in the queue
+	 * @param songQ - {SongQueue} the queue of songs
+	 */
+	public void shuffle() {
+	    for (int i = 0; i < sq.getSongs().size(); i++) {
+	    	int change = i + rand.nextInt(sq.getSongs().size() - i);
+	        swap(sq, i, change);
+	    }
+	}
+	
+	/**
+	 * Swapping queue positions for two songs
+	 * @param songQ - {SongQueue} the queue of songs
+	 * @param i - {int} position of song 1 
+	 * @param change - {int} position of song 2 that was randomly selected
+	 */
+	public void swap(SongQueue songQ, int i, int change) {
+		Song song1 = songQ.getSongs().get(i);
+		Song song2 = songQ.getSongs().get(change);
+		songQ.getSongs().set(i, song2);
+		songQ.getSongs().set(change, song1);
+	}
+	
+	/**
+	 * Repeat the current song
+	 * @return current
+	 */
+	public void repeat(boolean flag) {
+		repeat = flag;
 	}
 }

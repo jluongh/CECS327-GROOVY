@@ -2,13 +2,21 @@ package application;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.SocketException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
+import api.PlayerController;
 import api.UserController;
+import api.UserProfileController;
 import data.models.User;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -19,7 +27,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.Node;
 
-public class MainController 
+public class MainController implements Initializable
 {
 	//global variables
 	@FXML
@@ -36,6 +44,28 @@ public class MainController
 	private Button btnEnter;
 	private static User currentUser;
 	
+	private DatagramSocket socket;
+
+	/**
+	 * Initializing server/client sockets
+	 * Initializing the display for the user based on the username
+	 * Displaying the user's playlist profile
+	 * Inserting buttons
+	 * @param arg0 - {URL} the first argument
+	 * @param arg1 - {ResourceBundle} the second argument
+	 */
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1)
+	{
+		try {
+			socket = new DatagramSocket();
+			socket.setSoTimeout(5000);
+			socket.setReceiveBufferSize(60011 * 30 * 100);
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Event Listener on Button[#btnEnter].onAction to handle opening of the application
 	 * Displaying the initial page for logging into profile
@@ -47,7 +77,7 @@ public class MainController
 	@FXML
 	public void handleButtonEnter(ActionEvent event) throws IOException 
 	{
-		UserController uv = new UserController();
+		UserController uv = new UserController(socket);
 		// if user enter nothing on the username, display error message 
 		if(!uv.isValid(userID.getText()))
 		{
@@ -69,10 +99,11 @@ public class MainController
             Stage errorStage = (Stage) error.getDialogPane().getScene().getWindow();
             error.showAndWait();
 		}
-		//if the user enter the correct credential, transit into new stage: the main application
-		else if(uv.isValidCredentials(userID.getText(), password.getText()))
+		//if the user enter the correct credential, transit into new stage: the main application		
+		User user = uv.getUser(userID.getText(), password.getText());
+		if(user != null)
 		{
-			currentUser = uv.getUser(userID.getText());
+			currentUser = user;
 			Parent Parent = FXMLLoader.load(getClass().getResource("MainApp.fxml"));
             Scene nextScene = new Scene(Parent);
             Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();

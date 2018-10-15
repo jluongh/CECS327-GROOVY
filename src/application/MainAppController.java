@@ -122,7 +122,7 @@ public class MainAppController implements Initializable {
 	private boolean isSearch = false;
 	private int table = 0; //0 for playlist table, 1 for search table 
 	private boolean isPlaying = false;
-
+	private Playlist currentPlaylist = null;
 	private static User currentUser = MainController.getUser();
 	private DatagramSocket socket;
 	private UserProfileController upc ;
@@ -190,13 +190,12 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void clickItem(MouseEvent event)
 	{
-		
 		table=0;
 		Playlist userChoose = playlistTable.getSelectionModel().getSelectedItem();
+		
+		//when user right click and try to delete a playlist
 		if (event.getButton()==MouseButton.SECONDARY)
 		{
-			
-			
 			MenuItem delete = new MenuItem("Delete");
 			ContextMenu contextMenu = new ContextMenu();
 	        contextMenu.getItems().addAll(delete);
@@ -211,7 +210,14 @@ public class MainAppController implements Initializable {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-                	playlists.remove(userChoose);
+	            	playlists.removeAll(playlists);
+	    			playlist=upc.GetPlaylists();
+	    			for(int i = 0; i<playlist.size();i++)
+	    			{
+	    				playlists.add(playlist.get(i));
+	    			}
+                	playlistName.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getName()));
+            		playlistTable.setItems(playlists);
                 	playlistTable.refresh();
 	            }
 	        });
@@ -223,39 +229,63 @@ public class MainAppController implements Initializable {
 	    	// set the playlist btn to be visible
 	    	btnPlayList.setVisible(true);
 	    	setTabletoPlaylist();
+	    	currentPlaylist = userChoose;
 	    	for(int i = 0; i<Result.getItems().size();i++)
 			{
 				Result.getItems().clear();
 			}
-
-	        List<Song> songPlay = new ArrayList<Song>();
-	        ArrayList<SongInfo> songin = (ArrayList<SongInfo>) userChoose.getSongInfos();
-	        if (songin!=null && !songin.isEmpty())
-	        {
-	        	for (int i = 0; i<userChoose.getSongInfos().size();i++)
-		        {
-		        	songPlay.add(userChoose.getSongInfos().get(i).getSong());
-		        	userSong.add(userChoose.getSongInfos().get(i));
-
-		        }
-	        	// _________________** this should work but its not **__________________
-
-	        	txtResult.setText(userChoose.getName());
-
-		        //display object to the table
-				col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
-//				col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
-//				col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
-				col4.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getAddedDate().toString()));
-
-				Result.setItems(userSong);
-				Result.refresh();
-
-	        }
-
+	    	
+	    	playlists.removeAll(playlists);
+			playlist=upc.GetPlaylists();
+			
+			for(int i = 0; i<playlist.size();i++)
+			{
+				playlists.add(playlist.get(i));
+			}
+			for(int j = 0; j<playlists.size(); j++)
+			{
+				if (playlists.get(j).getPlaylistID()==currentPlaylist.getPlaylistID())
+				{
+					updatePlayTable(playlists.get(j));
+				}
+			}
 	    }
 	}
 
+	/**
+	 * update the playlist table
+	 * @param userChoose the playlist user selected
+	 */
+	public void updatePlayTable(Playlist userChoose)
+	{
+		List<Song> songPlay = new ArrayList<Song>();
+		
+        ArrayList<SongInfo> songin = (ArrayList<SongInfo>) userChoose.getSongInfos();
+        userSong.removeAll(userSong);
+        
+        if (songin!=null && !songin.isEmpty())
+        {
+        	for (int i = 0; i<userChoose.getSongInfos().size();i++)
+	        {
+	        	songPlay.add(userChoose.getSongInfos().get(i).getSong());
+	        	userSong.add(userChoose.getSongInfos().get(i));
+
+	        }
+        	// _________________** this should work but its not **__________________
+
+        	txtResult.setText(userChoose.getName());
+
+	        //display object to the table
+			col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
+//			col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
+//			col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
+			col4.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getAddedDate().toString()));
+
+			Result.setItems(userSong);
+			Result.refresh();
+
+        }
+	}
 	/**
 	 * Search if song button is clicked then
 	 * @param event - {MouseEvent} the action
@@ -386,7 +416,6 @@ public class MainAppController implements Initializable {
 	        							}
 	        						}
 	        					}
-	
 	                    	}
 	
 	                	}
@@ -401,6 +430,43 @@ public class MainAppController implements Initializable {
 	                	}
 		            }
 		        });
+			}
+			else if(table==0) //playlist display in the center if clicked happens
+			{
+				SongInfo userChoose = (SongInfo) Result.getSelectionModel().getSelectedItem();
+				MenuItem delete = new MenuItem("Delete");
+				ContextMenu contextMenu = new ContextMenu();
+		        contextMenu.getItems().addAll(delete);
+		        contextMenu.show(playlistTable,event.getScreenX(),event.getScreenY());
+
+				delete.setOnAction(new EventHandler<ActionEvent>() {
+
+		            @Override
+		            public void handle(ActionEvent event) 
+		            {
+		            	try {
+							upc.DeleteSongFromPlaylist(currentPlaylist.getPlaylistID(), userChoose.getSong().getSongID());
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+		            	playlists.removeAll(playlists);
+		    			playlist=upc.GetPlaylists();
+		    			for(int i = 0; i<playlist.size();i++)
+		    			{
+		    				playlists.add(playlist.get(i));
+		    			}
+		    			for(int j = 0; j<playlists.size(); j++)
+		    			{
+		    				if (playlists.get(j).getPlaylistID()==currentPlaylist.getPlaylistID())
+		    				{
+		    					updatePlayTable(playlists.get(j));
+		    				}
+		    				
+		    			}
+		            	
+		            }
+		            
+		            });
 			}
 		}
 		
@@ -604,19 +670,22 @@ public class MainAppController implements Initializable {
 		if(result.isPresent())
 		{
 			String playlistName = result.get();
-			playlists.removeAll(playlists);
+			
 			try {
 				upc.CreatePlaylist(playlistName);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			playlists.removeAll(playlists);
 			playlist=upc.GetPlaylists();
 			for(int i = 0; i<playlist.size();i++)
 			{
 				playlists.add(playlist.get(i));
 			}
+			playlistTable.setItems(playlists);
 			playlistTable.refresh();
 		}
+		playlistTable.refresh();
 	}
 
 	/**

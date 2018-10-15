@@ -75,12 +75,21 @@ public class UserProfileController {
 		return userProfile;
 	}
 
+	public void RefreshUserProfile() {
+		try {
+			GetUserProfile(userProfile.getUserID());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * Getter method for Playlists
 	 * 
 	 * @return playlists
 	 */
 	public List<Playlist> GetPlaylists() {
+		RefreshUserProfile();
 		return this.userProfile.getPlaylists();
 	}
 
@@ -88,13 +97,13 @@ public class UserProfileController {
 		Playlist playlist = new Playlist();
 		playlist.setName(name);
 		String playlistString = new Gson().toJson(playlist);
-		
+
 		Message requestMsg = new Message();
 		requestMsg.messageType = Packet.REQUEST;
 		requestMsg.requestID = Packet.REQUEST_ID_CREATEPLAYLIST;
 		requestMsg.objectID = userProfile.getUserID();
 		requestMsg.fragment = playlistString.getBytes();
-		
+
 		String requestString = new Gson().toJson(requestMsg);
 		byte[] requestBytes = requestString.getBytes();
 
@@ -113,21 +122,32 @@ public class UserProfileController {
 		if (replyMsg.messageType == Packet.REPLY) {
 			switch (replyMsg.requestID) {
 			case Packet.REQUEST_ID_CREATEPLAYLIST:
-				byte[] data = replyMsg.fragment;
-				if (data == Packet.SUCCESS) {
-					return true;
-				}
+				byte[] logBytes = replyMsg.fragment;
+				String logString = new String(logBytes, 0, logBytes.length);
+				Log log = new Gson().fromJson(logString, Log.class);
+				
+				Message ackMsg = new Message();
+				ackMsg.messageType = Packet.ACKNOWLEDGEMENT;
+				ackMsg.objectID = log.logID;
+				
+				String ackString = new Gson().toJson(ackMsg);
+				byte[] ackBytes = ackString.getBytes();
+				
+				DatagramPacket acknowledgement = new DatagramPacket(ackBytes, ackBytes.length, address, Net.PORT);
+				socket.send(acknowledgement);
+				
+				return log.success;
 			}
 		}
 		return false;
 	}
-	
+
 	public boolean DeletePlaylist(int playlistID) throws IOException {
 		Message requestMsg = new Message();
 		requestMsg.messageType = Packet.REQUEST;
 		requestMsg.requestID = Packet.REQUEST_ID_DELETEPLAYLIST;
 		requestMsg.objectID = userProfile.getUserID();
-		byte [] playlist = ByteBuffer.allocate(4).putInt(playlistID).array();
+		byte[] playlist = ByteBuffer.allocate(4).putInt(playlistID).array();
 		requestMsg.fragment = playlist;
 		String requestString = new Gson().toJson(requestMsg);
 		byte[] requestBytes = requestString.getBytes();
@@ -147,10 +167,21 @@ public class UserProfileController {
 		if (replyMsg.messageType == Packet.REPLY) {
 			switch (replyMsg.requestID) {
 			case Packet.REQUEST_ID_DELETEPLAYLIST:
-				byte[] data = replyMsg.fragment;
-				if (data == Packet.SUCCESS) {
-					return true;
-				}
+				byte[] logBytes = replyMsg.fragment;
+				String logString = new String(logBytes, 0, logBytes.length);
+				Log log = new Gson().fromJson(logString, Log.class);
+				
+				Message ackMsg = new Message();
+				ackMsg.messageType = Packet.ACKNOWLEDGEMENT;
+				ackMsg.objectID = log.logID;
+				
+				String ackString = new Gson().toJson(ackMsg);
+				byte[] ackBytes = ackString.getBytes();
+								
+				DatagramPacket acknowledgement = new DatagramPacket(ackBytes, ackBytes.length, address, Net.PORT);
+				socket.send(acknowledgement);
+				
+				return log.success;
 			}
 		}
 		return false;
@@ -167,7 +198,7 @@ public class UserProfileController {
 	 * @throws IOException
 	 *                         if input or output is invalid.
 	 */
-	public boolean AddSongToPlaylist (int playlistID, int songID) throws IOException {
+	public boolean AddSongToPlaylist(int playlistID, int songID) throws IOException {
 		// prepare message
 		Message requestMsg = new Message();
 		requestMsg.messageType = Packet.REQUEST;
@@ -177,7 +208,7 @@ public class UserProfileController {
 		baos.write(playlistID);
 		baos.write(songID);
 		requestMsg.fragment = baos.toByteArray();
-		
+
 		// convert to json
 		String requestString = new Gson().toJson(requestMsg);
 		byte[] requestBytes = requestString.getBytes();
@@ -197,15 +228,26 @@ public class UserProfileController {
 		if (replyMsg.messageType == Packet.REPLY) {
 			switch (replyMsg.requestID) {
 			case Packet.REQUEST_ID_ADDSONGTOPLAYLIST:
-				byte[] data = replyMsg.fragment;
-				if (data == Packet.SUCCESS) {
-					return true;
-				}
+				byte[] logBytes = replyMsg.fragment;
+				String logString = new String(logBytes, 0, logBytes.length);
+				Log log = new Gson().fromJson(logString, Log.class);
+				
+				Message ackMsg = new Message();
+				ackMsg.messageType = Packet.ACKNOWLEDGEMENT;
+				ackMsg.objectID = log.logID;
+				
+				String ackString = new Gson().toJson(ackMsg);
+				byte[] ackBytes = ackString.getBytes();
+				
+				DatagramPacket acknowledgement = new DatagramPacket(ackBytes, ackBytes.length, address, Net.PORT);
+				socket.send(acknowledgement);
+				
+				return log.success;
 			}
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Delete song to playlist based on song information
 	 * 
@@ -227,7 +269,7 @@ public class UserProfileController {
 		baos.write(playlistID);
 		baos.write(songID);
 		requestMsg.fragment = baos.toByteArray();
-		
+
 		// convert to json
 		String requestString = new Gson().toJson(requestMsg);
 		byte[] requestBytes = requestString.getBytes();
@@ -247,17 +289,29 @@ public class UserProfileController {
 		if (replyMsg.messageType == Packet.REPLY) {
 			switch (replyMsg.requestID) {
 			case Packet.REQUEST_ID_DELETESONGFROMPLAYLIST:
-				byte[] data = replyMsg.fragment;
-				if (data == Packet.SUCCESS) {
-					return true;
-				}
+				byte[] logBytes = replyMsg.fragment;
+				String logString = new String(logBytes, 0, logBytes.length);
+				Log log = new Gson().fromJson(logString, Log.class);
+				
+				Message ackMsg = new Message();
+				ackMsg.messageType = Packet.ACKNOWLEDGEMENT;
+				ackMsg.objectID = log.logID;
+				
+				String ackString = new Gson().toJson(ackMsg);
+				byte[] ackBytes = ackString.getBytes();
+				
+				DatagramPacket acknowledgement = new DatagramPacket(ackBytes, ackBytes.length, address, Net.PORT);
+				socket.send(acknowledgement);
+				
+				return log.success;
 			}
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Telling whether a playist is empty or not
+	 * 
 	 * @return boolean
 	 */
 	public boolean IsPlaylistEmpty() {

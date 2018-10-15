@@ -22,7 +22,8 @@ public class PlayerController {
 	private SourceDataLine sdl;
 	private AudioFormat audioFormat;
 	private DataLine.Info info;
-
+	private FloatControl gainControl;
+;
 	public boolean playing;
 	public boolean repeat;
 	public int current;
@@ -38,8 +39,6 @@ public class PlayerController {
 		info = new DataLine.Info(SourceDataLine.class, audioFormat);
 		try {
 			sdl = (SourceDataLine) AudioSystem.getLine(info);
-			sdl.open();
-			sdl.start();
 		} catch (LineUnavailableException e) {
 			e.printStackTrace();
 		}
@@ -57,7 +56,7 @@ public class PlayerController {
 				while (current < sq.getSongs().size()) {
 					Song song = sq.getSongs().get(current);
 					try {
-						playing = true;
+						reset();
 						playSong(song.getSongID());
 						current++;						
 					} catch (IOException e) {
@@ -103,10 +102,11 @@ public class PlayerController {
 				int offset = 0;
 
 				try {
-					sdl = (SourceDataLine) AudioSystem.getLine(info);
-					sdl.open();
-					sdl.start();
-
+					if (!sdl.isOpen()) {
+						sdl.open();
+						sdl.start();
+					}
+					playing = true;
 					while (offset < count && playing) {
 						msg = new Message();
 						msg.messageType = Packet.REQUEST;
@@ -134,9 +134,20 @@ public class PlayerController {
 
 						int bytesRead;
 						try {
-							if (!sdl.isRunning() && sdl.available() > Packet.BYTESIZE) {
-								sdl.start();
+							if (sdl.isRunning()) {
+								System.out.println(sdl.available());
+								if (sdl.available() > 80000) {
+									sdl.stop();
+								}
 							}
+							else {
+								if (sdl.available() < 80000) {
+									sdl.start();
+									System.out.println("hello2");
+
+								}
+							}
+							
 							if ((bytesRead = audioStream.read(msg.fragment, 0, msg.fragment.length)) != -1) {
 								sdl.write(msg.fragment, 0, bytesRead);
 							}
@@ -233,5 +244,26 @@ public class PlayerController {
 	 */
 	public void repeat(boolean flag) {
 		repeat = flag;
+	}
+	
+	/**
+	 * Get the volume
+	 * @return gainControl
+	 */
+
+	public float getVolume() {
+	    gainControl = (FloatControl) sdl.getControl(FloatControl.Type.MASTER_GAIN);        
+	    return (float) Math.pow(10f, gainControl.getValue() / 20f);
+	}
+
+	/**
+	 * Changing the volume
+	 * @param volume - {float} the sound 
+	 */
+	public void setVolume(float volume) {
+	    if (volume < 0f || volume > 1f)
+	        throw new IllegalArgumentException("Volume not valid: " + volume);
+	    gainControl = (FloatControl) sdl.getControl(FloatControl.Type.MASTER_GAIN);        
+	    gainControl.setValue(20f * (float) Math.log10(volume));
 	}
 }

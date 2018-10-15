@@ -67,7 +67,7 @@ public class MainAppController implements Initializable {
 
 	//global variables
 	@FXML
-	private ListView playlistScreen;
+	private ListView<?> playlistScreen;
 	@FXML
 	private ImageView addPlaylist;
 	@FXML
@@ -339,8 +339,6 @@ public class MainAppController implements Initializable {
 	public void btnPlayListClicked(MouseEvent event)
 	{			
 		
-		System.out.println("Helloo: " + isPlayListClicked);
-
 		if(isPlayListClicked == false) {
 			btnPlayList.setImage(pic2);
 			
@@ -736,13 +734,9 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void muteIsClicked(MouseEvent event)
 	{
-		//player.setVolume(0);
+		player.setVolume(0);
 	}
 	// Event Listener on ImageView[#exit].onMouseClicked
-
-
-
-	// _____________**** Still not working ****_____________
 
 
 	@FXML
@@ -764,18 +758,14 @@ public class MainAppController implements Initializable {
 	 */
 	@FXML
 	public void onSliderChanged(MouseEvent event) {
+	    sldVolume.valueProperty().addListener(new ChangeListener<Object>() {
 
-//	    sldVolume.valueProperty().addListener(new ChangeListener() {
-//
-//            @Override
-//            public void changed(ObservableValue arg0, Object arg1, Object arg2) {
-//
-//            	float sliderValue = (float) sldVolume.getValue();
-//
-//            	player.setVolume(sliderValue);
-//                System.out.println("here: "+ sliderValue );
-//            }
-//        });
+            @Override
+            public void changed(ObservableValue<?> arg0, Object arg1, Object arg2) {
+            	float sliderValue = (float) sldVolume.getValue();
+            	player.setVolume(sliderValue);
+            }
+        });
 
 
 	}

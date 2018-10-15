@@ -102,8 +102,10 @@ public class PlayerController {
 				int offset = 0;
 
 				try {
-					sdl.open();
-					sdl.start();
+					if (!sdl.isOpen()) {
+						sdl.open();
+						sdl.start();
+					}
 					playing = true;
 					while (offset < count && playing) {
 						msg = new Message();
@@ -132,9 +134,20 @@ public class PlayerController {
 
 						int bytesRead;
 						try {
-							if (!sdl.isRunning() && sdl.available() > Packet.BYTESIZE) {
-								sdl.start();
+							if (sdl.isRunning()) {
+								System.out.println(sdl.available());
+								if (sdl.available() > 80000) {
+									sdl.stop();
+								}
 							}
+							else {
+								if (sdl.available() < 80000) {
+									sdl.start();
+									System.out.println("hello2");
+
+								}
+							}
+							
 							if ((bytesRead = audioStream.read(msg.fragment, 0, msg.fragment.length)) != -1) {
 								sdl.write(msg.fragment, 0, bytesRead);
 							}

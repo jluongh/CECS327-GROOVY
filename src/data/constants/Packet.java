@@ -22,10 +22,14 @@ public class Packet {
 	// Byte Size
 	public static final int BYTESIZE = 10000;
 
-	// Uploading User Profile
+	// CRUD Success
 	public static final int FAIL = 0;
 	public static final int SUCCESS = 1;
 	
 	// Requests with Acknowledgement
-	public static final int[] RRA = { REQUEST_ID_ADDSONGTOPLAYLIST, REQUEST_ID_DELETESONGFROMPLAYLIST, REQUEST_ID_CREATEPLAYLIST, REQUEST_ID_DELETEPLAYLIST };
+	public static final int[] RRA = { REQUEST_ID_ADDSONGTOPLAYLIST, 
+			REQUEST_ID_DELETESONGFROMPLAYLIST, 
+			REQUEST_ID_CREATEPLAYLIST, 
+			REQUEST_ID_DELETEPLAYLIST };
+	
 }

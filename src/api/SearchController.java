@@ -19,6 +19,12 @@ public class SearchController {
 		this.socket = socket;
 	}
 
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 * @throws IOException
+	 */
 	public List<Artist> SearchByArtist(String query) throws IOException {
 		
 		// get JSON
@@ -67,6 +73,12 @@ public class SearchController {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 * @throws IOException
+	 */
 	public List<Album> SearchByAlbum(String query) throws IOException {
 
 		// get JSON
@@ -74,7 +86,7 @@ public class SearchController {
 		
 		// construct message
 		byte[] messageType = ByteBuffer.allocate(4).putInt(Packet.REQUEST).array();
-		byte[] requestIdSend = ByteBuffer.allocate(4).putInt(Packet.REQUEST_ID_SEACRHBYARTIST).array();
+		byte[] requestIdSend = ByteBuffer.allocate(4).putInt(Packet.REQUEST_ID_SEACRHBYALBUM).array();
 		byte[] fragment = queryJson.getBytes();
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -103,9 +115,9 @@ public class SearchController {
 		if (messageTypeReceive == Packet.REPLY) {
 			switch (requestIdReceive) {
 			
-			case Packet.REQUEST_ID_SEACRHBYARTIST:
+			case Packet.REQUEST_ID_SEACRHBYALBUM:
 				String data = new String(fragment);
-				Type listType = new TypeToken<List<Artist>>() {}.getType();
+				Type listType = new TypeToken<List<Album>>() {}.getType();
 				List<Album> albums = new Gson().fromJson(data, listType);
 				
 				return albums;
@@ -115,15 +127,21 @@ public class SearchController {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 * @throws IOException
+	 */
 	public List<Song> SearchBySong(String query) throws IOException {
 
 		// get JSON
-		String queryJson = new Gson().toJson(query);
+		//String queryJson = new Gson().toJson(query);
 		
 		// construct message
 		byte[] messageType = ByteBuffer.allocate(4).putInt(Packet.REQUEST).array();
-		byte[] requestIdSend = ByteBuffer.allocate(4).putInt(Packet.REQUEST_ID_SEACRHBYARTIST).array();
-		byte[] fragment = queryJson.getBytes();
+		byte[] requestIdSend = ByteBuffer.allocate(4).putInt(Packet.REQUEST_ID_SEACRHBYSONG).array();
+		byte[] fragment = query.getBytes();
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		baos.write(messageType);
@@ -140,7 +158,7 @@ public class SearchController {
 		byte[] buffer = new byte[1024 * 1000];
 		DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
 		socket.receive(reply);
-					
+
 		// Read reply
 		ByteBuffer wrapped = ByteBuffer.wrap(reply.getData(), 0, 4);
 		int messageTypeReceive = wrapped.getInt();
@@ -148,12 +166,13 @@ public class SearchController {
 		int requestIdReceive = wrapped.getInt();
 		fragment = Arrays.copyOfRange(reply.getData(), 8, reply.getLength());
 		
+		
 		if (messageTypeReceive == Packet.REPLY) {
 			switch (requestIdReceive) {
 			
-			case Packet.REQUEST_ID_SEACRHBYARTIST:
+			case Packet.REQUEST_ID_SEACRHBYSONG:
 				String data = new String(fragment);
-				Type listType = new TypeToken<List<Artist>>() {}.getType();
+				Type listType = new TypeToken<List<Song>>() {}.getType();
 				List<Song> songs = new Gson().fromJson(data, listType);
 				
 				return songs;

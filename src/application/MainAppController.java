@@ -307,13 +307,28 @@ public class MainAppController implements Initializable {
 	
 	@FXML
 	public void btnPlayListClicked(MouseEvent event)
-	{
+	{			
+		
+		System.out.println("Helloo: " + isPlayListClicked);
+
 		if(isPlayListClicked == false) {
 			btnPlayList.setImage(pic2);
+			
+			// Should be List<Song>
+			Playlist playlist = upc.GetPlaylists().get(0);
+			List<Song> songs = new ArrayList<Song>();
+			
+			for (SongInfo info : playlist.getSongInfos()) {
+				songs.add(info.getSong());
+			}
+			player.loadSongs(songs);
+			player.playQueue();
+			
 			
 		}else if(isPlayListClicked == true) {
 			btnPlayList.setImage(pic1);
 			
+
 		}
 		
 	}
@@ -393,24 +408,11 @@ public class MainAppController implements Initializable {
 	    {
 			if(isSearch== true)
 			{
-				Song userSong = (Song) Result.getSelectionModel().getSelectedItem();
-				int songId = userSong.getSongID();
-				
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							if (player.playing) {
-								player.reset();
-							}
-							player.playing = true;
-							player.playSong(songId);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-
-					}
-				}).start();
+				Song song = (Song) Result.getSelectionModel().getSelectedItem();
+				List<Song> songs = new ArrayList <Song>();
+				songs.add(song);
+				player.loadSongs(songs);
+				player.playQueue();
 				
 //				ap.stop();
 //				ap.play(songId, false);
@@ -420,23 +422,11 @@ public class MainAppController implements Initializable {
 			}
 			else
 			{
-				SongInfo userSong = (SongInfo) Result.getSelectionModel().getSelectedItem();
-				int songId = userSong.getSong().getSongID();
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							if (player.playing) {
-								player.reset();
-							}
-							player.playing = true;
-							player.playSong(songId);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-
-					}
-				}).start();
+				SongInfo song = (SongInfo) Result.getSelectionModel().getSelectedItem();
+				List<Song> songs = new ArrayList <Song>();
+				songs.add(song.getSong());
+				player.loadSongs(songs);
+				player.playQueue();
 				//				ap.stop();
 //				ap.play(songId, false);
 //				songName.setText(userSong.getSong().getTitle());
@@ -636,6 +626,7 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void playMusicClicked(MouseEvent event)
 	{
+
 		player.resume();
 	}
 
@@ -646,7 +637,7 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void previousIsClicked(MouseEvent event)
 	{
-		//player.Previous();
+		player.previous();
 	}
 
 	/**
@@ -656,8 +647,7 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void nextIsClicked(MouseEvent event)
 	{
-		//player.Next();
-
+		player.next();
 	}
 
 	/**

@@ -190,7 +190,6 @@ public class ClientHandler extends Thread {
 		} else {
 			return null;
 		}
-
 	}
 
 	/**

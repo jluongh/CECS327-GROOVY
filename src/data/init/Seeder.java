@@ -39,11 +39,13 @@ public class Seeder {
 		users.add(user2);
 		
 		// Create user profiles
-		Playlist playlist1 = new Playlist("sample1");
+		Playlist playlist1 = new Playlist();
+		playlist1.setName("sample1");
 		playlist1.setPlaylistID(0);
 		playlist1.setSongCount(0);
 		
-		Playlist playlist2 = new Playlist("sample2");
+		Playlist playlist2 = new Playlist();
+		playlist2.setName("sample2");
 		playlist2.setPlaylistID(1);
 		playlist2.setSongCount(0);
 		

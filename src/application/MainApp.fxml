@@ -19,20 +19,19 @@
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#10252d" height="482.0" layoutY="76.0" stroke="BLACK" strokeType="INSIDE" width="269.0" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#213942" height="85.0" layoutX="-2.0" layoutY="-5.0" stroke="BLACK" strokeType="INSIDE" width="276.0" />
-            <Label layoutX="12.0" layoutY="91.0" prefHeight="35.0" prefWidth="107.0" text="Playlist:" textFill="WHITE" underline="true">
+            <Label layoutX="12.0" layoutY="91.0" prefHeight="35.0" prefWidth="107.0" text="Playlist:" textFill="WHITE">
                <font>
                   <Font name="Arial Bold" size="24.0" />
                </font>
             </Label>
             <ImageView fx:id="addPlaylist" fitHeight="26.0" fitWidth="27.0" layoutX="228.0" layoutY="100.0" onMouseClicked="#addPlaylistClicked" pickOnBounds="true">
                <image>
-                  <Image url="@resources%20v2/add-button.png" />
+                  <Image url="@resources/add-button.png" />
                </image>
             </ImageView>
             <TableView fx:id="playlistTable" layoutX="12.0" layoutY="130.0" onMouseClicked="#clickItem" prefHeight="422.0" prefWidth="246.0">
               <columns>
-                <TableColumn fx:id="delete" prefWidth="93.0" text="Delete" />
-                <TableColumn fx:id="playlistName" prefWidth="152.0" text="Playlist" />
+                <TableColumn fx:id="playlistName" prefWidth="245.0" text="Playlist" />
               </columns>
             </TableView>
             <ImageView fitHeight="67.0" fitWidth="58.0" layoutX="12.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
@@ -40,7 +39,7 @@
                   <Image url="@user-icon.png" />
                </image>
             </ImageView>
-            <Label fx:id="userNameText" layoutX="83.0" layoutY="26.0" prefHeight="35.0" prefWidth="165.0" text="Username" textFill="WHITE" underline="true">
+            <Label fx:id="userNameText" layoutX="83.0" layoutY="26.0" prefHeight="35.0" prefWidth="165.0" text="Username" textFill="WHITE">
                <font>
                   <Font name="Arial Black" size="18.0" />
                </font>
@@ -53,72 +52,76 @@
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#eaf2f5" height="76.0" layoutX="-269.0" stroke="BLACK" strokeType="INSIDE" width="965.0" />
             <ImageView fx:id="playMusic" fitHeight="26.0" fitWidth="27.0" layoutX="214.0" layoutY="18.0" onMouseClicked="#playMusicClicked" pickOnBounds="true">
                <image>
-                  <Image url="@resources%20v2/play-button.png" />
+                  <Image url="@resources/play-button.png" />
                </image>
             </ImageView>
             <ImageView fx:id="previousMusic" fitHeight="26.0" fitWidth="27.0" layoutX="172.0" layoutY="18.0" onMouseClicked="#previousIsClicked" pickOnBounds="true">
                <image>
-                  <Image url="@resources%20v2/back-button.png" />
+                  <Image url="@resources/back-button.png" />
                </image>
             </ImageView>
             <ImageView fx:id="nextMusic" fitHeight="26.0" fitWidth="27.0" layoutX="289.0" layoutY="18.0" onMouseClicked="#nextIsClicked" pickOnBounds="true">
                <image>
-                  <Image url="@resources%20v2/forward-button.png" />
+                  <Image url="@resources/forward-button.png" />
                </image>
             </ImageView>
             <ImageView fx:id="stopMusic" fitHeight="26.0" fitWidth="27.0" layoutX="249.0" layoutY="18.0" onMouseClicked="#musicStopClicked" pickOnBounds="true">
                <image>
-                  <Image url="@resources%20v2/pause-button.png" />
+                  <Image url="@resources/pause-button.png" />
                </image>
             </ImageView>
             <ImageView fx:id="Mute" fitHeight="26.0" fitWidth="27.0" layoutX="482.0" layoutY="25.0" onMouseClicked="#muteIsClicked" pickOnBounds="true">
                <image>
-                  <Image url="@resources%20v2/full-sound-button.png" />
+                  <Image url="@resources/full-sound-button.png" />
                </image>
             </ImageView>
             <ImageView fx:id="btnRepeat" fitHeight="20.0" fitWidth="20.0" layoutX="328.0" layoutY="21.0" onMouseClicked="#repeatClicked" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@resources%20v2/repeat.png" />
+                  <Image url="@resources/repeat.png" />
                </image>
             </ImageView>
             <Slider layoutX="520.0" layoutY="31.0" prefHeight="14.0" prefWidth="119.0" value="100.0" />
-            <Text fx:id="songName" layoutX="-261.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Song Name" wrappingWidth="246.00000163912773">
+            <Text fx:id="songName" layoutX="-261.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="246.00000163912773">
                <font>
-                  <Font name="Arial Bold" size="14.0" />
+                  <Font name="Arial Bold" size="18.0" />
                </font>
             </Text>
-            <Text fx:id="artistName" layoutX="-261.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Artist Name">
+            <Text fx:id="artistName" layoutX="-261.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0">
                <font>
-                  <Font size="15.0" />
+                  <Font name="Arial" size="13.0" />
                </font>
             </Text>
-            <Label layoutX="-263.0" layoutY="-1.0" prefHeight="24.0" prefWidth="149.0" text="CURRENTLY PLAYING:" textFill="#6f6f6f">
+            <Label layoutX="-263.0" layoutY="-1.0" prefHeight="24.0" prefWidth="149.0" text="CURRENTLY PLAYING:" textFill="#aeaeae">
                <font>
-                  <Font name="System Bold" size="13.0" />
+                  <Font name="Arial Bold" size="12.0" />
                </font>
             </Label>
             <ImageView fx:id="btnShuffle" fitHeight="20.0" fitWidth="24.0" layoutX="138.0" layoutY="21.0" onMouseClicked="#shuffleClicked" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@resources%20v2/1082440.png" />
+                  <Image url="@resources/1082440.png" />
                </image>
             </ImageView>
          </children>
       </AnchorPane>
       <AnchorPane layoutX="269.0" layoutY="85.0" prefHeight="473.0" prefWidth="696.0">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="558.0" layoutY="-85.0" stroke="BLACK" strokeType="INSIDE" width="696.0" />
-            <Label layoutX="14.0" prefHeight="48.0" prefWidth="107.0" text="Result:" textFill="#223a44" underline="true">
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="559.0" layoutY="-85.0" stroke="BLACK" strokeType="INSIDE" width="696.0" />
+            <ImageView fx:id="btnPlayList" fitHeight="47.0" fitWidth="66.0" layoutX="570.0" layoutY="1.0" onMouseClicked="#btnPlayListClicked" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@resources/if-play.png" />
+               </image>
+            </ImageView>
+            <Text fx:id="txtResult" fill="#223a44" layoutX="22.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Result:" wrappingWidth="142.00001707673073">
                <font>
-                  <Font name="Arial Bold" size="28.0" />
+                  <Font name="Arial" size="28.0" />
                </font>
-            </Label>
+            </Text>
             <TableView fx:id="Result" layoutX="22.0" layoutY="50.0" onMouseClicked="#playTable" prefHeight="397.0" prefWidth="653.0">
               <columns>
-                <TableColumn fx:id="col1" prefWidth="119.0" text="C1" />
-                <TableColumn fx:id="col2" prefWidth="130.0" text="C2" />
-                  <TableColumn fx:id="col3" prefWidth="134.0" text="C3" />
-                  <TableColumn fx:id="col4" prefWidth="122.0" text="C4" />
-                  <TableColumn fx:id="col5" prefWidth="147.0" text="C5" />
+                <TableColumn fx:id="col1" prefWidth="159.0" text="C1" />
+                <TableColumn fx:id="col2" prefWidth="158.0" text="C2" />
+                  <TableColumn fx:id="col3" prefWidth="170.0" text="C3" />
+                  <TableColumn fx:id="col4" prefWidth="165.0" text="C4" />
               </columns>
             </TableView>
          </children>
@@ -127,17 +130,17 @@
          <children>
             <ImageView fx:id="btnArtist" fitHeight="29.0" fitWidth="35.0" layoutX="630.0" layoutY="44.0" onMouseClicked="#btnArtistClick" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@resources%20v2/artist-button.png" />
+                  <Image url="@resources/artist-button.png" />
                </image>
             </ImageView>
             <ImageView fx:id="btnSong" fitHeight="29.0" fitWidth="24.0" layoutX="567.0" layoutY="47.0" onMouseClicked="#btnSongClick" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@resources%20v2/song-button.png" />
+                  <Image url="@resources/song-button.png" />
                </image>
             </ImageView>
             <ImageView fx:id="btnAlbum" fitHeight="40.0" fitWidth="24.0" layoutX="497.0" layoutY="47.0" onMouseClicked="#btnAlbumClick" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@resources%20v2/playlist-button.png" />
+                  <Image url="@resources/playlist-button.png" />
                </image>
             </ImageView>
             <TextField fx:id="txtSearch" layoutX="495.0" layoutY="12.0" promptText="search..." />

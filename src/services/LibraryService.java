@@ -417,6 +417,50 @@ public class LibraryService {
 			return Collections.emptyList();
 		}
 	}
+	
+	/**
+	 * Getter for specific album's song	
+	 * @param songName - {String} Name of the song being searched for 
+	 * @return song
+	 */
+	public Song getSong(int songID) {
+		Song foundSong = null;
+		// Create file object from library
+		File file = new File(fPath);
+
+		String json = "";
+
+		// Read each character token in file
+		try (FileInputStream in = new FileInputStream(file)) {
+			int w;
+			while ((w = in.read()) != -1) {
+				json = json + (char) w;
+			}
+
+			// Identify token type for deserialization
+			Gson gson = new Gson();
+			List<Artist> artists = gson.fromJson(json, new TypeToken<List<Artist>>() {}.getType());
+			
+			// Get album's song
+			for (Artist artist : artists) {
+				for(Album album : artist.getAlbums()) {
+					for(Song song : album.getSongs()) {
+						if (song.getSongID() == (songID)) {
+							foundSong = song;
+							break;
+						}
+						else {
+							System.out.println("Song does not exist");
+						}
+					}
+				}
+
+			}
+		} catch(Exception e) {
+			System.out.print(e);
+		}
+		return foundSong;
+	}
 
 	/**
 	 * Getter for specific album's song	

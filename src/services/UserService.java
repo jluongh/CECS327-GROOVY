@@ -37,6 +37,20 @@ public class UserService {
 	}
 	
 	/**
+	 * Get user with password
+	 * @param username - {String} name of profile user
+	 * @return User
+	 */
+	public User getUser(String username, String password) {
+		List<User> UserList = getUsers();
+		try {
+			return UserList.stream().filter(u -> u.getUsername().equals(username) && u.getPassword().equals(password)).findFirst().get();
+		} catch (NoSuchElementException e) {
+			return null;
+		}
+	}
+	
+	/**
 	 * Get all users
 	 * @return Userlist
 	 */

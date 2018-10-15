@@ -66,7 +66,6 @@ public class ClientHandler extends Thread {
 							String userString = new String(receivedMsg.fragment, 0, receivedMsg.fragment.length);
 							User user = new Gson().fromJson(userString, User.class);
 							sendMsg.fragment = GetUser(user.getUsername(), user.getPassword());
-							System.out.println("1: " + sendMsg.fragment);
 							break;
 						case Packet.REQUEST_ID_GETPROFILE:
 							sendMsg = new Message();

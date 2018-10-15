@@ -48,16 +48,18 @@ public class ClientHandler extends Thread {
 			DatagramPacket request = new DatagramPacket(message, message.length);
 			try {
 				socket.receive(request);
-
+				
 				// display request
 				String received = new String(request.getData(), 0, request.getLength());
 				Message receivedMsg = new Gson().fromJson(received, Message.class);
 				Message sendMsg = null;
+				
 				if (received != null) {
 					if (receivedMsg.messageType == Packet.REQUEST) {
 						Log log = new Log();
 						log.setClientAddress(request.getAddress());
 						log.setPort(request.getPort());
+						
 						switch (receivedMsg.requestID) {
 						case Packet.REQUEST_ID_GETUSER:
 							sendMsg = new Message();
@@ -137,7 +139,7 @@ public class ClientHandler extends Thread {
 						case Packet.REQUEST_ID_DELETESONGFROMPLAYLIST:
 							sendMsg = new Message();
 							sendMsg.messageType = Packet.REPLY;
-							sendMsg.requestID = Packet.REQUEST_ID_ADDSONGTOPLAYLIST;
+							sendMsg.requestID = Packet.REQUEST_ID_DELETESONGFROMPLAYLIST;
 							userID = receivedMsg.objectID;
 							bais = new ByteArrayInputStream(receivedMsg.fragment);
 							playlistId = bais.read();
@@ -149,16 +151,28 @@ public class ClientHandler extends Thread {
 							fragment = CreateLog(log);
 							sendMsg.fragment = fragment;
 							break;
-						// case Packet.REQUEST_ID_SEARCHBYARTIST:
-						// buffer = SearchByArtist(new String(data));
-						// break;
-						// case Packet.REQUEST_ID_SEARCHBYALBUM:
-						// buffer = SearchByAlbum(new String(data));
-						// break;
-						// case Packet.REQUEST_ID_SEARCHBYSONG:
-						// buffer = SearchBySong(new String(data));
-						// break;
-
+						case Packet.REQUEST_ID_SEARCHBYARTIST:
+							sendMsg = new Message();
+							sendMsg.messageType = Packet.REPLY;
+							sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYARTIST;
+							userID = receivedMsg.objectID;
+							sendMsg.fragment = SearchByArtist(new String(receivedMsg.fragment));
+							break;
+						case Packet.REQUEST_ID_SEARCHBYALBUM:
+							sendMsg = new Message();
+							sendMsg.messageType = Packet.REPLY;
+							sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYALBUM;
+							userID = receivedMsg.objectID;
+							sendMsg.fragment = SearchByAlbum(new String(receivedMsg.fragment));
+							break;
+						case Packet.REQUEST_ID_SEARCHBYSONG:
+							sendMsg = new Message();
+							sendMsg.messageType = Packet.REPLY;
+							sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYSONG;
+							userID = receivedMsg.objectID; 
+							System.out.println(new String(receivedMsg.fragment));
+							sendMsg.fragment = SearchBySong(new String(receivedMsg.fragment));
+							break;
 						}
 
 						if (sendMsg != null) {

@@ -54,6 +54,8 @@ public class ClientHandler extends Thread {
 					wrapped = ByteBuffer.wrap(request.getData(), 4, 4);
 					int requestIdReceive = wrapped.getInt();
 					byte[] data = Arrays.copyOfRange(request.getData(), 8, request.getLength());
+				
+					
 					if (messageTypeReceive == 0) {
 						byte[] buffer = null;
 
@@ -78,12 +80,15 @@ public class ClientHandler extends Thread {
 							buffer = LoadSong(new String(data));
 							  break;
 						case Packet.REQUEST_ID_SEACRHBYARTIST:
+							requestId = Packet.REQUEST_ID_SEACRHBYARTIST;
 							buffer = SearchByArtist(new String(data));
 							break;
 						case Packet.REQUEST_ID_SEACRHBYALBUM:
+							requestId = Packet.REQUEST_ID_SEACRHBYALBUM;
 							buffer = SearchByAlbum(new String(data));
 							break;
 						case Packet.REQUEST_ID_SEACRHBYSONG:
+							requestId = Packet.REQUEST_ID_SEACRHBYSONG;
 							buffer = SearchBySong(new String(data));
 							break;
 //						case 6:

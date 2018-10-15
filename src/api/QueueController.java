@@ -21,8 +21,7 @@ public class QueueController {
 	 * @param songs - {Songs} list of song objects
 	 * @param song - {Song} song object
 	 */
-	public void loadSongs(List <Song> songs, Song song) {
-		songs.add(song);
+	public void loadSongs(List <Song> songs) {
 		sq.setSongs(songs);
 	}
 	
@@ -30,12 +29,11 @@ public class QueueController {
 	 * Plays the next song
 	 * @return next
 	 */
-	public Song next() {
+	public void next() {
 		if (!sq.getSongs().isEmpty() && sq.getSongs().listIterator().hasNext()){
 			next = sq.getSongs().remove(0);
 			stack.push(next);
 		}
-		return next;
 	}
 	
 	/**

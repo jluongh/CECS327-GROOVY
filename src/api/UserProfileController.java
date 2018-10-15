@@ -75,12 +75,21 @@ public class UserProfileController {
 		return userProfile;
 	}
 
+	public void RefreshUserProfile() {
+		try {
+			GetUserProfile(userProfile.getUserID());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * Getter method for Playlists
 	 * 
 	 * @return playlists
 	 */
 	public List<Playlist> GetPlaylists() {
+		RefreshUserProfile();
 		return this.userProfile.getPlaylists();
 	}
 

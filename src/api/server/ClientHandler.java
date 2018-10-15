@@ -23,7 +23,8 @@ import services.UserService;
 public class ClientHandler extends Thread {
 
 	// global variables
-	final DatagramSocket socket;
+	final private DatagramSocket socket;
+	final private LogService ls = new LogService();
 
 	/**
 	 * Setter for socket for ClientHandler
@@ -54,6 +55,9 @@ public class ClientHandler extends Thread {
 				Message sendMsg = null;
 				if (received != null) {
 					if (receivedMsg.messageType == Packet.REQUEST) {
+						Log log = new Log();
+						log.setClientAddress(request.getAddress());
+						log.setPort(request.getPort());
 						switch (receivedMsg.requestID) {
 						case Packet.REQUEST_ID_GETUSER:
 							sendMsg = new Message();
@@ -98,7 +102,10 @@ public class ClientHandler extends Thread {
 							int userID = receivedMsg.objectID;
 							String playlistString = new String(receivedMsg.fragment, 0, receivedMsg.fragment.length);
 							Playlist playlist = new Gson().fromJson(playlistString, Playlist.class);
-							byte[] fragment = CreatePlaylist(userID, playlist.getName());
+							boolean success = CreatePlaylist(userID, playlist.getName());
+							log.setRequestID(Packet.REQUEST_ID_CREATEPLAYLIST);
+							log.setSuccess(success);
+							byte[] fragment = CreateLog(log);
 							sendMsg.fragment = fragment;
 							break;
 						case Packet.REQUEST_ID_DELETEPLAYLIST:
@@ -108,7 +115,10 @@ public class ClientHandler extends Thread {
 							userID = receivedMsg.objectID;
 							ByteBuffer wrapped = ByteBuffer.wrap(receivedMsg.fragment, 0, 4);
 							int playlistId = wrapped.getInt();
-							fragment = DeletePlaylist(userID, playlistId);
+							success = DeletePlaylist(userID, playlistId);
+							log.setRequestID(Packet.REQUEST_ID_DELETEPLAYLIST);
+							log.setSuccess(success);
+							fragment = CreateLog(log);
 							sendMsg.fragment = fragment;
 							break;
 						case Packet.REQUEST_ID_ADDSONGTOPLAYLIST:
@@ -119,7 +129,10 @@ public class ClientHandler extends Thread {
 							ByteArrayInputStream bais = new ByteArrayInputStream(receivedMsg.fragment);
 							playlistId = bais.read();
 							int songId = bais.read();
-							fragment = AddSongToPlaylist(userID, playlistId, songId);
+							log.setRequestID(Packet.REQUEST_ID_ADDSONGTOPLAYLIST);
+							success = AddSongToPlaylist(userID, playlistId, songId);
+							log.setSuccess(success);
+							fragment = CreateLog(log);
 							sendMsg.fragment = fragment;
 							break;
 						case Packet.REQUEST_ID_DELETESONGFROMPLAYLIST:
@@ -130,7 +143,11 @@ public class ClientHandler extends Thread {
 							bais = new ByteArrayInputStream(receivedMsg.fragment);
 							playlistId = bais.read();
 							songId = bais.read();
-							fragment = DeleteSongFromPlaylist(userID, playlistId, songId);
+							log.setRequestID(Packet.REQUEST_ID_DELETESONGFROMPLAYLIST);
+							success = DeleteSongFromPlaylist(userID, playlistId, songId);
+							log = new Log();
+							log.setSuccess(success);
+							fragment = CreateLog(log);
 							sendMsg.fragment = fragment;
 							break;
 						// case Packet.REQUEST_ID_SEARCHBYARTIST:
@@ -154,25 +171,12 @@ public class ClientHandler extends Thread {
 
 							DatagramPacket packet = new DatagramPacket(send, send.length, address, port);
 							socket.send(packet);
-							
-							for(int i = 0; i < Packet.RRA.length; i++) {
-								if (sendMsg.requestID == Packet.RRA[i]) {
-									Log log = new Log();
-									log.setClientAddress(address);
-									log.setPort(port);
-									log.setRequestID(sendMsg.requestID);
-									if (sendMsg.fragment == Packet.SUCCESS) {
-										log.setSuccess(true);
-									}
-									else {
-										log.setSuccess(false);
-									}
-									LogService ls = new LogService();
-									ls.CreateLog(log);
-									break;
-								}
-							}
 						}
+					}
+					else if (receivedMsg.messageType == Packet.ACKNOWLEDGEMENT) {
+						int logID = receivedMsg.objectID;
+						ls.DeleteLog(logID);
+						System.out.println("Deleted Log");
 					}
 				}
 			} catch (IOException e) {
@@ -181,6 +185,12 @@ public class ClientHandler extends Thread {
 		}
 	}
 
+	private byte[] CreateLog (Log log) {
+		ls.CreateLog(log);
+		String logString = new Gson().toJson(log);
+		return logString.getBytes();
+	}
+	
 	private byte[] GetUser(String username, String password) {
 		UserService us = new UserService();
 		User user = us.getUser(username, password);
@@ -209,23 +219,34 @@ public class ClientHandler extends Thread {
 		return send.getBytes();
 	}
 
-	private byte[] CreatePlaylist(int userID, String name) {
+	/**
+	 * Create a playlist with a specified name for a user
+	 * 
+	 * @param userID
+	 *                    - {int} userID
+	 * @param name
+	 * 					  - {String} playlist name                   
+	 * @return boolean
+	 * @throws IOException
+	 *                         if input or output was successful.
+	 */
+	private boolean CreatePlaylist(int userID, String name) {
 		UserProfileService ups = new UserProfileService(userID);
 		UserProfile userProfile = ups.CreatePlaylist(name);
 		if (userProfile != null && ups.SaveUserProfile(userProfile)) {
-			return Packet.SUCCESS;
+			return true;
 		} else {
-			return Packet.FAIL;
+			return false;
 		}
 	}
 
-	private byte[] DeletePlaylist(int userID, int playlistId) {
+	private boolean DeletePlaylist(int userID, int playlistId) {
 		UserProfileService ups = new UserProfileService(userID);
 		UserProfile userProfile = ups.DeletePlaylist(playlistId);
 		if (userProfile != null && ups.SaveUserProfile(userProfile)) {
-			return Packet.SUCCESS;
+			return true;
 		} else {
-			return Packet.FAIL;
+			return false;
 		}
 	}
 
@@ -237,13 +258,13 @@ public class ClientHandler extends Thread {
 	 *                    - {String} the text to be serialized
 	 * @return data
 	 */
-	private byte[] AddSongToPlaylist(int userID, int playlistID, int songID) {
+	private boolean AddSongToPlaylist(int userID, int playlistID, int songID) {
 		UserProfileService ups = new UserProfileService(userID);
 		UserProfile userProfile = ups.AddSongToPlaylist(playlistID, songID);
 		if (userProfile != null && ups.SaveUserProfile(userProfile)) {
-			return Packet.SUCCESS;
+			return true;
 		} else {
-			return Packet.FAIL;
+			return false;
 		}
 	}
 
@@ -255,13 +276,13 @@ public class ClientHandler extends Thread {
 	 *                   - {int} Id of user
 	 * @return data
 	 */
-	private byte[] DeleteSongFromPlaylist(int userID, int playlistID, int songID) {
+	private boolean DeleteSongFromPlaylist(int userID, int playlistID, int songID) {
 		UserProfileService ups = new UserProfileService(userID);
 		UserProfile userProfile = ups.DeleteSongFromPlaylist(playlistID, songID);
 		if (userProfile != null && ups.SaveUserProfile(userProfile)) {
-			return Packet.SUCCESS;
+			return true;
 		} else {
-			return Packet.FAIL;
+			return false;
 		}
 	}
 

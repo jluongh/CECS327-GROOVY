@@ -81,6 +81,10 @@ public class MainAppController implements Initializable {
 	@FXML
 	private ImageView stopMusic;
 	@FXML
+	private ImageView btnShuffle;
+	@FXML
+	private ImageView btnRepeat;
+	@FXML
 	private ImageView Mute;
 	@FXML
 	private ImageView queue;
@@ -88,6 +92,8 @@ public class MainAppController implements Initializable {
 	private Text songName;
 	@FXML
 	private Text artistName;
+	@FXML
+	private Text lbMode;
 	@FXML
 	private Label userNameText;
 	@FXML
@@ -353,10 +359,10 @@ public class MainAppController implements Initializable {
 
 
 	// when btn is clicked > image
-	Image pic1 = new Image("file:resources/if-close.png");
+	//Image pic1 = new Image("if-close.png");
 	
-	// when btn is unclicked > img
-	Image pic2 = new Image("file:/resources/if-play.png");
+	// when btn is unclicked > image
+	//Image pic2 = new Image("if-play.png");
 
 	boolean isPlayListClicked = false;
 	
@@ -365,7 +371,7 @@ public class MainAppController implements Initializable {
 	{			
 		
 		if(isPlayListClicked == false) {
-			btnPlayList.setImage(pic2);
+			//btnPlayList.setImage(pic1);
 			
 			// Should be List<Song>
 			Playlist playlist = upc.GetPlaylists().get(0);
@@ -375,13 +381,17 @@ public class MainAppController implements Initializable {
 				songs.add(info.getSong());
 			}
 			player.loadSongs(songs);
+			if (player.thread != null && player.thread.isAlive()) {
+				player.thread.stop();
+			}
 			player.playQueue();
 			
+			//btnPlayList.setStyle("-fx-background-color: transparent; -fx-padding: 6 4 4 6;");
+			btnPlayList.setStyle("-fx-background-color: BLACK");
 			
 		}else if(isPlayListClicked == true) {
-			btnPlayList.setImage(pic1);
+			//btnPlayList.setImage(pic2);
 			
-
 		}
 		
 	}
@@ -522,6 +532,9 @@ public class MainAppController implements Initializable {
 				List<Song> songs = new ArrayList <Song>();
 				songs.add(song);
 				player.loadSongs(songs);
+				if (player.thread != null && player.thread.isAlive()) {
+					player.thread.stop();
+				}
 				player.playQueue();
 				
 //				ap.stop();
@@ -536,6 +549,9 @@ public class MainAppController implements Initializable {
 				List<Song> songs = new ArrayList <Song>();
 				songs.add(song.getSong());
 				player.loadSongs(songs);
+				if (player.thread != null && player.thread.isAlive()) {
+					player.thread.stop();
+				}
 				player.playQueue();
 				//				ap.stop();
 //				ap.play(songId, false);
@@ -877,23 +893,41 @@ public class MainAppController implements Initializable {
 	 * Event Listener on ImageView[#Mute].onMouseClicked to mute the song
 	 * @param event - {MouseEvent} the action
 	 */
+
+	boolean isMuteClicked = false;
 	@FXML
 	public void muteIsClicked(MouseEvent event)
 	{
-		player.setVolume(0);
+		if(isMuteClicked == false) {
+			player.setVolume(0);
+			isMuteClicked = true;
+		
+		}else if(isMuteClicked == true) {
+			player.setVolume(1);
+			isMuteClicked = false;
+		}
+		
 	}
 	// Event Listener on ImageView[#exit].onMouseClicked
 
 
+	
+	
 	@FXML
 	public void shuffleClicked(MouseEvent event)
 	{
 		//call the shuffle function
+		player.shuffle();
+		lbMode.setText("Mode: Shuffle");
+		
 	}
 	@FXML
 	public void repeatClicked(MouseEvent event)
 	{
 		//call the repeat function
+		
+		player.repeat(true);
+		lbMode.setText("Mode: Repeat");
 	}
 
 	
@@ -909,6 +943,11 @@ public class MainAppController implements Initializable {
             @Override
             public void changed(ObservableValue<?> arg0, Object arg1, Object arg2) {
             	float sliderValue = (float) sldVolume.getValue();
+            	
+            	// not executing this 
+            	System.out.println("_______________________________________________="+ sliderValue);
+            	sliderValue = sliderValue/100;
+            	System.out.println("_______________________________________________="+ sliderValue);
             	player.setVolume(sliderValue);
             }
         });

@@ -23,7 +23,7 @@ public class PlayerController {
 	private AudioFormat audioFormat;
 	private DataLine.Info info;
 	private FloatControl gainControl;
-;
+
 	public boolean playing;
 	public boolean repeat;
 	public Song current;

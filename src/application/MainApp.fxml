@@ -103,7 +103,7 @@
             </ImageView>
             <ImageView fx:id="queue" fitHeight="40.0" fitWidth="24.0" layoutX="435.0" layoutY="25.0" onMouseClicked="#selectQueue" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@resources/playlist-button.png" />
+                  <Image url="@resources/playlist-button.png" /> 
                </image>
             </ImageView>
          </children>

@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import data.constants.Packet;
 import data.models.*;
+import services.LibraryService;
 import services.LogService;
 import services.SearchService;
 import data.models.Message;
@@ -172,6 +173,18 @@ public class ClientHandler extends Thread {
 							userID = receivedMsg.objectID; 
 							System.out.println(new String(receivedMsg.fragment));
 							sendMsg.fragment = SearchBySong(new String(receivedMsg.fragment));
+							break;
+						case Packet.REQUEST_ID_GETARTISTBYSONGID:
+							sendMsg = new Message();
+							sendMsg.messageType = Packet.REPLY;
+							sendMsg.requestID = Packet.REQUEST_ID_GETARTISTBYSONGID;
+							sendMsg.fragment = GetArtistBySongID(receivedMsg.objectID);
+							break;
+						case Packet.REQUEST_ID_GETALBUMBYSONGID:
+							sendMsg = new Message();
+							sendMsg.messageType = Packet.REPLY;
+							sendMsg.requestID = Packet.REQUEST_ID_GETALBUMBYSONGID;
+							sendMsg.fragment = GetAlbumBySongID(receivedMsg.objectID);
 							break;
 						}
 
@@ -391,5 +404,55 @@ public class ClientHandler extends Thread {
 		String send = new Gson().toJson(songs, listType);
 
 		return send.getBytes();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private byte[] GetArtistBySongID(int songID) {
+		LibraryService ls = new LibraryService();
+		
+		List<Artist> artists = ls.getAllArtists();
+		Artist artist = null;
+		
+		for (Artist ar : artists) {
+			List<Album> albums = ar.getAlbums(); 
+			for (Album al : albums) {
+				List<Song> songs = al.getSongs();
+				for (Song s : songs) {
+					if (s.getSongID() == songID)
+						artist = ar;
+				}
+			}
+		}
+		
+		String artistJson = new Gson().toJson(artist, Artist.class);
+		return artistJson.getBytes();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private byte[] GetAlbumBySongID(int songID) {
+		LibraryService ls = new LibraryService();
+		
+		List<Artist> artists = ls.getAllArtists();
+		Album album = null;
+		
+		for (Artist ar : artists) {
+			List<Album> albums = ar.getAlbums(); 
+			for (Album al : albums) {
+				List<Song> songs = al.getSongs();
+				for (Song s : songs) {
+					if (s.getSongID() == songID)
+						album = al;
+				}
+			}
+		}
+		
+		String albumJson = new Gson().toJson(album, Album.class);
+		return albumJson.getBytes();
 	}
 }

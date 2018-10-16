@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import data.constants.Packet;
 import data.models.*;
+import services.LibraryService;
 import services.LogService;
 import services.SearchService;
 import data.models.Message;
@@ -48,16 +49,18 @@ public class ClientHandler extends Thread {
 			DatagramPacket request = new DatagramPacket(message, message.length);
 			try {
 				socket.receive(request);
-
+				
 				// display request
 				String received = new String(request.getData(), 0, request.getLength());
 				Message receivedMsg = new Gson().fromJson(received, Message.class);
 				Message sendMsg = null;
+				
 				if (received != null) {
 					if (receivedMsg.messageType == Packet.REQUEST) {
 						Log log = new Log();
 						log.setClientAddress(request.getAddress());
 						log.setPort(request.getPort());
+						
 						switch (receivedMsg.requestID) {
 						case Packet.REQUEST_ID_GETUSER:
 							sendMsg = new Message();
@@ -137,7 +140,7 @@ public class ClientHandler extends Thread {
 						case Packet.REQUEST_ID_DELETESONGFROMPLAYLIST:
 							sendMsg = new Message();
 							sendMsg.messageType = Packet.REPLY;
-							sendMsg.requestID = Packet.REQUEST_ID_ADDSONGTOPLAYLIST;
+							sendMsg.requestID = Packet.REQUEST_ID_DELETESONGFROMPLAYLIST;
 							userID = receivedMsg.objectID;
 							bais = new ByteArrayInputStream(receivedMsg.fragment);
 							playlistId = bais.read();
@@ -149,16 +152,40 @@ public class ClientHandler extends Thread {
 							fragment = CreateLog(log);
 							sendMsg.fragment = fragment;
 							break;
-						// case Packet.REQUEST_ID_SEARCHBYARTIST:
-						// buffer = SearchByArtist(new String(data));
-						// break;
-						// case Packet.REQUEST_ID_SEARCHBYALBUM:
-						// buffer = SearchByAlbum(new String(data));
-						// break;
-						// case Packet.REQUEST_ID_SEARCHBYSONG:
-						// buffer = SearchBySong(new String(data));
-						// break;
-
+						case Packet.REQUEST_ID_SEARCHBYARTIST:
+							sendMsg = new Message();
+							sendMsg.messageType = Packet.REPLY;
+							sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYARTIST;
+							userID = receivedMsg.objectID;
+							sendMsg.fragment = SearchByArtist(new String(receivedMsg.fragment));
+							break;
+						case Packet.REQUEST_ID_SEARCHBYALBUM:
+							sendMsg = new Message();
+							sendMsg.messageType = Packet.REPLY;
+							sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYALBUM;
+							userID = receivedMsg.objectID;
+							sendMsg.fragment = SearchByAlbum(new String(receivedMsg.fragment));
+							break;
+						case Packet.REQUEST_ID_SEARCHBYSONG:
+							sendMsg = new Message();
+							sendMsg.messageType = Packet.REPLY;
+							sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYSONG;
+							userID = receivedMsg.objectID; 
+							System.out.println(new String(receivedMsg.fragment));
+							sendMsg.fragment = SearchBySong(new String(receivedMsg.fragment));
+							break;
+						case Packet.REQUEST_ID_GETARTISTBYSONGID:
+							sendMsg = new Message();
+							sendMsg.messageType = Packet.REPLY;
+							sendMsg.requestID = Packet.REQUEST_ID_GETARTISTBYSONGID;
+							sendMsg.fragment = GetArtistBySongID(receivedMsg.objectID);
+							break;
+						case Packet.REQUEST_ID_GETALBUMBYSONGID:
+							sendMsg = new Message();
+							sendMsg.messageType = Packet.REPLY;
+							sendMsg.requestID = Packet.REQUEST_ID_GETALBUMBYSONGID;
+							sendMsg.fragment = GetAlbumBySongID(receivedMsg.objectID);
+							break;
 						}
 
 						if (sendMsg != null) {
@@ -377,5 +404,55 @@ public class ClientHandler extends Thread {
 		String send = new Gson().toJson(songs, listType);
 
 		return send.getBytes();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private byte[] GetArtistBySongID(int songID) {
+		LibraryService ls = new LibraryService();
+		
+		List<Artist> artists = ls.getAllArtists();
+		Artist artist = null;
+		
+		for (Artist ar : artists) {
+			List<Album> albums = ar.getAlbums(); 
+			for (Album al : albums) {
+				List<Song> songs = al.getSongs();
+				for (Song s : songs) {
+					if (s.getSongID() == songID)
+						artist = ar;
+				}
+			}
+		}
+		
+		String artistJson = new Gson().toJson(artist, Artist.class);
+		return artistJson.getBytes();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private byte[] GetAlbumBySongID(int songID) {
+		LibraryService ls = new LibraryService();
+		
+		List<Artist> artists = ls.getAllArtists();
+		Album album = null;
+		
+		for (Artist ar : artists) {
+			List<Album> albums = ar.getAlbums(); 
+			for (Album al : albums) {
+				List<Song> songs = al.getSongs();
+				for (Song s : songs) {
+					if (s.getSongID() == songID)
+						album = al;
+				}
+			}
+		}
+		
+		String albumJson = new Gson().toJson(album, Album.class);
+		return albumJson.getBytes();
 	}
 }

@@ -17,7 +17,7 @@ import java.util.Iterator;
 
 import api.AudioPlayer;
 import api.PlayerController;
-import api.Searcher;
+import api.SearchController;
 import api.SongController;
 import api.UserProfileController;
 import data.models.Album;
@@ -46,6 +46,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.TableView;
@@ -85,6 +87,8 @@ public class MainAppController implements Initializable {
 	@FXML
 	private ImageView Mute;
 	@FXML
+	private ImageView queue;
+	@FXML
 	private Text songName;
 	@FXML
 	private Text artistName;
@@ -104,7 +108,6 @@ public class MainAppController implements Initializable {
 	private TableColumn<Object,String> col3;
 	@FXML
 	private TableColumn<Object, String> col4;
-
 	@FXML
 	private TableView<Playlist> playlistTable;
 	@FXML
@@ -134,18 +137,19 @@ public class MainAppController implements Initializable {
 	private UserProfileController upc ;
 	private UserProfile user;
 	private List<Playlist> playlist;
+	private ArrayList<Song> queues;
 	private ObservableList<Playlist> playlists = FXCollections.observableArrayList();
     private ObservableList<Object> userSong = FXCollections.observableArrayList();
 	private ObservableList<Object> songs = FXCollections.observableArrayList();
 	private ObservableList<Object> artistSong = FXCollections.observableArrayList();
 	private ObservableList<Object> albumSong = FXCollections.observableArrayList();
-
-	private SongController sc = new SongController();
+	private ObservableList<Object> queueSong = FXCollections.observableArrayList();
+	private SongController sc;
 
 	// Audio player
 	private PlayerController player;
 	api.audio.AudioPlayer ap = new api.audio.AudioPlayer();
-	private Searcher search = new Searcher();
+	private SearchController search;
 
 	/**
 	 * Initializing server/client sockets
@@ -164,8 +168,11 @@ public class MainAppController implements Initializable {
 			socket.setReceiveBufferSize(60011 * 30 * 100);
 			player= new PlayerController(socket);
 			upc = new UserProfileController(socket);
+			search = new SearchController(socket);
 			user = upc.GetUserProfile(currentUser.getUserID());
 			playlist = user.getPlaylists();
+			sc = new SongController(socket);
+			
 		} catch (SocketException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -183,12 +190,16 @@ public class MainAppController implements Initializable {
 		//display playlist name on sidebar
 		playlistName.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getName()));
 		playlistTable.setItems(playlists);
-		
+		queues = new ArrayList<Song>();
 		
 		//disable the playlist button 
 		btnPlayList.setVisible(false);
+		
 	}
 
+	
+
+	
 	/**
 	 * When user double click the playlist, it will display the songs in the playlist on the right
 	 * @param event - {MouseEvent} the action
@@ -281,12 +292,26 @@ public class MainAppController implements Initializable {
 
         	txtResult.setText(userChoose.getName());
 
-	        //display object to the table
-			col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
-//			col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
-//			col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((SongInfo) cellData.getValue()).getSong().getTitle()).getName()));
+	        col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
+			col2.setCellValueFactory(cellData -> {
+				try {
+					return new ReadOnlyStringWrapper(sc.GetArtistBySongID(((SongInfo) cellData.getValue()).getSong().getSongID()).getName());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return null;
+				}
+			});
+			col3.setCellValueFactory(cellData -> {
+				try {
+					return new ReadOnlyStringWrapper(sc.GetAlbumBySongID(((SongInfo) cellData.getValue()).getSong().getSongID()).getName());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return null;
+			});
 			col4.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getAddedDate().toString()));
-
 			Result.setItems(userSong);
 			Result.refresh();
 
@@ -297,7 +322,7 @@ public class MainAppController implements Initializable {
 	 * @param event - {MouseEvent} the action
 	 */
 	@FXML
-	public void btnSongClick(MouseEvent event)
+	public void btnSongClick(MouseEvent event) throws IOException
 	{
 		table=1;
 		search(txtSearch.getText(), "song");
@@ -385,13 +410,13 @@ public class MainAppController implements Initializable {
 			if (table==1)
 			{
 				Song userChoose = (Song) Result.getSelectionModel().getSelectedItem();
-				MenuItem add = new MenuItem("Add");
+				MenuItem add = new MenuItem("Add to playlist");
+				MenuItem addQueue = new MenuItem("Add to queue");
 				ContextMenu contextMenu = new ContextMenu();
-		        contextMenu.getItems().addAll(add);
+		        contextMenu.getItems().addAll(add,addQueue);
 		        contextMenu.show(playlistTable,event.getScreenX(),event.getScreenY());
 
 				add.setOnAction(new EventHandler<ActionEvent>() {
-
 		            @Override
 		            public void handle(ActionEvent event) {
 		            	ArrayList<String> dropDown = new ArrayList<String>();
@@ -410,12 +435,14 @@ public class MainAppController implements Initializable {
 	                    	{
 	                    		Date date = new Date();
 	        					SongInfo newSong = new SongInfo(userChoose, date);
+
 	        					for (int i = 0; i < playlist.size(); i++)
 	        					{
 	        						if (playlist.get(i).getName().equals(result.get()))
 	        						{
 	        							try {
 	        								upc.AddSongToPlaylist(playlist.get(i).getPlaylistID(), userChoose.getSongID());
+	        								System.out.println(userChoose.getTitle());
 	        							} catch(IOException e) {
 	        								e.printStackTrace();
 	        							}
@@ -435,6 +462,25 @@ public class MainAppController implements Initializable {
 	                	}
 		            }
 		        });
+				addQueue.setOnAction(new EventHandler<ActionEvent>() 
+				{
+					@Override
+		            public void handle(ActionEvent event) 
+					{
+						if(queues==null&&queues.isEmpty())
+						{
+							queues.add(0, userChoose);
+							queueSong.add(userChoose);
+						}
+						else
+						{
+							queues.add(userChoose);
+							queueSong.add(userChoose);
+						}
+						
+					}
+					
+				});
 			}
 			else if(table==0) //playlist display in the center if clicked happens
 			{
@@ -513,19 +559,19 @@ public class MainAppController implements Initializable {
 	 * @param text - {String} the name of the object being searched
 	 * @param type - {String} the type of object that is searched
 	 */
-	private void search(String text, String type) {
+	private void search(String query, String type) throws IOException {
 		isSearch=true;
 		if(type == "song") {
 			//update result page to search for that song
-			List<Song> song=search.findFromSongs(text);
+			List<Song> song=search.SearchBySong(query);
 			setSearchSong(song);
 		} else if(type == "album") {
 			//update result page to search for that album
-			List<Album> album=search.findFromAlbums(text);;
+			List<Album> album=search.SearchByAlbum(query);
 			setSearchAlbum(album);
 		} else if(type == "artist") {
 			//update result page to search for that artist
-			List<Artist> artist=search.findFromArtists(text);
+			List<Artist> artist=search.SearchByArtist(query);
 			setSearchArtist(artist);
 		}
 	}
@@ -550,11 +596,27 @@ public class MainAppController implements Initializable {
 		col2.setText("Artist");
 		col3.setText("Album");
 		col4.setText("Duration");
-		
+		txtResult.setText("Search Result");
 		//display object to the table
 		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
-//		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-//		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
+		col2.setCellValueFactory(cellData -> {
+			try {
+				return new ReadOnlyStringWrapper(sc.GetArtistBySongID(((Song) cellData.getValue()).getSongID()).getName());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		});
+		col3.setCellValueFactory(cellData -> {
+			try {
+				return new ReadOnlyStringWrapper(sc.GetAlbumBySongID(((Song) cellData.getValue()).getSongID()).getName());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		});
 		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
 
 
@@ -586,13 +648,28 @@ public class MainAppController implements Initializable {
 		col3.setText("Album");
 		
 		col4.setText("Duration");
-
+		txtResult.setText("Search Result");
 		//display object to the table
 
 		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
-//		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-//		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-
+		col2.setCellValueFactory(cellData -> {
+			try {
+				return new ReadOnlyStringWrapper(sc.GetArtistBySongID(((Song) cellData.getValue()).getSongID()).getName());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		});
+		col3.setCellValueFactory(cellData -> {
+			try {
+				return new ReadOnlyStringWrapper(sc.GetAlbumBySongID(((Song) cellData.getValue()).getSongID()).getName());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		});
 		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
 
 
@@ -626,7 +703,7 @@ public class MainAppController implements Initializable {
 		col1.setText("Artist");
 		col3.setText("Album");
 		col4.setText("Duration");
-
+		txtResult.setText("Search Result");
 		//display object to the table
 		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
 //		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
@@ -658,6 +735,36 @@ public class MainAppController implements Initializable {
 	public void addPlaylistClicked(MouseEvent event)
 	{
 		showInputBox();
+	}
+	
+	@FXML
+	public void selectQueue(MouseEvent event)
+	{
+		isSearch=true;
+		table=3;
+        txtResult.setText("Queue");
+
+        col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
+        col2.setCellValueFactory(cellData -> {
+			try {
+				return new ReadOnlyStringWrapper(sc.GetArtistBySongID(((Song) cellData.getValue()).getSongID()).getName());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		});
+		col3.setCellValueFactory(cellData -> {
+			try {
+				return new ReadOnlyStringWrapper(sc.GetAlbumBySongID(((Song) cellData.getValue()).getSongID()).getName());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		});
+		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
+
+		Result.setItems(queueSong);
+		Result.refresh();        
 	}
 
 	/**
@@ -704,6 +811,45 @@ public class MainAppController implements Initializable {
 		player.resume();
 	}
 
+	
+	private EventHandler<KeyEvent> keyListener = new EventHandler<KeyEvent>() {
+	    @Override
+	    public void handle(KeyEvent event) {
+	        if(event.getCode() == KeyCode.LEFT) 
+	        {
+	            player.previous();
+	        } 
+	        else if(event.getCode() == KeyCode.RIGHT)
+	        {
+	        	player.next();
+	        }
+	        else if(event.getCode() == KeyCode.SPACE) {
+	            player.pause();
+	        }
+	        event.consume();
+	    }
+	};
+	
+	
+	
+	@FXML
+	public void spacePress(KeyEvent e)
+	{
+		keyListener.handle(e);
+	}
+	
+	@FXML
+	public void rightPress(KeyEvent e)
+	{
+		keyListener.handle(e);
+	}
+	
+	@FXML
+	public void leftPress(KeyEvent e)
+	{
+		keyListener.handle(e);
+	}
+	
 	/**
 	 * Event Listener on ImageView[#previousMusic].onMouseClicked to play previous song
 	 * @param event - {MouseEvent} the action

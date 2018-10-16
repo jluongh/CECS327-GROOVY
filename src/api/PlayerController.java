@@ -29,6 +29,7 @@ public class PlayerController {
 
 	public Thread thread;
 	private SongQueue sq;
+	private Stack<Song> st;
 	Random rand = new Random();
 
 	public PlayerController(DatagramSocket socket) {

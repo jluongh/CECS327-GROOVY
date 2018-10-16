@@ -18,6 +18,8 @@ public class Packet {
 	public static final int REQUEST_ID_CREATEPLAYLIST = 8; // done
 	public static final int REQUEST_ID_DELETEPLAYLIST = 9; // done
 	public static final int REQUEST_ID_BYTECOUNT = 10; // done
+	public static final int REQUEST_ID_GETARTISTBYSONGID = 11;
+	public static final int REQUEST_ID_GETALBUMBYSONGID = 12;
 
 	// Byte Size
 	public static final int BYTESIZE = 10000;

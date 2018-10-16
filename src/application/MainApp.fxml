@@ -106,6 +106,11 @@
                   <Image url="@resources/1082440.png" />
                </image>
             </ImageView>
+            <ImageView fx:id="queue" fitHeight="40.0" fitWidth="24.0" layoutX="435.0" layoutY="25.0" onMouseClicked="#selectQueue" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@resources/playlist-button.png" />
+               </image>
+            </ImageView>
          </children>
       </AnchorPane>
       <AnchorPane layoutX="269.0" layoutY="85.0" prefHeight="473.0" prefWidth="696.0">

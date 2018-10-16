@@ -22,15 +22,15 @@ public class PlayerController {
 	private SourceDataLine sdl;
 	private AudioFormat audioFormat;
 	private DataLine.Info info;
-	private FloatControl gainControl;
-;
+	private FloatControl gainControl;;
 	public boolean playing;
 	public boolean repeat;
 	public int current;
 
+	public Thread thread;
 	private SongQueue sq;
+	private Stack<Song> st;
 	Random rand = new Random();
-
 
 	public PlayerController(DatagramSocket socket) {
 		this.socket = socket;
@@ -47,28 +47,32 @@ public class PlayerController {
 	public void loadSongs(List<Song> songs) {
 		sq.setSongs(songs);
 		current = 0;
+		System.out.println("loaded songs to: " + current);
 	}
 
 	public void playQueue() {
-		new Thread(new Runnable() {
+
+
+		thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
+				reset();
+				playing = true;
 				while (current < sq.getSongs().size()) {
 					Song song = sq.getSongs().get(current);
 					try {
-						reset();
 						playSong(song.getSongID());
-						current++;						
+						current++;
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					
-					if (repeat) {
+					if (repeat && current == (sq.getSongs().size() - 1)) {
 						current = 0;
 					}
 				}
 			}
-		}).start();
+		});
+		thread.start();
 	}
 
 	public void playSong(int songID) throws IOException {
@@ -100,64 +104,50 @@ public class PlayerController {
 			case Packet.REQUEST_ID_BYTECOUNT:
 				int count = msg.count;
 				int offset = 0;
-
-				try {
-					if (!sdl.isOpen()) {
+				if (!sdl.isOpen()) {
+					try {
 						sdl.open();
-						sdl.start();
+					} catch (LineUnavailableException e) {
+						e.printStackTrace();
 					}
-					playing = true;
-					while (offset < count && playing) {
-						msg = new Message();
-						msg.messageType = Packet.REQUEST;
-						msg.requestID = Packet.REQUEST_ID_LOADSONG;
-						msg.offset = offset;
-						msg.objectID = songID;
-						msg.count = count;
+					sdl.start();
+				}
+				playing = true;
+				while (offset < count && playing) {
+					msg = new Message();
+					msg.messageType = Packet.REQUEST;
+					msg.requestID = Packet.REQUEST_ID_LOADSONG;
+					msg.offset = offset;
+					msg.objectID = songID;
+					msg.count = count;
 
-						String sendJson = gson.toJson(msg);
-						byte[] message = sendJson.getBytes();
-						request = new DatagramPacket(message, message.length, address, Net.PORT);
-						socket.send(request);
+					String sendJson = gson.toJson(msg);
+					byte[] message = sendJson.getBytes();
+					request = new DatagramPacket(message, message.length, address, Net.PORT);
+					socket.send(request);
 
-						// Get reply back and play
-						DatagramPacket reply1 = new DatagramPacket(buffer, buffer.length);
-						socket.receive(reply1);
+					// Get reply back and play
+					DatagramPacket reply1 = new DatagramPacket(buffer, buffer.length);
+					socket.receive(reply1);
 
-						// Translate it back into a message
-						msg = new Message();
-						bitString = new String(reply1.getData(), 0, reply1.getLength());
-						msg = gson.fromJson(bitString, Message.class);
+					// Translate it back into a message
+					msg = new Message();
+					bitString = new String(reply1.getData(), 0, reply1.getLength());
+					msg = gson.fromJson(bitString, Message.class);
 
-						ByteArrayInputStream bis = new ByteArrayInputStream(msg.fragment);
-						AudioInputStream audioStream = new AudioInputStream(bis, audioFormat, msg.fragment.length);
+					ByteArrayInputStream bis = new ByteArrayInputStream(msg.fragment);
+					AudioInputStream audioStream = new AudioInputStream(bis, audioFormat, msg.fragment.length);
 
-						int bytesRead;
-						try {
-							if (sdl.isRunning()) {
-								System.out.println(sdl.available());
-								if (sdl.available() > 80000) {
-									sdl.stop();
-								}
-							}
-							else {
-								if (sdl.available() < 80000) {
-									sdl.start();
-									System.out.println("hello2");
+					int bytesRead;
+					try {
 
-								}
-							}
-							
-							if ((bytesRead = audioStream.read(msg.fragment, 0, msg.fragment.length)) != -1) {
-								sdl.write(msg.fragment, 0, bytesRead);
-							}
-						} catch (IOException e) {
-							e.printStackTrace();
+						if ((bytesRead = audioStream.read(msg.fragment, 0, msg.fragment.length)) != -1) {
+							sdl.write(msg.fragment, 0, bytesRead);
 						}
-						offset++;
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
-				} catch (LineUnavailableException e1) {
-					e1.printStackTrace();
+					offset++;
 				}
 
 			}
@@ -173,18 +163,23 @@ public class PlayerController {
 		if (!playing) {
 			current++;
 		}
-		reset();
+		reset2();
 	}
-	
+
 	/**
 	 * Plays the previous song
 	 * 
 	 */
 	public void previous() {
 		if (playing) {
-			current-=2;
+			current -= 2;
+			if (current < 0) {
+				current = -1;
+			}
 		}
-		reset();
+		System.out.println(current);
+
+		reset2();
 	}
 
 	/**
@@ -192,6 +187,18 @@ public class PlayerController {
 	 * 
 	 */
 	public void reset() {
+		sdl.stop();
+		sdl.flush();
+		if (!sdl.isRunning()) {
+			sdl.start();
+		}
+	}
+
+	/**
+	 * Resets dataline
+	 * 
+	 */
+	public void reset2() {
 		playing = false;
 		sdl.stop();
 		sdl.flush();
@@ -202,7 +209,7 @@ public class PlayerController {
 	 * 
 	 */
 	public void pause() {
-		playing = false;
+		System.out.println("2");
 		sdl.stop();
 	}
 
@@ -213,23 +220,29 @@ public class PlayerController {
 	public void resume() {
 		sdl.start();
 	}
-	
+
 	/**
 	 * Shuffle the songs in the queue
-	 * @param songQ - {SongQueue} the queue of songs
+	 * 
+	 * @param songQ
+	 *                  - {SongQueue} the queue of songs
 	 */
 	public void shuffle() {
-	    for (int i = 0; i < sq.getSongs().size(); i++) {
-	    	int change = i + rand.nextInt(sq.getSongs().size() - i);
-	        swap(sq, i, change);
-	    }
+		for (int i = 0; i < sq.getSongs().size(); i++) {
+			int change = i + rand.nextInt(sq.getSongs().size() - i);
+			swap(sq, i, change);
+		}
 	}
-	
+
 	/**
 	 * Swapping queue positions for two songs
-	 * @param songQ - {SongQueue} the queue of songs
-	 * @param i - {int} position of song 1 
-	 * @param change - {int} position of song 2 that was randomly selected
+	 * 
+	 * @param songQ
+	 *                   - {SongQueue} the queue of songs
+	 * @param i
+	 *                   - {int} position of song 1
+	 * @param change
+	 *                   - {int} position of song 2 that was randomly selected
 	 */
 	public void swap(SongQueue songQ, int i, int change) {
 		Song song1 = songQ.getSongs().get(i);
@@ -237,33 +250,37 @@ public class PlayerController {
 		songQ.getSongs().set(i, song2);
 		songQ.getSongs().set(change, song1);
 	}
-	
+
 	/**
 	 * Repeat the current song
+	 * 
 	 * @return current
 	 */
 	public void repeat(boolean flag) {
 		repeat = flag;
 	}
-	
+
 	/**
 	 * Get the volume
+	 * 
 	 * @return gainControl
 	 */
 
 	public float getVolume() {
-	    gainControl = (FloatControl) sdl.getControl(FloatControl.Type.MASTER_GAIN);        
-	    return (float) Math.pow(10f, gainControl.getValue() / 20f);
+		gainControl = (FloatControl) sdl.getControl(FloatControl.Type.MASTER_GAIN);
+		return (float) Math.pow(10f, gainControl.getValue() / 20f);
 	}
 
 	/**
 	 * Changing the volume
-	 * @param volume - {float} the sound 
+	 * 
+	 * @param volume
+	 *                   - {float} the sound
 	 */
 	public void setVolume(float volume) {
-	    if (volume < 0f || volume > 1f)
-	        throw new IllegalArgumentException("Volume not valid: " + volume);
-	    gainControl = (FloatControl) sdl.getControl(FloatControl.Type.MASTER_GAIN);        
-	    gainControl.setValue(20f * (float) Math.log10(volume));
+		if (volume < 0f || volume > 1f)
+			throw new IllegalArgumentException("Volume not valid: " + volume);
+		gainControl = (FloatControl) sdl.getControl(FloatControl.Type.MASTER_GAIN);
+		gainControl.setValue(20f * (float) Math.log10(volume));
 	}
 }

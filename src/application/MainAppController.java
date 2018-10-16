@@ -46,6 +46,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.TableView;
@@ -79,11 +81,19 @@ public class MainAppController implements Initializable {
 	@FXML
 	private ImageView stopMusic;
 	@FXML
+	private ImageView btnShuffle;
+	@FXML
+	private ImageView btnRepeat;
+	@FXML
 	private ImageView Mute;
+	@FXML
+	private ImageView queue;
 	@FXML
 	private Text songName;
 	@FXML
 	private Text artistName;
+	@FXML
+	private Text lbMode;
 	@FXML
 	private Label userNameText;
 	@FXML
@@ -98,7 +108,6 @@ public class MainAppController implements Initializable {
 	private TableColumn<Object,String> col3;
 	@FXML
 	private TableColumn<Object, String> col4;
-
 	@FXML
 	private TableView<Playlist> playlistTable;
 	@FXML
@@ -128,12 +137,13 @@ public class MainAppController implements Initializable {
 	private UserProfileController upc ;
 	private UserProfile user;
 	private List<Playlist> playlist;
+	private ArrayList<Song> queues;
 	private ObservableList<Playlist> playlists = FXCollections.observableArrayList();
     private ObservableList<Object> userSong = FXCollections.observableArrayList();
 	private ObservableList<Object> songs = FXCollections.observableArrayList();
 	private ObservableList<Object> artistSong = FXCollections.observableArrayList();
 	private ObservableList<Object> albumSong = FXCollections.observableArrayList();
-
+	private ObservableList<Object> queueSong = FXCollections.observableArrayList();
 	private SongController sc;
 
 	// Audio player
@@ -180,12 +190,16 @@ public class MainAppController implements Initializable {
 		//display playlist name on sidebar
 		playlistName.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getName()));
 		playlistTable.setItems(playlists);
-		
+		queues = new ArrayList<Song>();
 		
 		//disable the playlist button 
 		btnPlayList.setVisible(false);
+		
 	}
 
+	
+
+	
 	/**
 	 * When user double click the playlist, it will display the songs in the playlist on the right
 	 * @param event - {MouseEvent} the action
@@ -345,10 +359,10 @@ public class MainAppController implements Initializable {
 
 
 	// when btn is clicked > image
-	Image pic1 = new Image("file:resources/if-close.png");
+	//Image pic1 = new Image("if-close.png");
 	
-	// when btn is unclicked > img
-	Image pic2 = new Image("file:/resources/if-play.png");
+	// when btn is unclicked > image
+	//Image pic2 = new Image("if-play.png");
 
 	boolean isPlayListClicked = false;
 	
@@ -357,7 +371,7 @@ public class MainAppController implements Initializable {
 	{			
 		
 		if(isPlayListClicked == false) {
-			btnPlayList.setImage(pic2);
+			//btnPlayList.setImage(pic1);
 			
 			// Should be List<Song>
 			Playlist playlist = upc.GetPlaylists().get(0);
@@ -367,13 +381,17 @@ public class MainAppController implements Initializable {
 				songs.add(info.getSong());
 			}
 			player.loadSongs(songs);
+			if (player.thread != null && player.thread.isAlive()) {
+				player.thread.stop();
+			}
 			player.playQueue();
 			
+			//btnPlayList.setStyle("-fx-background-color: transparent; -fx-padding: 6 4 4 6;");
+			btnPlayList.setStyle("-fx-background-color: BLACK");
 			
 		}else if(isPlayListClicked == true) {
-			btnPlayList.setImage(pic1);
+			//btnPlayList.setImage(pic2);
 			
-
 		}
 		
 	}
@@ -395,13 +413,13 @@ public class MainAppController implements Initializable {
 			if (table==1)
 			{
 				Song userChoose = (Song) Result.getSelectionModel().getSelectedItem();
-				MenuItem add = new MenuItem("Add");
+				MenuItem add = new MenuItem("Add to playlist");
+				MenuItem addQueue = new MenuItem("Add to queue");
 				ContextMenu contextMenu = new ContextMenu();
-		        contextMenu.getItems().addAll(add);
+		        contextMenu.getItems().addAll(add,addQueue);
 		        contextMenu.show(playlistTable,event.getScreenX(),event.getScreenY());
 
 				add.setOnAction(new EventHandler<ActionEvent>() {
-
 		            @Override
 		            public void handle(ActionEvent event) {
 		            	ArrayList<String> dropDown = new ArrayList<String>();
@@ -420,12 +438,14 @@ public class MainAppController implements Initializable {
 	                    	{
 	                    		Date date = new Date();
 	        					SongInfo newSong = new SongInfo(userChoose, date);
+
 	        					for (int i = 0; i < playlist.size(); i++)
 	        					{
 	        						if (playlist.get(i).getName().equals(result.get()))
 	        						{
 	        							try {
 	        								upc.AddSongToPlaylist(playlist.get(i).getPlaylistID(), userChoose.getSongID());
+	        								System.out.println(userChoose.getTitle());
 	        							} catch(IOException e) {
 	        								e.printStackTrace();
 	        							}
@@ -445,6 +465,25 @@ public class MainAppController implements Initializable {
 	                	}
 		            }
 		        });
+				addQueue.setOnAction(new EventHandler<ActionEvent>() 
+				{
+					@Override
+		            public void handle(ActionEvent event) 
+					{
+						if(queues==null&&queues.isEmpty())
+						{
+							queues.add(0, userChoose);
+							queueSong.add(userChoose);
+						}
+						else
+						{
+							queues.add(userChoose);
+							queueSong.add(userChoose);
+						}
+						
+					}
+					
+				});
 			}
 			else if(table==0) //playlist display in the center if clicked happens
 			{
@@ -493,6 +532,9 @@ public class MainAppController implements Initializable {
 				List<Song> songs = new ArrayList <Song>();
 				songs.add(song);
 				player.loadSongs(songs);
+				if (player.thread != null && player.thread.isAlive()) {
+					player.thread.stop();
+				}
 				player.playQueue();
 				
 //				ap.stop();
@@ -507,6 +549,9 @@ public class MainAppController implements Initializable {
 				List<Song> songs = new ArrayList <Song>();
 				songs.add(song.getSong());
 				player.loadSongs(songs);
+				if (player.thread != null && player.thread.isAlive()) {
+					player.thread.stop();
+				}
 				player.playQueue();
 				//				ap.stop();
 //				ap.play(songId, false);
@@ -560,7 +605,7 @@ public class MainAppController implements Initializable {
 		col2.setText("Artist");
 		col3.setText("Album");
 		col4.setText("Duration");
-		
+		txtResult.setText("Search Result");
 		//display object to the table
 		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
 		col2.setCellValueFactory(cellData -> {
@@ -612,7 +657,7 @@ public class MainAppController implements Initializable {
 		col3.setText("Album");
 		
 		col4.setText("Duration");
-
+		txtResult.setText("Search Result");
 		//display object to the table
 
 		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
@@ -667,7 +712,7 @@ public class MainAppController implements Initializable {
 		col1.setText("Artist");
 		col3.setText("Album");
 		col4.setText("Duration");
-
+		txtResult.setText("Search Result");
 		//display object to the table
 		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
 //		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
@@ -699,6 +744,36 @@ public class MainAppController implements Initializable {
 	public void addPlaylistClicked(MouseEvent event)
 	{
 		showInputBox();
+	}
+	
+	@FXML
+	public void selectQueue(MouseEvent event)
+	{
+		isSearch=true;
+		table=3;
+        txtResult.setText("Queue");
+
+        col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
+        col2.setCellValueFactory(cellData -> {
+			try {
+				return new ReadOnlyStringWrapper(sc.GetArtistBySongID(((Song) cellData.getValue()).getSongID()).getName());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		});
+		col3.setCellValueFactory(cellData -> {
+			try {
+				return new ReadOnlyStringWrapper(sc.GetAlbumBySongID(((Song) cellData.getValue()).getSongID()).getName());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		});
+		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
+
+		Result.setItems(queueSong);
+		Result.refresh();        
 	}
 
 	/**
@@ -745,6 +820,45 @@ public class MainAppController implements Initializable {
 		player.resume();
 	}
 
+	
+	private EventHandler<KeyEvent> keyListener = new EventHandler<KeyEvent>() {
+	    @Override
+	    public void handle(KeyEvent event) {
+	        if(event.getCode() == KeyCode.LEFT) 
+	        {
+	            player.previous();
+	        } 
+	        else if(event.getCode() == KeyCode.RIGHT)
+	        {
+	        	player.next();
+	        }
+	        else if(event.getCode() == KeyCode.SPACE) {
+	            player.pause();
+	        }
+	        event.consume();
+	    }
+	};
+	
+	
+	
+	@FXML
+	public void spacePress(KeyEvent e)
+	{
+		keyListener.handle(e);
+	}
+	
+	@FXML
+	public void rightPress(KeyEvent e)
+	{
+		keyListener.handle(e);
+	}
+	
+	@FXML
+	public void leftPress(KeyEvent e)
+	{
+		keyListener.handle(e);
+	}
+	
 	/**
 	 * Event Listener on ImageView[#previousMusic].onMouseClicked to play previous song
 	 * @param event - {MouseEvent} the action
@@ -779,23 +893,41 @@ public class MainAppController implements Initializable {
 	 * Event Listener on ImageView[#Mute].onMouseClicked to mute the song
 	 * @param event - {MouseEvent} the action
 	 */
+
+	boolean isMuteClicked = false;
 	@FXML
 	public void muteIsClicked(MouseEvent event)
 	{
-		player.setVolume(0);
+		if(isMuteClicked == false) {
+			player.setVolume(0);
+			isMuteClicked = true;
+		
+		}else if(isMuteClicked == true) {
+			player.setVolume(1);
+			isMuteClicked = false;
+		}
+		
 	}
 	// Event Listener on ImageView[#exit].onMouseClicked
 
 
+	
+	
 	@FXML
 	public void shuffleClicked(MouseEvent event)
 	{
 		//call the shuffle function
+		player.shuffle();
+		lbMode.setText("Mode: Shuffle");
+		
 	}
 	@FXML
 	public void repeatClicked(MouseEvent event)
 	{
 		//call the repeat function
+		
+		player.repeat(true);
+		lbMode.setText("Mode: Repeat");
 	}
 
 	
@@ -811,6 +943,11 @@ public class MainAppController implements Initializable {
             @Override
             public void changed(ObservableValue<?> arg0, Object arg1, Object arg2) {
             	float sliderValue = (float) sldVolume.getValue();
+            	
+            	// not executing this 
+            	System.out.println("_______________________________________________="+ sliderValue);
+            	sliderValue = sliderValue/100;
+            	System.out.println("_______________________________________________="+ sliderValue);
             	player.setVolume(sliderValue);
             }
         });

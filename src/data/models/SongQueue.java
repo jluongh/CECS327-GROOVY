@@ -23,7 +23,7 @@ public class SongQueue {
 	}
 	
 	/**
-	 * Getter method for a list of song objects
+	 * Getter method for a list of song objects, the queue
 	 * @return songs
 	 */
 	public List<Song> getSongs() {

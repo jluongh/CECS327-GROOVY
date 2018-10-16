@@ -734,6 +734,7 @@ public class MainAppController implements Initializable {
 	public void selectQueue(MouseEvent event)
 	{
 		isSearch=true;
+		table=3;
         txtResult.setText("Queue");
 
         col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));

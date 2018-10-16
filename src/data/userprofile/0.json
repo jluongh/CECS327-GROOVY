@@ -92,6 +92,40 @@
     {
       "playlistID": 9,
       "name": "ddd",
+      "songInfos": [
+        {
+          "song": {
+            "songID": 6,
+            "title": "Let\u0027s Groovy",
+            "duration": 3.55
+          },
+          "addedDate": "Oct 15, 2018 8:50:08 PM"
+        },
+        {
+          "song": {
+            "songID": 2,
+            "title": "September",
+            "duration": 3.35
+          },
+          "addedDate": "Oct 15, 2018 8:51:05 PM"
+        },
+        {
+          "song": {
+            "songID": 1,
+            "title": "Everybody Wants To Rule The World",
+            "duration": 4.13
+          },
+          "addedDate": "Oct 15, 2018 8:53:13 PM"
+        },
+        {
+          "song": {
+            "songID": 4,
+            "title": "Bohemian Rhapsody",
+            "duration": 6.07
+          },
+          "addedDate": "Oct 15, 2018 8:55:54 PM"
+        }
+      ],
       "songCount": 0,
       "creationDate": "Oct 14, 2018 7:51:50 PM"
     }

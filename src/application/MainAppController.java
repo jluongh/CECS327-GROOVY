@@ -102,7 +102,6 @@ public class MainAppController implements Initializable {
 	private TableColumn<Object,String> col3;
 	@FXML
 	private TableColumn<Object, String> col4;
-
 	@FXML
 	private TableView<Playlist> playlistTable;
 	@FXML
@@ -132,12 +131,13 @@ public class MainAppController implements Initializable {
 	private UserProfileController upc ;
 	private UserProfile user;
 	private List<Playlist> playlist;
+	private ArrayList<Song> queues;
 	private ObservableList<Playlist> playlists = FXCollections.observableArrayList();
     private ObservableList<Object> userSong = FXCollections.observableArrayList();
 	private ObservableList<Object> songs = FXCollections.observableArrayList();
 	private ObservableList<Object> artistSong = FXCollections.observableArrayList();
 	private ObservableList<Object> albumSong = FXCollections.observableArrayList();
-
+	private ObservableList<Object> queueSong = FXCollections.observableArrayList();
 	private SongController sc;
 
 	// Audio player
@@ -184,7 +184,7 @@ public class MainAppController implements Initializable {
 		//display playlist name on sidebar
 		playlistName.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getName()));
 		playlistTable.setItems(playlists);
-		
+		queues = new ArrayList<Song>();
 		
 		//disable the playlist button 
 		btnPlayList.setVisible(false);
@@ -403,13 +403,13 @@ public class MainAppController implements Initializable {
 			if (table==1)
 			{
 				Song userChoose = (Song) Result.getSelectionModel().getSelectedItem();
-				MenuItem add = new MenuItem("Add");
+				MenuItem add = new MenuItem("Add to playlist");
+				MenuItem addQueue = new MenuItem("Add to queue");
 				ContextMenu contextMenu = new ContextMenu();
-		        contextMenu.getItems().addAll(add);
+		        contextMenu.getItems().addAll(add,addQueue);
 		        contextMenu.show(playlistTable,event.getScreenX(),event.getScreenY());
 
 				add.setOnAction(new EventHandler<ActionEvent>() {
-
 		            @Override
 		            public void handle(ActionEvent event) {
 		            	ArrayList<String> dropDown = new ArrayList<String>();
@@ -428,12 +428,14 @@ public class MainAppController implements Initializable {
 	                    	{
 	                    		Date date = new Date();
 	        					SongInfo newSong = new SongInfo(userChoose, date);
+
 	        					for (int i = 0; i < playlist.size(); i++)
 	        					{
 	        						if (playlist.get(i).getName().equals(result.get()))
 	        						{
 	        							try {
 	        								upc.AddSongToPlaylist(playlist.get(i).getPlaylistID(), userChoose.getSongID());
+	        								System.out.println(userChoose.getTitle());
 	        							} catch(IOException e) {
 	        								e.printStackTrace();
 	        							}
@@ -453,6 +455,25 @@ public class MainAppController implements Initializable {
 	                	}
 		            }
 		        });
+				addQueue.setOnAction(new EventHandler<ActionEvent>() 
+				{
+					@Override
+		            public void handle(ActionEvent event) 
+					{
+						if(queues==null&&queues.isEmpty())
+						{
+							queues.add(0, userChoose);
+							queueSong.add(userChoose);
+						}
+						else
+						{
+							queues.add(userChoose);
+							queueSong.add(userChoose);
+						}
+						
+					}
+					
+				});
 			}
 			else if(table==0) //playlist display in the center if clicked happens
 			{
@@ -568,7 +589,7 @@ public class MainAppController implements Initializable {
 		col2.setText("Artist");
 		col3.setText("Album");
 		col4.setText("Duration");
-		
+		txtResult.setText("Search Result");
 		//display object to the table
 		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
 		col2.setCellValueFactory(cellData -> {
@@ -620,7 +641,7 @@ public class MainAppController implements Initializable {
 		col3.setText("Album");
 		
 		col4.setText("Duration");
-
+		txtResult.setText("Search Result");
 		//display object to the table
 
 		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
@@ -675,7 +696,7 @@ public class MainAppController implements Initializable {
 		col1.setText("Artist");
 		col3.setText("Album");
 		col4.setText("Duration");
-
+		txtResult.setText("Search Result");
 		//display object to the table
 		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
 //		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
@@ -712,7 +733,31 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void selectQueue(MouseEvent event)
 	{
-		
+		isSearch=true;
+		table=3;
+        txtResult.setText("Queue");
+
+        col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
+        col2.setCellValueFactory(cellData -> {
+			try {
+				return new ReadOnlyStringWrapper(sc.GetArtistBySongID(((Song) cellData.getValue()).getSongID()).getName());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		});
+		col3.setCellValueFactory(cellData -> {
+			try {
+				return new ReadOnlyStringWrapper(sc.GetAlbumBySongID(((Song) cellData.getValue()).getSongID()).getName());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		});
+		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
+
+		Result.setItems(queueSong);
+		Result.refresh();        
 	}
 
 	/**

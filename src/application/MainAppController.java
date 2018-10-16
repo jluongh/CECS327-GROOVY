@@ -46,6 +46,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.TableView;
@@ -80,6 +82,8 @@ public class MainAppController implements Initializable {
 	private ImageView stopMusic;
 	@FXML
 	private ImageView Mute;
+	@FXML
+	private ImageView queue;
 	@FXML
 	private Text songName;
 	@FXML
@@ -181,8 +185,12 @@ public class MainAppController implements Initializable {
 		
 		//disable the playlist button 
 		btnPlayList.setVisible(false);
+		
 	}
 
+	
+
+	
 	/**
 	 * When user double click the playlist, it will display the songs in the playlist on the right
 	 * @param event - {MouseEvent} the action
@@ -652,6 +660,12 @@ public class MainAppController implements Initializable {
 	{
 		showInputBox();
 	}
+	
+	@FXML
+	public void selectQueue(MouseEvent event)
+	{
+		
+	}
 
 	/**
 	 * Prompt user to input new playlist name
@@ -697,6 +711,45 @@ public class MainAppController implements Initializable {
 		player.resume();
 	}
 
+	
+	private EventHandler<KeyEvent> keyListener = new EventHandler<KeyEvent>() {
+	    @Override
+	    public void handle(KeyEvent event) {
+	        if(event.getCode() == KeyCode.LEFT) 
+	        {
+	            player.previous();
+	        } 
+	        else if(event.getCode() == KeyCode.RIGHT)
+	        {
+	        	player.next();
+	        }
+	        else if(event.getCode() == KeyCode.SPACE) {
+	            player.pause();
+	        }
+	        event.consume();
+	    }
+	};
+	
+	
+	
+	@FXML
+	public void spacePress(KeyEvent e)
+	{
+		keyListener.handle(e);
+	}
+	
+	@FXML
+	public void rightPress(KeyEvent e)
+	{
+		keyListener.handle(e);
+	}
+	
+	@FXML
+	public void leftPress(KeyEvent e)
+	{
+		keyListener.handle(e);
+	}
+	
 	/**
 	 * Event Listener on ImageView[#previousMusic].onMouseClicked to play previous song
 	 * @param event - {MouseEvent} the action

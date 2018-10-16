@@ -9,6 +9,7 @@ import javax.sound.sampled.AudioInputStream;
 import api.*;
 import api.audio.AudioPlayer;
 import data.models.*;
+import services.LibraryService;
 
 public class Client {
 
@@ -28,14 +29,20 @@ public class Client {
 //		pc.playSong(1);
 //		System.out.println("Done");
 
-		UserController uc = new UserController(socket);
-		User user = uc.getUser("user23", "cecs327");
-		if (user != null) {
-			System.out.println(user.getUserID());
+//		UserController uc = new UserController(socket);
+//		User user = uc.getUser("user23", "cecs327");
+//		if (user != null) {
+//			System.out.println(user.getUserID());
+//		}
+//		else {
+//			System.out.println("Not Found");
+//		}
+		SearchController sc = new SearchController(socket);
+		List<Artist> artists = sc.SearchByArtist("A");
+		for (Artist artist : artists) {
+			System.out.println(artist.getName());
 		}
-		else {
-			System.out.println("Not Found");
-		}
+		
 		socket.close();
 	}
 

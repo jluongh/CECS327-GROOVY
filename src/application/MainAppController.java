@@ -375,6 +375,9 @@ public class MainAppController implements Initializable {
 				songs.add(info.getSong());
 			}
 			player.loadSongs(songs);
+			if (player.thread != null && player.thread.isAlive()) {
+				player.thread.stop();
+			}
 			player.playQueue();
 			
 			
@@ -522,6 +525,9 @@ public class MainAppController implements Initializable {
 				List<Song> songs = new ArrayList <Song>();
 				songs.add(song);
 				player.loadSongs(songs);
+				if (player.thread != null && player.thread.isAlive()) {
+					player.thread.stop();
+				}
 				player.playQueue();
 				
 //				ap.stop();
@@ -536,6 +542,9 @@ public class MainAppController implements Initializable {
 				List<Song> songs = new ArrayList <Song>();
 				songs.add(song.getSong());
 				player.loadSongs(songs);
+				if (player.thread != null && player.thread.isAlive()) {
+					player.thread.stop();
+				}
 				player.playQueue();
 				//				ap.stop();
 //				ap.play(songId, false);

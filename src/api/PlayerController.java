@@ -26,9 +26,10 @@ public class PlayerController {
 ;
 	public boolean playing;
 	public boolean repeat;
-	public int current;
+	public Song current;
 
 	private SongQueue sq;
+	private Stack<Song> st;
 	Random rand = new Random();
 
 
@@ -46,25 +47,39 @@ public class PlayerController {
 
 	public void loadSongs(List<Song> songs) {
 		sq.setSongs(songs);
-		current = 0;
 	}
 
 	public void playQueue() {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (current < sq.getSongs().size()) {
-					Song song = sq.getSongs().get(current);
+//				while (current < sq.getSongs().size()) {
+//					Song song = sq.getSongs().get(current);
+//					try {
+//						reset();
+//						playSong(song.getSongID());
+//						current++;						
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+//					
+//					if (repeat) {
+//						current = 0;
+//					}
+//				}
+				while(!sq.getSongs().isEmpty()) {
+					Song song;	
+					if (repeat) {
+						song = current;
+					}
+					else {
+						song = next();
+					}
 					try {
 						reset();
-						playSong(song.getSongID());
-						current++;						
-					} catch (IOException e) {
+						playSong(song.getSongID());						
+					} catch (Exception e) {
 						e.printStackTrace();
-					}
-					
-					if (repeat) {
-						current = 0;
 					}
 				}
 			}
@@ -167,24 +182,33 @@ public class PlayerController {
 
 	/**
 	 * Plays the next song
-	 * 
+	 * @return current 
 	 */
-	public void next() {
+	public Song next() {
 		if (!playing) {
-			current++;
+			current = sq.getSongs().remove(0);
+			st.push(current);
 		}
+//		if (!playing) {
+//			current++;
+//		}
 		reset();
+		return current;
 	}
 	
 	/**
 	 * Plays the previous song
-	 * 
+	 * @return current
 	 */
-	public void previous() {
+	public Song previous() {
 		if (playing) {
-			current-=2;
+			current = st.pop();
 		}
+//		if (playing) {
+//			current-=2;
+//		}
 		reset();
+		return current;
 	}
 
 	/**

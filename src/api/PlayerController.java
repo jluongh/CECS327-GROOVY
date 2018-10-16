@@ -47,7 +47,7 @@ public class PlayerController {
 	public void loadSongs(List<Song> songs) {
 		sq.setSongs(songs);
 		current = 0;
-		System.out.println("loaded songs to: " + current);
+//		System.out.println("loaded songs to: " + current);
 	}
 
 	public void playQueue() {
@@ -177,7 +177,7 @@ public class PlayerController {
 				current = -1;
 			}
 		}
-		System.out.println(current);
+//		System.out.println(current);
 
 		reset2();
 	}
@@ -209,7 +209,7 @@ public class PlayerController {
 	 * 
 	 */
 	public void pause() {
-		System.out.println("2");
+//		System.out.println("2");
 		sdl.stop();
 	}
 

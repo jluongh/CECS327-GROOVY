@@ -28,6 +28,14 @@
             "duration": 4.13
           },
           "addedDate": "Oct 8, 2018 5:00:58 PM"
+        },
+        {
+          "song": {
+            "songID": 2,
+            "title": "September",
+            "duration": 3.35
+          },
+          "addedDate": "Oct 16, 2018 11:11:51 AM"
         }
       ],
       "songCount": 0,

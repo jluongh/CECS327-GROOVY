@@ -19,147 +19,144 @@ public class SearchController {
 		this.socket = socket;
 	}
 
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 * @throws IOException
+	 */
 	public List<Artist> SearchByArtist(String query) throws IOException {
-		
-		// get JSON
-		String queryJson = new Gson().toJson(query);
-		
-		// construct message
-		byte[] messageType = ByteBuffer.allocate(4).putInt(Packet.REQUEST).array();
-		byte[] requestIdSend = ByteBuffer.allocate(4).putInt(Packet.REQUEST_ID_SEARCHBYARTIST).array();
-		byte[] fragment = queryJson.getBytes();
 
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		baos.write(messageType);
-		baos.write(requestIdSend);
-		baos.write(fragment);
+		// construct message
+		Message requestMsg = new Message();
+		requestMsg.messageType = Packet.REQUEST;
+		requestMsg.requestID = Packet.REQUEST_ID_SEARCHBYARTIST;
+		requestMsg.fragment = query.getBytes();
+		
+		String requestString = new Gson().toJson(requestMsg);
+		byte[] requestBytes = requestString.getBytes();
 		
 		// Send request
-		byte[] message = baos.toByteArray();
 		InetAddress address = InetAddress.getByName(Net.HOST);
-		DatagramPacket request = new DatagramPacket(message, message.length, address, Net.PORT);
+		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
 		socket.send(request);
 					
 		// Receive reply 
 		byte[] buffer = new byte[1024 * 1000];
 		DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
 		socket.receive(reply);
-					
-		// Read reply
-		ByteBuffer wrapped = ByteBuffer.wrap(reply.getData(), 0, 4);
-		int messageTypeReceive = wrapped.getInt();
-		wrapped = ByteBuffer.wrap(reply.getData(), 4, 4);
-		int requestIdReceive = wrapped.getInt();
-		fragment = Arrays.copyOfRange(reply.getData(), 8, reply.getLength());
+
+		String replyString = new String(reply.getData(), 0, reply.getLength());
 		
-		if (messageTypeReceive == Packet.REPLY) {
-			switch (requestIdReceive) {
-			
+		// Deserialize message string 
+		Message replyMsg = new Gson().fromJson(replyString, Message.class);
+		
+		if (replyMsg.messageType == Packet.REPLY) {
+			switch (replyMsg.requestID) {
 			case Packet.REQUEST_ID_SEARCHBYARTIST:
-				String data = new String(fragment);
-				Type listType = new TypeToken<List<Artist>>() {}.getType();
-				List<Artist> artists = new Gson().fromJson(data, listType);
+				String artistsString = new String(replyMsg.fragment, 0, replyMsg.fragment.length);
+				
+				Type listType = new TypeToken<List<Artist>>() {
+				}.getType();
+				List<Artist> artists = new Gson().fromJson(artistsString, listType);
 				
 				return artists;
 			}
 		}
-		
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 * @throws IOException
+	 */
 	public List<Album> SearchByAlbum(String query) throws IOException {
 
-		// get JSON
-		String queryJson = new Gson().toJson(query);
-		
 		// construct message
-		byte[] messageType = ByteBuffer.allocate(4).putInt(Packet.REQUEST).array();
-		byte[] requestIdSend = ByteBuffer.allocate(4).putInt(Packet.REQUEST_ID_SEARCHBYALBUM).array();
-		byte[] fragment = queryJson.getBytes();
-
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		baos.write(messageType);
-		baos.write(requestIdSend);
-		baos.write(fragment);
+		Message requestMsg = new Message();
+		requestMsg.messageType = Packet.REQUEST;
+		requestMsg.requestID = Packet.REQUEST_ID_SEARCHBYALBUM;
+		requestMsg.fragment = query.getBytes();
+		
+		String requestString = new Gson().toJson(requestMsg);
+		byte[] requestBytes = requestString.getBytes();
 		
 		// Send request
-		byte[] message = baos.toByteArray();
 		InetAddress address = InetAddress.getByName(Net.HOST);
-		DatagramPacket request = new DatagramPacket(message, message.length, address, Net.PORT);
+		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
 		socket.send(request);
 					
 		// Receive reply 
 		byte[] buffer = new byte[1024 * 1000];
 		DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
 		socket.receive(reply);
-					
-		// Read reply
-		ByteBuffer wrapped = ByteBuffer.wrap(reply.getData(), 0, 4);
-		int messageTypeReceive = wrapped.getInt();
-		wrapped = ByteBuffer.wrap(reply.getData(), 4, 4);
-		int requestIdReceive = wrapped.getInt();
-		fragment = Arrays.copyOfRange(reply.getData(), 8, reply.getLength());
+
+		String replyString = new String(reply.getData(), 0, reply.getLength());
 		
-		if (messageTypeReceive == Packet.REPLY) {
-			switch (requestIdReceive) {
-			
+		// Deserialize message string 
+		Message replyMsg = new Gson().fromJson(replyString, Message.class);
+		
+		if (replyMsg.messageType == Packet.REPLY) {
+			switch (replyMsg.requestID) {
 			case Packet.REQUEST_ID_SEARCHBYALBUM:
-				String data = new String(fragment);
-				Type listType = new TypeToken<List<Artist>>() {}.getType();
-				List<Album> albums = new Gson().fromJson(data, listType);
+				String albumsString = new String(replyMsg.fragment, 0, replyMsg.fragment.length);
+				
+				Type listType = new TypeToken<List<Album>>() {
+				}.getType();
+				List<Album> albums = new Gson().fromJson(albumsString, listType);
 				
 				return albums;
 			}
 		}
-		
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 * @throws IOException
+	 */
 	public List<Song> SearchBySong(String query) throws IOException {
 
-		// get JSON
-		String queryJson = new Gson().toJson(query);
-		
 		// construct message
-		byte[] messageType = ByteBuffer.allocate(4).putInt(Packet.REQUEST).array();
-		byte[] requestIdSend = ByteBuffer.allocate(4).putInt(Packet.REQUEST_ID_SEARCHBYSONG).array();
-		byte[] fragment = queryJson.getBytes();
-
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		baos.write(messageType);
-		baos.write(requestIdSend);
-		baos.write(fragment);
+		Message requestMsg = new Message();
+		requestMsg.messageType = Packet.REQUEST;
+		requestMsg.requestID = Packet.REQUEST_ID_SEARCHBYSONG;
+		requestMsg.fragment = query.getBytes();
+		
+		String requestString = new Gson().toJson(requestMsg);
+		byte[] requestBytes = requestString.getBytes();
 		
 		// Send request
-		byte[] message = baos.toByteArray();
 		InetAddress address = InetAddress.getByName(Net.HOST);
-		DatagramPacket request = new DatagramPacket(message, message.length, address, Net.PORT);
+		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
 		socket.send(request);
 					
 		// Receive reply 
 		byte[] buffer = new byte[1024 * 1000];
 		DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
 		socket.receive(reply);
-					
-		// Read reply
-		ByteBuffer wrapped = ByteBuffer.wrap(reply.getData(), 0, 4);
-		int messageTypeReceive = wrapped.getInt();
-		wrapped = ByteBuffer.wrap(reply.getData(), 4, 4);
-		int requestIdReceive = wrapped.getInt();
-		fragment = Arrays.copyOfRange(reply.getData(), 8, reply.getLength());
+
+		String replyString = new String(reply.getData(), 0, reply.getLength());
 		
-		if (messageTypeReceive == Packet.REPLY) {
-			switch (requestIdReceive) {
-			
+		// Deserialize message string 
+		Message replyMsg = new Gson().fromJson(replyString, Message.class);
+		
+		if (replyMsg.messageType == Packet.REPLY) {
+			switch (replyMsg.requestID) {
 			case Packet.REQUEST_ID_SEARCHBYSONG:
-				String data = new String(fragment);
-				Type listType = new TypeToken<List<Artist>>() {}.getType();
-				List<Song> songs = new Gson().fromJson(data, listType);
+				String songsString = new String(replyMsg.fragment, 0, replyMsg.fragment.length);
+				
+				Type listType = new TypeToken<List<Song>>() {
+				}.getType();
+				List<Song> songs = new Gson().fromJson(songsString, listType);
 				
 				return songs;
 			}
 		}
-		
 		return null;
 	}
 }

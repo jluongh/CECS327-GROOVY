@@ -68,8 +68,7 @@ public class SearchService {
 		
 		LibraryService ls = new LibraryService();
 		
-		List<Song> songs = new ArrayList<Song>();
-		songs = ls.getAllSongs();
+		List<Song> songs = ls.getAllSongs();
 		
 		List<Song> response = new ArrayList<Song>();
 		

@@ -48,7 +48,6 @@ public class ClientHandler extends Thread {
 
 			// display request
 			String received = new String(request.getData(), 0, request.getLength());
-			System.out.println("Received: " + received);
 			Message receivedMsg = new Gson().fromJson(received, Message.class);
 			Message sendMsg = null;
 
@@ -190,7 +189,6 @@ public class ClientHandler extends Thread {
 						int port = request.getPort();
 
 						String sendMsgS = new Gson().toJson(sendMsg);
-						System.out.println("Send: " + sendMsgS);
 						byte[] send = sendMsgS.getBytes();
 
 						DatagramPacket packet = new DatagramPacket(send, send.length, address, port);

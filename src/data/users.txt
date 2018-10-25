@@ -1,0 +1,4 @@
+user1;0;cecs327
+user2;1;cecs327
+jen;2;1234
+caitlin;3;1234

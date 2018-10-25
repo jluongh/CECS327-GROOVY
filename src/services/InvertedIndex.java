@@ -13,23 +13,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.sun.org.apache.bcel.internal.Constants;
+
+import data.constants.Files;
+
 public class InvertedIndex {
-	
-	List<String> stopwords = Arrays.asList("a", "able", "about",
-			"across", "after", "all", "almost", "also", "am", "among", "an",
-			"and", "any", "are", "as", "at", "be", "because", "been", "but",
-			"by", "can", "cannot", "could", "dear", "did", "do", "does",
-			"either", "else", "ever", "every", "for", "from", "get", "got",
-			"had", "has", "have", "he", "her", "hers", "him", "his", "how",
-			"however", "i", "if", "in", "into", "is", "it", "its", "just",
-			"least", "let", "like", "likely", "may", "me", "might", "most",
-			"must", "my", "neither", "no", "nor", "not", "of", "off", "often",
-			"on", "only", "or", "other", "our", "own", "rather", "said", "say",
-			"says", "she", "should", "since", "so", "some", "than", "that",
-			"the", "their", "them", "then", "there", "these", "they", "this",
-			"tis", "to", "too", "twas", "us", "wants", "was", "we", "were",
-			"what", "when", "where", "which", "while", "who", "whom", "why",
-			"will", "with", "would", "yet", "you", "your");
+
  
 	Map<String, List<Tuple>> index = new HashMap<String, List<Tuple>>();
 	List<String> files = new ArrayList<String>();
@@ -48,8 +37,6 @@ public class InvertedIndex {
 			for (String _word : line.split("\\W+")) {
 				String word = _word.toLowerCase();
 				pos++;
-				if (stopwords.contains(word))
-					continue;
 				List<Tuple> idx = index.get(word);
 				if (idx == null) {
 					idx = new LinkedList<Tuple>();
@@ -82,10 +69,21 @@ public class InvertedIndex {
 	public static void main(String[] args) {
 		try {
 			InvertedIndex idx = new InvertedIndex();
-			for (int i = 1; i < args.length; i++) {
-				idx.indexFile(new File(args[i]));
+			List<File> files = new ArrayList<File>();
+			
+			File albums = new File(Files.ALBUMS);
+			files.add(albums);
+			File artists = new File(Files.ARTISTS);
+			files.add(artists);
+			File songs = new File(Files.SONGS);
+			files.add(songs);
+			File users = new File(Files.USERS);
+			files.add(users);
+			
+			for (File file : files) {
+				idx.indexFile(file);
 			}
-			idx.search(Arrays.asList(args[0].split(",")));
+			idx.search(Arrays.asList("abba".split(";")));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

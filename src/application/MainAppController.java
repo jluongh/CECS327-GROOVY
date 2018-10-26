@@ -79,8 +79,6 @@ public class MainAppController implements Initializable {
 	@FXML
 	private ImageView nextMusic;
 	@FXML
-	private ImageView stopMusic;
-	@FXML
 	private ImageView btnShuffle;
 	@FXML
 	private ImageView btnRepeat;
@@ -128,6 +126,14 @@ public class MainAppController implements Initializable {
 	private Text txtResult;
 	
 
+	
+	// images change 
+	// when btn is clicked > image
+	Image pic1 = new Image(getClass().getResourceAsStream("resources/if-close.png")); // THIS WORKSS!!!!!!!!
+	// when btn is unclicked > image
+	Image pic2 = new Image(getClass().getResourceAsStream("resources/if-play.png"));
+	Image pic3 = new Image(getClass().getResourceAsStream("resources/play-button.png"));
+	Image pic4 = new Image(getClass().getResourceAsStream("resources/pause-button.png"));
 	private boolean isSearch = false;
 	private int table = 0; //0 for playlist table, 1 for search table 
 	private boolean isPlaying = false;
@@ -197,7 +203,6 @@ public class MainAppController implements Initializable {
 		
 	}
 
-	
 
 	
 	/**
@@ -302,6 +307,7 @@ public class MainAppController implements Initializable {
 					return null;
 				}
 			});
+			
 			col3.setCellValueFactory(cellData -> {
 				try {
 					return new ReadOnlyStringWrapper(sc.GetAlbumBySongID(((SongInfo) cellData.getValue()).getSong().getSongID()).getName());
@@ -358,21 +364,17 @@ public class MainAppController implements Initializable {
 	
 
 
-	// when btn is clicked > image
-	//Image pic1 = new Image("if-close.png");
-	
-	// when btn is unclicked > image
-	//Image pic2 = new Image("if-play.png");
 
-	boolean isPlayListClicked = false;
+	//boolean isPlayListClicked = false;
 	
 	@FXML
 	public void btnPlayListClicked(MouseEvent event)
 	{			
 		
-		if(isPlayListClicked == false) {
-			//btnPlayList.setImage(pic1);
-			
+		if(isPlaying == false) {
+			btnPlayList.setImage(pic1);
+			isPlaying = true;
+			playMusic.setImage(pic4);
 			// Should be List<Song>
 			Playlist playlist = upc.GetPlaylists().get(0);
 			List<Song> songs = new ArrayList<Song>();
@@ -386,17 +388,17 @@ public class MainAppController implements Initializable {
 			}
 			player.playQueue();
 			
-			//btnPlayList.setStyle("-fx-background-color: transparent; -fx-padding: 6 4 4 6;");
-			btnPlayList.setStyle("-fx-background-color: BLACK");
-			
-		}else if(isPlayListClicked == true) {
-			//btnPlayList.setImage(pic2);
+
+			//isPlayListClicked= true;
+		}else if(isPlaying == true) {
+			btnPlayList.setImage(pic2);
+			playMusic.setImage(pic3);
+			player.pause();
+			isPlaying = false;
 			
 		}
 		
 	}
-	
-	
 	
 	
 
@@ -410,6 +412,7 @@ public class MainAppController implements Initializable {
 	{
 		if (event.getButton()==MouseButton.SECONDARY)
 		{
+			
 			if (table==1)
 			{
 				Song userChoose = (Song) Result.getSelectionModel().getSelectedItem();
@@ -813,11 +816,29 @@ public class MainAppController implements Initializable {
 	 * Event Listener on ImageView[#playMusic].onMouseClicked to play the song at specific time
 	 * @param event - {MouseEvent} the action
 	 */
+	
+	
+	//player.isPlaying
+	// 
 	@FXML
 	public void playMusicClicked(MouseEvent event)
 	{
+		//boolean isPlayClicked = ap.isPlaying;
+		if(isPlaying == false) {
+			
 
-		player.resume();
+			player.resume();
+			
+			playMusic.setImage(pic4);
+			isPlaying = true;
+		}else if(isPlaying == true) {
+			
+
+			player.pause();
+			
+			playMusic.setImage(pic3);
+			isPlaying = false;
+		}
 	}
 
 	
@@ -879,15 +900,11 @@ public class MainAppController implements Initializable {
 		player.next();
 	}
 
-	/**
-	 * Event Listener on ImageView[#stopMusic].onMouseClicked to stop the song at the current time
-	 * @param event - {MouseEvent} the action
-	 */
-	@FXML
-	public void musicStopClicked(MouseEvent event)
-	{
-		player.pause();
-	}
+	
+
+	Image pic5 = new Image(getClass().getResourceAsStream("resources/volume-mute.png"));
+
+	Image pic6 = new Image(getClass().getResourceAsStream("resources/full-sound-button.png"));
 
 	/**
 	 * Event Listener on ImageView[#Mute].onMouseClicked to mute the song
@@ -901,10 +918,14 @@ public class MainAppController implements Initializable {
 		if(isMuteClicked == false) {
 			player.setVolume(0);
 			isMuteClicked = true;
+			Mute.setImage(pic5);
+			
 		
 		}else if(isMuteClicked == true) {
 			player.setVolume(1);
 			isMuteClicked = false;
+			Mute.setImage(pic6);
+			
 		}
 		
 	}
@@ -930,7 +951,11 @@ public class MainAppController implements Initializable {
 		lbMode.setText("Mode: Repeat");
 	}
 
-	
+	public boolean refreash(boolean x) {
+		
+		//x=
+		return  false;
+	}
 	
 	/**
 	 * The volume slider is not working yet

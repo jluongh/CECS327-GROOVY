@@ -1,12 +1,20 @@
 package services;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import data.constants.Files;
+import data.index.Chunk;
+import data.index.MetadataFile;
 
 public class TestService {
 	
 	private static final String newFile = "test-songs.txt";
+	private static final String newMDF = "test-metadata.json";
 	
 	public static void main(String[] args) {
 //		HashService hs = new HashService(true);
@@ -16,7 +24,8 @@ public class TestService {
 		
 		
 		//appendHash();
-		System.out.println(getHashByChunk(4));
+		//System.out.println(getHashByChunk(4));
+		serializeMDF(new File(Files.ROOT+newFile));
 	}
 	// TODO: remove trailing spaces
 	public static void appendHash() {
@@ -68,5 +77,43 @@ public class TestService {
 		} 
 
 		return hash;
+	}
+	
+	public static void serializeMDF(File file) {
+		MetadataFile mdf = new MetadataFile();
+		
+		mdf.name = file.getName();
+		mdf.size = Long.toString(file.length()); // in bytes
+		
+		List<Chunk> chunks = new ArrayList<Chunk>();
+		
+		String guid = null;
+		try (BufferedReader br = new BufferedReader(new FileReader(new File(Files.ROOT+newFile)))) {
+			
+		    String chunkLine;
+		    
+		    while ((chunkLine = br.readLine()) != null) {
+
+		    	String[] tokens = chunkLine.split(";");
+		    	guid = tokens[tokens.length-1];
+		    	Chunk chunk = new Chunk();
+		    	chunk.setGuid(guid);
+		    	chunks.add(chunk);
+		    }
+		    
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		
+		mdf.chunks = chunks;
+		
+		try (Writer writer = new FileWriter(Files.ROOT+newMDF)) {
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			gson.toJson(mdf, writer);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

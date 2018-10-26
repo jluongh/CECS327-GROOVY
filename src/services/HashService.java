@@ -71,6 +71,32 @@ public class HashService {
 	
 	/**
 	 * 
+	 * @param plaintext
+	 * @return
+	 */
+	public String sha1(byte[] plaintextBytes) {
+		
+		String decimalString = null;
+		
+		try {
+			
+			MessageDigest digest = MessageDigest.getInstance(Security.HASH_ALGORITHM);
+			digest.update(plaintextBytes, 0, plaintextBytes.length);
+			byte[] hashBytes = digest.digest();
+			
+			decimalString = hexToDecimal(bytesToHexString(hashBytes));
+			
+			return truncate(decimalString);
+			
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		
+		return decimalString;
+	}
+	
+	/**
+	 * 
 	 * @param bytes
 	 * @return
 	 */

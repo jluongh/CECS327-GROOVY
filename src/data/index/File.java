@@ -3,6 +3,9 @@ package data.index;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * I renamed this to MetadataFile model since it conflicts with the java.io.File class.  Delete later... - @trishaechual
+ */
 public class File {
 	public String name;
 	public String size;

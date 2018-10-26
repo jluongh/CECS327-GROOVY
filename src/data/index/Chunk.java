@@ -1,5 +1,5 @@
 package data.index;
 
 public class Chunk {
-	protected String text;
+	protected String guid;
 }

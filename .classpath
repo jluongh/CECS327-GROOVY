@@ -9,5 +9,22 @@
 	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/gson-2.8.5.jar"/>
 	<classpathentry kind="lib" path="lib/metadata-extractor-2.11.0.jar"/>
+	<classpathentry kind="lib" path="lib/p2p-lib/gcm-server-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/p2p-lib/json-simple-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/p2p-lib/mapdb-1.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/p2p-lib/netty-buffer-4.0.28.Final.jar"/>
+	<classpathentry kind="lib" path="lib/p2p-lib/netty-common-4.0.28.Final.jar"/>
+	<classpathentry kind="lib" path="lib/p2p-lib/netty-transport-4.0.28.Final.jar"/>
+	<classpathentry kind="lib" path="lib/p2p-lib/slf4j-api-1.7.5.jar"/>
+	<classpathentry kind="lib" path="lib/p2p-lib/tomp2p-all-5.0-Beta8.jar"/>
+	<classpathentry kind="lib" path="lib/p2p-lib/tomp2p-android-5.0-Beta8.jar"/>
+	<classpathentry kind="lib" path="lib/p2p-lib/tomp2p-core-5.0-Beta8.jar"/>
+	<classpathentry kind="lib" path="lib/p2p-lib/tomp2p-dht-5.0-Beta8.jar"/>
+	<classpathentry kind="lib" path="lib/p2p-lib/tomp2p-nat-5.0-Beta8.jar"/>
+	<classpathentry kind="lib" path="lib/p2p-lib/tomp2p-replication-5.0-Beta8.jar"/>
+	<classpathentry kind="lib" path="lib/p2p-lib/tomp2p-storage-5.0-Beta8.jar"/>
+	<classpathentry kind="lib" path="lib/p2p-lib/tomp2p-tracker-5.0-Beta8.jar"/>
+	<classpathentry kind="lib" path="lib/p2p-lib/weupnp-0.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/tomp2p-all-5.0-Beta8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

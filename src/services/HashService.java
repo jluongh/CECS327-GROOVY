@@ -9,8 +9,35 @@ import data.constants.Security;
 
 public class HashService {
 
+	private int truncatedLength;
+	
+	/**
+	 * 
+	 */
 	public HashService() {
-		//
+		this.truncatedLength = 0;
+	}
+	
+	/**
+	 * 
+	 * @param setDefaultTruncation
+	 */
+	public HashService(boolean setDefaultTruncation) {
+		if (setDefaultTruncation)
+			this.truncatedLength = Security.DEFAULT_TRUNCATION;
+		else
+			this.truncatedLength = 0;
+	}
+	
+	/**
+	 * 
+	 * @param truncatedLength
+	 */
+	public HashService(int truncatedLength) {
+		if (truncatedLength > 0)
+			this.truncatedLength = truncatedLength;
+		else this.truncatedLength = 0;
+			
 	}
 	
 	/**
@@ -20,6 +47,8 @@ public class HashService {
 	 */
 	public String sha1(String plaintext) {
 		
+		String decimalString = null;
+		
 		try {
 			
 			MessageDigest digest = MessageDigest.getInstance(Security.HASH_ALGORITHM);
@@ -27,7 +56,9 @@ public class HashService {
 			digest.update(plaintextBytes, 0, plaintextBytes.length);
 			byte[] hashBytes = digest.digest();
 			
-			return hexToDecimal(bytesToHexString(hashBytes));
+			decimalString = hexToDecimal(bytesToHexString(hashBytes));
+			
+			return truncate(decimalString);
 			
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
@@ -35,7 +66,7 @@ public class HashService {
 			e.printStackTrace();
 		}
 		
-		return null;
+		return decimalString;
 	}
 	
 	/**
@@ -65,5 +96,17 @@ public class HashService {
 	private String hexToDecimal(String hex) {
 		BigInteger decimal = new BigInteger(hex,16);
 		return decimal.toString();
+	}
+	
+	/**
+	 * 
+	 * @param hash
+	 * @return
+	 */
+	private String truncate(String hash) {
+		if (truncatedLength != 0)
+			return hash.substring(0, truncatedLength);
+		else
+			return hash;
 	}
 }

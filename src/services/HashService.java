@@ -6,6 +6,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import data.constants.Security;
+import net.tomp2p.peers.Number160;
 
 public class HashService {
 
@@ -93,6 +94,40 @@ public class HashService {
 		}
 		
 		return decimalString;
+	}
+	
+	
+	/**
+	 * 
+	 * @param plaintext
+	 * @return
+	 */
+	public Number160 sha1toNum160(String plaintext) {
+		
+		String hexString = null;
+		Number160 hex = null;
+		
+		try {
+			
+			MessageDigest digest = MessageDigest.getInstance(Security.HASH_ALGORITHM);
+			byte[] plaintextBytes = plaintext.getBytes(Security.ENCODING);
+			digest.update(plaintextBytes, 0, plaintextBytes.length);
+			byte[] hashBytes = digest.digest();
+			
+			//decimalString = truncate(hexToDecimal(bytesToHexString(hashBytes)));
+			//decimalString = hexToDecimal(bytesToHexString(hashBytes));
+			hexString = "0x"+bytesToHexString(hashBytes);
+			hex = new Number160(hexString);
+			
+			return hex;
+			
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		return hex;
 	}
 	
 	/**

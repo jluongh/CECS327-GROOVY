@@ -17,15 +17,15 @@ public class TestService {
 	private static final String newMDF = "test-metadata.json";
 	
 	public static void main(String[] args) {
-//		HashService hs = new HashService(true);
-//		String payload = "Abba;5";
-//		
-//		System.out.println(hs.sha1(payload));
+		HashService hs = new HashService(true);
+		String payload = "Abba;5";
 		
+		System.out.println(hs.sha1toNum160(payload).toString());
+		System.out.println(hs.sha1(payload));
 		
 		//appendHash();
 		//System.out.println(getHashByChunk(4));
-		serializeMDF(new File(Files.ROOT+newFile));
+		//serializeMDF(new File(Files.ROOT+newFile));
 	}
 	// TODO: remove trailing spaces
 	public static void appendHash() {

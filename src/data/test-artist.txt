@@ -1,4 +1,0 @@
-ABBA;3;
-Earth, Wind, & Fire;2;
-Queen;4;
-Tears For Fears;1;

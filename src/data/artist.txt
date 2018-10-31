@@ -1,4 +1,4 @@
-ABBA;3
-Earth, Wind, & Fire;2
-Queen;4
-Tears For Fears;1
+ABBA;3;5760
+Earth, Wind, & Fire;2;3534
+Queen;4;4174
+Tears For Fears;1;3938

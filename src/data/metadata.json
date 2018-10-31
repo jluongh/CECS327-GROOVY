@@ -1,0 +1,77 @@
+[
+  {
+    "name": "song.txt",
+    "size": "329",
+    "chunks": [
+      {
+        "guid": 2636
+      },
+      {
+        "guid": 8166
+      },
+      {
+        "guid": 2103
+      },
+      {
+        "guid": 1428
+      },
+      {
+        "guid": 5075
+      },
+      {
+        "guid": 3454
+      }
+    ]
+  },
+  {
+    "name": "album.txt",
+    "size": "107",
+    "chunks": [
+      {
+        "guid": 4672
+      },
+      {
+        "guid": 8358
+      },
+      {
+        "guid": 4237
+      },
+      {
+        "guid": 1192
+      },
+      {
+        "guid": 8671
+      }
+    ]
+  },
+  {
+    "name": "artist.txt",
+    "size": "75",
+    "chunks": [
+      {
+        "guid": 5760
+      },
+      {
+        "guid": 3534
+      },
+      {
+        "guid": 4174
+      },
+      {
+        "guid": 3938
+      }
+    ]
+  },
+  {
+    "name": "users.txt",
+    "size": "42",
+    "chunks": [
+      {
+        "guid": 9493
+      },
+      {
+        "guid": 4924
+      }
+    ]
+  }
+]

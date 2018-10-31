@@ -1,13 +1,17 @@
 package data.index;
 
 public class Chunk {
-	protected String guid;
+	private int guid;
 
-//	public String getGuid() {
-//		return guid;
-//	}
+	
+	public Chunk() {
+	}
 
-	public void setGuid(String guid) {
+	public int getGuid() {
+		return guid;
+	}
+
+	public void setGuid(int guid) {
 		this.guid = guid;
 	}
 }

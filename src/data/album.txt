@@ -1,5 +1,5 @@
-Abba;5
-Arrival;3
-Greatest Hits;2
-Songs From The Big Chair;1
-Stone Cold Classics;4
+Abba;5;4672
+Arrival;3;8358
+Greatest Hits;2;4237
+Songs From The Big Chair;1;1192
+Stone Cold Classics;4;8671

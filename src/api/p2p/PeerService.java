@@ -30,8 +30,8 @@ public class PeerService {
         }
 	}
 	
-	public Data get(int guid) throws IOException, ClassNotFoundException {
-		FutureGet futureGet = peer.get(Number160.createHash(Integer.toString(guid))).start(); // lmao
+	public Data get(String guid) throws IOException, ClassNotFoundException {
+		FutureGet futureGet = peer.get(new Number160(guid)).start();
 		futureGet.awaitUninterruptibly();
 		if (futureGet.isSuccess()) {
 			return futureGet.dataMap().values().iterator().next();

@@ -1,178 +1,91 @@
 package services;
 
+import java.io.*;
+import java.lang.reflect.Type;
+import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import data.constants.Files;
+import data.index.Chunk;
+import data.index.MetadataFile;
+
 public class MetadataFileService {
 
+	public MetadataFileService() {
+		
+	}
+	
+	/**
+	 * 
+	 * @param fileName
+	 * @param newContent
+	 */
+	public void append (String fileName, String newContent) {
+		File f = new File(Files.ROOT+fileName);
+		File t = new File(Files.ROOT+"temp.txt");
+		
+		if (f.exists()) {
+			try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+				FileWriter writer = new FileWriter(t);
+				
+				String oLine;
+				String nLine;
+				
+				while((oLine = br.readLine()) != null) {
+					
+//					writer.write(oLine+System.lineSeparator());
+//					if (newContent.charAt(0)==oLine.charAt(0)) {
+//						if(oLine.compareTo(newContent)<0) {
+//							nLine = System.lineSeparator()+newContent;
+//							writer.write(nLine);
+//						}
+//					}
+				}
+				
+				f.delete();
+				t.renameTo(f);
+				
+				br.close();
+				writer.close();
+				
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param fileName
+	 * @param guid
+	 * @return
+	 */
+	public Chunk getChunk(String fileName, String guid) {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(Files.MDF));
+			Type listType = new TypeToken<List<MetadataFile>>() {}.getType();
+			List<MetadataFile> fileList = new Gson().fromJson(br, listType);
+			
+			for (MetadataFile f : fileList) {
+				if (f.getName().equals(fileName)) {
+					List<Chunk> chunks = f.getChunks();
+					for (Chunk c : chunks) {
+						if (c.getGuid().equals(guid))
+							return c;
+					}
+				}
+			}
+			
+			return null;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
 
-//
-//package services;
-//
-//import java.io.File;
-//import java.util.List;
-//
-//import data.index.MetadataFile;
-//
-//public class Metadata 
-//{
-//	List<MetadataFile> file;
-//	boolean found = false;
-//	public void append(String fileName, String content)
-//	{
-//		if(file!=null && !file.isEmpty())
-//		{
-//			for(int i = 0; i<file.size();i++)
-//			{
-//				if(file.get(i).getName().equals(fileName))
-//				{
-//					found = true;
-//				}
-//			}
-//			if (found == false)
-//			{
-//				MetadataFile mf = new MetadataFile();
-//				mf.setName(fileName);
-//				//put it in chunk
-//			}
-//		}
-//		else
-//		{
-//			MetadataFile f = new MetadataFile();
-//			f.setName(fileName);
-//			f.append(content);
-//		}
-//		
-//	}
-//	
-//	public void getChunk(String fileName, int index)
-//	{
-//		
-//	}
-//}
-
-
-
-
-
-
-
-//
-//package services;
-//
-//import java.io.*;
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//import com.google.gson.Gson;
-//import com.google.gson.GsonBuilder;
-//
-//import data.constants.Files;
-//import data.index.Chunk;
-//import data.index.MetadataFile;
-//
-//public class TestService {
-//	
-//	private static final String newFile = "test-songs.txt";
-//	private static final String newMDF = "test-metadata.json";
-//	
-//	public static void main(String[] args) {
-//		HashService hs = new HashService(true);
-//		String payload = "Abba;5";
-//		
-//		System.out.println(hs.sha1toNum160(payload).toString());
-//		System.out.println(hs.sha1(payload));
-//		
-//		//appendHash();
-//		//System.out.println(getHashByChunk(4));
-//		//serializeMDF(new File(Files.ROOT+newFile));
-//	}
-//	// TODO: remove trailing spaces
-//	public static void appendHash() {
-//		try (BufferedReader br = new BufferedReader(new FileReader(new File(Files.SONGS)))) {
-//			
-//			FileWriter writer = new FileWriter(Files.ROOT+newFile);
-//			HashService hs = new HashService(true);
-//			String line = "";
-//		    String chunk;
-//		    
-//		    while ((chunk = br.readLine()) != null) {
-//		    	System.out.println(chunk);
-//		    	String hashedChunk = hs.sha1(chunk);
-//		    	System.out.println(hashedChunk);
-//		    	line = chunk + ";" + hashedChunk + System.lineSeparator();
-//		    	writer.write(line);
-//		    }
-//		    
-//		    writer.close();
-//		    
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//	public static String getHashByChunk(int line) {
-//		String hash = null;
-//		
-//		try (BufferedReader br = new BufferedReader(new FileReader(new File(Files.ROOT+newFile)))) {
-//		
-//		    String chunk;
-//		    int lineCount = 1;
-//		    
-//		    while ((chunk = br.readLine()) != null) {
-//		    	if (lineCount == line) {
-//		    		String[] tokens = chunk.split(";");
-//		    		hash = tokens[tokens.length-1];
-//		    		break;
-//		    	}
-//		    	lineCount++;
-//		    }
-//		    
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} 
-//
-//		return hash;
-//	}
-//	
-//	public static void serializeMDF(File file) {
-//		MetadataFile mdf = new MetadataFile();
-//		
-//		mdf.name = file.getName();
-//		mdf.size = Long.toString(file.length()); // in bytes
-//		
-//		List<Chunk> chunks = new ArrayList<Chunk>();
-//		
-//		String guid = null;
-//		try (BufferedReader br = new BufferedReader(new FileReader(new File(Files.ROOT+newFile)))) {
-//			
-//		    String chunkLine;
-//		    
-//		    while ((chunkLine = br.readLine()) != null) {
-//
-//		    	String[] tokens = chunkLine.split(";");
-//		    	guid = tokens[tokens.length-1];
-//		    	Chunk chunk = new Chunk();
-//		    	chunk.setGuid(guid);
-//		    	chunks.add(chunk);
-//		    }
-//		    
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} 
-//		
-//		mdf.chunks = chunks;
-//		
-//		try (Writer writer = new FileWriter(Files.ROOT+newMDF)) {
-//			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//			gson.toJson(mdf, writer);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//}
 

@@ -25,5 +25,6 @@
 	<classpathentry kind="lib" path="lib/p2p-lib/weupnp-0.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/gson-2.8.5.jar"/>
 	<classpathentry kind="lib" path="lib/tomp2p-all-5.0-Beta8.jar"/>
+	<classpathentry kind="lib" path="lib/metadata-extractor-2.11.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

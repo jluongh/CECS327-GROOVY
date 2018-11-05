@@ -1,15 +1,15 @@
 package data.index;
 
 public class Chunk {
-	private int guid;
+	private String guid;
 	private String firstLine;
 	private String lastLine;
 
-	public Chunk(int guid) {
+	public Chunk(String guid) {
 		this.guid = guid;
 	}
 
-	public int getGuid() {
+	public String getGuid() {
 		return guid;
 	}
 

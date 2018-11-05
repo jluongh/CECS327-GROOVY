@@ -1,6 +1,17 @@
-Bohemian Rhapsody;4;Queen;Stone Cold Classics;6.07;2636
-Dancing Queen;3;ABBA;Arrival;3.51;8166
-Everybody Wants To Rule The World;1;Tears For Fears;Songs From The Big Chair;4.13;2103
-Let's Groovy;6;Earth, Wind, & Fire;Greatest Hits;3.55;1428
-Mamma Mia;5;ABBA;Abba;3.31;5075
-September;2;Earth, Wind, & Fire;Greatest Hits;3.35;3454
+Airplanes;12;B.o.B;B.o.B Presents: The Adventures of Bobby Ray;3.01
+Bennie and the Jets; 10;Haley Reinhart;N/A;4.01
+Bohemian Rhapsody;4;Queen;Stone Cold Classics;6.07
+Breakfast in America;14;Supertrampl;Breakfast in America;2.38
+Can't Fight This Feeling;15;REO Speedwagon;Wheels Are Turnin';4.54
+Can't Get Enough of Your Love, Babe;13;Barry White;Can't Get Enough;3.28
+Come Sail Away;16;Styx;The Grand Illusion;3.10
+Dancing Queen;3;ABBA;Arrival;3.51
+Everybody Wants To Rule The World;1;Tears For Fears;Songs From The Big Chair;4.13
+How Long;9;Charlie Puth;How Long;3.18
+Let's Groovy;6;Earth, Wind, & Fire;Greatest Hits;3.55
+Mamma Mia;5;ABBA;Abba;3.31
+Perfect;8;Ed Sheeran;Divide;4.23
+September;2;Earth, Wind, & Fire;Greatest Hits;3.35
+Somebody Else;11;The 1975;I Like It When You Sleep, for You Are So Beautiful yet So Unaware of It;5.47
+The Promise;7;When in Rome;When in Rome;3.40
+Too Many;17;Russ;(Single);2.44

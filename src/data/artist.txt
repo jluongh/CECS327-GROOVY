@@ -1,4 +1,15 @@
-ABBA;3;5760
-Earth, Wind, & Fire;2;3534
-Queen;4;4174
-Tears For Fears;1;3938
+ABBA;3
+B.o.B;11
+Barry White;8
+Charlie Puth;10
+Earth, Wind, & Fire;2
+Ed Sheeran;9
+Haley Reinhart;5
+Queen;4
+REO Speedwagon;14
+Russ;12
+Styx;15
+Supertramp;13
+Tears For Fears;1
+The 1975;6
+When in Rome;7

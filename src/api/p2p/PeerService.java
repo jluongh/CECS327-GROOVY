@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.util.Random;
 
 import data.constants.Net;
+import data.index.Chunk;
 import net.tomp2p.dht.FutureGet;
 import net.tomp2p.dht.PeerBuilderDHT;
 import net.tomp2p.dht.PeerDHT;
@@ -16,7 +17,8 @@ import net.tomp2p.storage.Data;
 public class PeerService {
 	
 	private final PeerDHT peer;
-	private final int port = 4001; //change
+//	private final int port = 4001; //change
+	private final int port = Net.PORT; //change
 	
 	public PeerService() throws IOException {
 		
@@ -30,16 +32,55 @@ public class PeerService {
         }
 	}
 	
-	public Data get(String guid) throws IOException, ClassNotFoundException {
+	/**
+	 * 
+	 * @param guid
+	 * @return
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public Chunk get(String guid) throws IOException, ClassNotFoundException {
 		FutureGet futureGet = peer.get(new Number160(guid)).start();
 		futureGet.awaitUninterruptibly();
 		if (futureGet.isSuccess()) {
-			return futureGet.dataMap().values().iterator().next();
+			return (Chunk) futureGet.dataMap().values().iterator().next().object();
 		}
 		return null;
-	}	
-	
-	public void put(String chunkLine) throws IOException {
-		peer.put(Number160.createHash(chunkLine)).data(new Data(chunkLine)).start().awaitUninterruptibly();
 	}
+
+//	/**
+//	 * 
+//	 * @param guid
+//	 * @return
+//	 * @throws IOException
+//	 * @throws ClassNotFoundException
+//	 */
+//	public Data get(String guid) throws IOException, ClassNotFoundException {
+//		FutureGet futureGet = peer.get(new Number160(guid)).start();
+//		futureGet.awaitUninterruptibly();
+//		if (futureGet.isSuccess()) {
+//			return futureGet.dataMap().values().iterator().next();
+//		}
+//		return null;
+//	}
+	
+	/**
+	 * 
+	 * @param guid
+	 * @param chunk
+	 * @throws IOException
+	 */
+	public void put(String guid, Chunk chunk) throws IOException {
+		peer.put(new Number160(guid)).data(new Data(chunk)).start().awaitUninterruptibly();
+	}
+	
+//	/**
+//	 * 
+//	 * @param chunkLine
+//	 * @throws IOException
+//	 */
+//	public void put(String chunkLine) throws IOException {
+//		peer.put(Number160.createHash(chunkLine)).data(new Data(chunkLine)).start().awaitUninterruptibly();
+//	}
 }
+

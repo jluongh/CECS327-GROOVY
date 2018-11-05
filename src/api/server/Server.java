@@ -3,6 +3,7 @@ package api.server;
 import java.io.IOException;
 import java.net.*;
 
+import api.p2p.PeerService;
 import data.constants.Net;
 import net.tomp2p.p2p.Peer;
 import net.tomp2p.p2p.PeerBuilder;
@@ -20,13 +21,10 @@ public class Server {
 	 */
 	public static void main(String[] args) throws IOException {
 		
-		HashService hs = new HashService(true);
-		
-		InetAddress ip = InetAddress.getByName(Net.HOST);
-		Peer peer = new PeerBuilder(hs.sha1toNum160(ip.getHostAddress())).ports(4434).start();
+		PeerService ps = new PeerService();
 		
 		// socket = null;
-		DatagramSocket socket = new DatagramSocket(4445);
+		DatagramSocket socket = new DatagramSocket(Net.PORT);
 
 		while (true) {
 			byte[] message = new byte[1024 * 1000];

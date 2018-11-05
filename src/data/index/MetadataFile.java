@@ -1,31 +1,25 @@
 package data.index;
 
+import java.io.File;
 import java.util.*;
 
 public class MetadataFile {
 
 	private String name;
-	private int size;
+	private long size;
 	private List<Chunk> chunks = new ArrayList<Chunk>();
 	
-	public MetadataFile() {
-		//
+	public MetadataFile(File file) {
+		this.name = file.getName();
+		this.size = file.length();
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public int getSize() {
+	public long getSize() {
 		return size;
-	}
-
-	public void setSize(int size) {
-		this.size = size;
 	}
 
 	public List<Chunk> getChunks() {

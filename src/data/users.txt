@@ -1,2 +1,0 @@
-user1;0;cecs327
-user2;1;cecs327

@@ -2,23 +2,31 @@ package data.index;
 
 public class Chunk {
 	private int guid;
-	String first, last;
+	private String firstLine;
+	private String lastLine;
 
-	
-	public Chunk() {
+	public Chunk(int guid) {
+		this.guid = guid;
 	}
 
 	public int getGuid() {
 		return guid;
 	}
 
-	public void setGuid(int guid) {
-		this.guid = guid;
+	public String getFirstLine() {
+		return firstLine;
 	}
-	
-	public void setFristLast(String f, String l)
-	{
-		this.first = f;
-		this.last = l;
+
+	public void setFirstLine(String firstLine) {
+		this.firstLine = firstLine;
 	}
+
+	public String getLastLine() {
+		return lastLine;
+	}
+
+	public void setLastLine(String lastLine) {
+		this.lastLine = lastLine;
+	}
+
 }

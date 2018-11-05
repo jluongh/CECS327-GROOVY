@@ -1,76 +1,81 @@
 [
   {
-    "name": "song.txt",
-    "size": "329",
-    "chunks": [
-      {
-        "guid": 2636
-      },
-      {
-        "guid": 8166
-      },
-      {
-        "guid": 2103
-      },
-      {
-        "guid": 1428
-      },
-      {
-        "guid": 5075
-      },
-      {
-        "guid": 3454
-      }
-    ]
-  },
-  {
     "name": "album.txt",
-    "size": "107",
+    "size": 450,
     "chunks": [
       {
-        "guid": 4672
+        "guid": 4154,
+        "firstLine": "Abba;13;4154",
+        "lastLine": "Can\u0027t Get Enough;5;4154"
       },
       {
-        "guid": 8358
+        "guid": 2861,
+        "firstLine": "Greatest Hits;10;2861",
+        "lastLine": "I Like It When You Sleep, for You Are So Beautiful Yet So Unaware Of It;3;2861"
       },
       {
-        "guid": 4237
-      },
-      {
-        "guid": 1192
-      },
-      {
-        "guid": 8671
+        "guid": 1128,
+        "firstLine": "Songs From The Big Chair;1;1128",
+        "lastLine": "�;15;1128"
       }
     ]
   },
   {
     "name": "artist.txt",
-    "size": "75",
+    "size": 274,
     "chunks": [
       {
-        "guid": 5760
+        "guid": 1075,
+        "firstLine": "ABBA;11;1075",
+        "lastLine": "Ed Sheeran;14;1075"
       },
       {
-        "guid": 3534
+        "guid": 9623,
+        "firstLine": "Haley Reinhart;2;9623",
+        "lastLine": "Haley Reinhart;2;9623"
       },
       {
-        "guid": 4174
+        "guid": 1007,
+        "firstLine": "Queen;12;1007",
+        "lastLine": "When In Rome;13;1007"
+      }
+    ]
+  },
+  {
+    "name": "song.txt",
+    "size": 1047,
+    "chunks": [
+      {
+        "guid": 3796,
+        "firstLine": "Airplanes (feat. Hayley Williams);4;B.o.B.;B.o.B Presents: The Adventures of Bobby Ray;3.01;3796",
+        "lastLine": "Everybody Wants To Rule The World;1;Tears For Fears;Songs From The Big Chair;4.13;3796"
       },
       {
-        "guid": 3938
+        "guid": 7679,
+        "firstLine": "How Long;17;Charlie Puth;How Long;3.3;7679",
+        "lastLine": "Mamma Mia;13;ABBA;Abba;3.31;7679"
+      },
+      {
+        "guid": 7619,
+        "firstLine": "Perfect;16;Ed Sheeran;�;4.4;7619",
+        "lastLine": "Too Many;9;Russ;Too Many;2.41;7619"
       }
     ]
   },
   {
     "name": "users.txt",
-    "size": "42",
+    "size": 42,
     "chunks": [
       {
-        "guid": 9493
+        "guid": 0
       },
       {
-        "guid": 4924
+        "guid": 0
+      },
+      {
+        "guid": 9493,
+        "firstLine": "user1;0;cecs327;9493",
+        "lastLine": "user2;1;cecs327;9493"
       }
     ]
   }

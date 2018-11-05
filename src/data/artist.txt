@@ -1,15 +1,15 @@
-ABBA;11
-B.o.B.;4
-Barry White;5
-Charlie Puth;15
-Earth, Wind, & Fire;10
-Ed Sheeran;14
-Haley Reinhart;2
-Queen;12
-REO Speedwagon;7
-Russ;9
-Styx;8
-Supertramp;6
-Tears For Fears;1
-The 1975;3
-When In Rome;13
+ABBA;11;1075
+B.o.B.;4;1075
+Barry White;5;1075
+Charlie Puth;15;1075
+Earth, Wind, & Fire;10;1075
+Ed Sheeran;14;1075
+Haley Reinhart;2;9623
+Queen;12;1007
+REO Speedwagon;7;1007
+Russ;9;1007
+Styx;8;1007
+Supertramp;6;1007
+Tears For Fears;1;1007
+The 1975;3;1007
+When In Rome;13;1007

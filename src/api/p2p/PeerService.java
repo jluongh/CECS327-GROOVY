@@ -1,4 +1,4 @@
-package services;
+package api.p2p;
 
 public class PeerService {
 	public PeerService() {

@@ -1,2 +1,2 @@
-user1;0;cecs327;9493
-user2;1;cecs327;9493
+user1;0;cecs327
+user2;1;cecs327

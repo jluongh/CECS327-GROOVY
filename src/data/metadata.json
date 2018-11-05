@@ -4,19 +4,19 @@
     "size": 450,
     "chunks": [
       {
-        "guid": 4154,
-        "firstLine": "Abba;13;4154",
-        "lastLine": "Can\u0027t Get Enough;5;4154"
+        "guid": "0x1a1021ddb63a8466811481e9984418efeb98c111",
+        "firstLine": "Abba;13",
+        "lastLine": "Can\u0027t Get Enough;5"
       },
       {
-        "guid": 2861,
-        "firstLine": "Greatest Hits;10;2861",
-        "lastLine": "I Like It When You Sleep, for You Are So Beautiful Yet So Unaware Of It;3;2861"
+        "guid": "0xc2ca81ae14f8ce86892f905f5c7f8fbfafb078eb",
+        "firstLine": "Greatest Hits;10",
+        "lastLine": "I Like It When You Sleep, for You Are So Beautiful Yet So Unaware Of It;3"
       },
       {
-        "guid": 1128,
-        "firstLine": "Songs From The Big Chair;1;1128",
-        "lastLine": "�;15;1128"
+        "guid": "0x912856ece1e12c5e9efcbbdf15ee0a1fb38a6fe7",
+        "firstLine": "Songs From The Big Chair;1",
+        "lastLine": "�;15"
       }
     ]
   },
@@ -25,19 +25,19 @@
     "size": 274,
     "chunks": [
       {
-        "guid": 1075,
-        "firstLine": "ABBA;11;1075",
-        "lastLine": "Ed Sheeran;14;1075"
+        "guid": "0x74e17f7eb2fa8cd06e21834fb319004dea291747",
+        "firstLine": "ABBA;11",
+        "lastLine": "Ed Sheeran;14"
       },
       {
-        "guid": 9623,
-        "firstLine": "Haley Reinhart;2;9623",
-        "lastLine": "Haley Reinhart;2;9623"
+        "guid": "0xa892749a14c303b43732b0d835dacc119399ba22",
+        "firstLine": "Haley Reinhart;2",
+        "lastLine": "Haley Reinhart;2"
       },
       {
-        "guid": 1007,
-        "firstLine": "Queen;12;1007",
-        "lastLine": "When In Rome;13;1007"
+        "guid": "0xf6d4b3564b9ac84a89504193ffcfafa440590ebd",
+        "firstLine": "Queen;12",
+        "lastLine": "When In Rome;13"
       }
     ]
   },
@@ -46,19 +46,19 @@
     "size": 1047,
     "chunks": [
       {
-        "guid": 3796,
-        "firstLine": "Airplanes (feat. Hayley Williams);4;B.o.B.;B.o.B Presents: The Adventures of Bobby Ray;3.01;3796",
-        "lastLine": "Everybody Wants To Rule The World;1;Tears For Fears;Songs From The Big Chair;4.13;3796"
+        "guid": "0x5c35765b6b38751751dc1a2ddcd3cf305bda753",
+        "firstLine": "Airplanes (feat. Hayley Williams);4;B.o.B.;B.o.B Presents: The Adventures of Bobby Ray;3.01",
+        "lastLine": "Everybody Wants To Rule The World;1;Tears For Fears;Songs From The Big Chair;4.13"
       },
       {
-        "guid": 7679,
-        "firstLine": "How Long;17;Charlie Puth;How Long;3.3;7679",
-        "lastLine": "Mamma Mia;13;ABBA;Abba;3.31;7679"
+        "guid": "0x16b2ed2612a48c8beb32c1bdebe8a6152e8bb5b5",
+        "firstLine": "How Long;17;Charlie Puth;How Long;3.3",
+        "lastLine": "Mamma Mia;13;ABBA;Abba;3.31"
       },
       {
-        "guid": 7619,
-        "firstLine": "Perfect;16;Ed Sheeran;�;4.4;7619",
-        "lastLine": "Too Many;9;Russ;Too Many;2.41;7619"
+        "guid": "0xba959e9171dd081ee68af636e004b7b4da308177",
+        "firstLine": "Perfect;16;Ed Sheeran;�;4.4",
+        "lastLine": "Too Many;9;Russ;Too Many;2.41"
       }
     ]
   },
@@ -67,15 +67,15 @@
     "size": 42,
     "chunks": [
       {
-        "guid": 0
+        "guid": ""
       },
       {
-        "guid": 0
+        "guid": ""
       },
       {
-        "guid": 9493,
-        "firstLine": "user1;0;cecs327;9493",
-        "lastLine": "user2;1;cecs327;9493"
+        "guid": "0xbd9d6a1ed7f81f20d18a75de55e1550ef75b7635",
+        "firstLine": "user1;0;cecs327",
+        "lastLine": "user2;1;cecs327"
       }
     ]
   }

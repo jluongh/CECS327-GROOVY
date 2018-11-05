@@ -66,12 +66,8 @@
     "name": "users.txt",
     "size": 42,
     "chunks": [
-      {
-        "guid": ""
-      },
-      {
-        "guid": ""
-      },
+      {},
+      {},
       {
         "guid": "0xbd9d6a1ed7f81f20d18a75de55e1550ef75b7635",
         "firstLine": "user1;0;cecs327",

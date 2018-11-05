@@ -1,0 +1,8 @@
+Queen;12
+REO Speedwagon;7
+Russ;9
+Styx;8
+Supertramp;6
+Tears For Fears;1
+The 1975;3
+When In Rome;13

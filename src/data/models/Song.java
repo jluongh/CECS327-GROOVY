@@ -7,8 +7,8 @@ public class Song implements Serializable {
 	//global variables
 	private int songID;
 	private String title;
-//	private String artist;
-//	private String album;
+	private String artist;
+	private String album;
 	private double duration;
 	
 	public Song() {
@@ -20,13 +20,15 @@ public class Song implements Serializable {
 	 * Initializing the songID, title, and duration 
 	 * @param songID - unique identification for song
 	 * @param title - song title
+	 * @param artist - artist name
+	 * @param album - album name
 	 * @param duration - length of song
 	 */
-	public Song(int songID, String title, double duration) { // constructors- String artist, String album aren't used
+	public Song(int songID, String title, String artist, String album, double duration) {
 		this.songID = songID;
 		this.title = title;
-//		this.artist = artist;
-//		this.album = album;
+		this.artist = artist;
+		this.album = album;
 		this.duration = duration;
 	}
 
@@ -62,21 +64,21 @@ public class Song implements Serializable {
 		this.title = title;
 	}
 
-//	public String getArtist() {
-//		return artist;
-//	}
-//
-//	public void setArtist(String artist) {
-//		this.artist = artist;
-//	}
-//
-//	public String getAlbum() {
-//		return album;
-//	}
-//
-//	public void setAlbum(String album) {
-//		this.album = album;
-//	}
+	public String getArtist() {
+		return artist;
+	}
+
+	public void setArtist(String artist) {
+		this.artist = artist;
+	}
+
+	public String getAlbum() {
+		return album;
+	}
+
+	public void setAlbum(String album) {
+		this.album = album;
+	}
 
 	/**
 	 * Getter method for song duration

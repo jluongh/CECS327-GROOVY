@@ -10,6 +10,8 @@
           {
             "songID": 1,
             "title": "Everybody Wants To Rule The World",
+            "artist": "Tears For Fears",
+            "album": "Songs From The Big Chair",
             "duration": 4.13
           }
         ]
@@ -18,21 +20,18 @@
   },
   {
     "artistID": 2,
-    "name": "Earth, Wind, \u0026 Fire",
+    "name": "Haley Reinhart",
     "albums": [
       {
         "albumID": 2,
-        "name": "Greatest Hits",
+        "name": "Bennie \u0026 The Jets Cover",
         "songs": [
           {
             "songID": 2,
-            "title": "September",
-            "duration": 3.35
-          },
-          {
-            "songID": 6,
-            "title": "Let\u0027s Groovy",
-            "duration": 3.55
+            "title": "Bennie \u0026 The Jets Cover",
+            "artist": "Haley Reinhart",
+            "album": "Bennie \u0026 The Jets Cover",
+            "duration": 1.3
           }
         ]
       }
@@ -40,27 +39,18 @@
   },
   {
     "artistID": 3,
-    "name": "ABBA",
+    "name": "The 1975",
     "albums": [
       {
         "albumID": 3,
-        "name": "Arrival",
+        "name": "I Like It When You Sleep, for You Are So Beautiful Yet So Unaware Of It",
         "songs": [
           {
             "songID": 3,
-            "title": "Dancing Queen",
-            "duration": 3.51
-          }
-        ]
-      },
-      {
-        "albumID": 5,
-        "name": "Abba",
-        "songs": [
-          {
-            "songID": 5,
-            "title": "Mamma Mia",
-            "duration": 3.31
+            "title": "Somebody Else",
+            "artist": "The 1975",
+            "album": "I Like It When You Sleep, for You Are So Beautiful Yet So Unaware Of It",
+            "duration": 5.11
           }
         ]
       }
@@ -68,16 +58,345 @@
   },
   {
     "artistID": 4,
-    "name": "Queen",
+    "name": "B.o.B.",
     "albums": [
       {
         "albumID": 4,
-        "name": "Stone Cold Classics",
+        "name": "B.o.B Presents: The Adventures of Bobby Ray",
         "songs": [
           {
             "songID": 4,
+            "title": "Airplanes (feat. Hayley Williams)",
+            "artist": "B.o.B.",
+            "album": "B.o.B Presents: The Adventures of Bobby Ray",
+            "duration": 3.01
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistID": 5,
+    "name": "Barry White",
+    "albums": [
+      {
+        "albumID": 5,
+        "name": "Can\u0027t Get Enough",
+        "songs": [
+          {
+            "songID": 5,
+            "title": "Can\u0027t Get Enough Of Your Love, Babe",
+            "artist": "Barry White",
+            "album": "Can\u0027t Get Enough",
+            "duration": 4.35
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistID": 6,
+    "name": "Supertramp",
+    "albums": [
+      {
+        "albumID": 6,
+        "name": "Supertramp- The Very Best Of",
+        "songs": [
+          {
+            "songID": 6,
+            "title": "Breakfast In America",
+            "artist": "Supertramp",
+            "album": "Supertramp- The Very Best Of",
+            "duration": 2.4
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistID": 7,
+    "name": "REO Speedwagon",
+    "albums": [
+      {
+        "albumID": 7,
+        "name": "Wheels Are Turnin\u0027",
+        "songs": [
+          {
+            "songID": 7,
+            "title": "Can\u0027t Fight This Feeling",
+            "artist": "REO Speedwagon",
+            "album": "Wheels Are Turnin\u0027",
+            "duration": 4.54
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistID": 8,
+    "name": "Styx",
+    "albums": [
+      {
+        "albumID": 8,
+        "name": "The Grand Illusion",
+        "songs": [
+          {
+            "songID": 8,
+            "title": "Come Sail Away",
+            "artist": "Styx",
+            "album": "The Grand Illusion",
+            "duration": 4.29
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistID": 9,
+    "name": "Russ",
+    "albums": [
+      {
+        "albumID": 9,
+        "name": "Too Many",
+        "songs": [
+          {
+            "songID": 9,
+            "title": "Too Many",
+            "artist": "Russ",
+            "album": "Too Many",
+            "duration": 2.41
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistID": 10,
+    "name": "Earth, Wind, \u0026 Fire",
+    "albums": [
+      {
+        "albumID": 10,
+        "name": "Greatest Hits",
+        "songs": [
+          {
+            "songID": 10,
+            "title": "September",
+            "artist": "Earth, Wind, \u0026 Fire",
+            "album": "Greatest Hits",
+            "duration": 3.35
+          },
+          {
+            "songID": 14,
+            "title": "Let\u0027s Groovy",
+            "artist": "Earth, Wind, \u0026 Fire",
+            "album": "Greatest Hits",
+            "duration": 3.55
+          }
+        ]
+      },
+      {
+        "albumID": 10,
+        "name": "Greatest Hits",
+        "songs": [
+          {
+            "songID": 10,
+            "title": "September",
+            "artist": "Earth, Wind, \u0026 Fire",
+            "album": "Greatest Hits",
+            "duration": 3.35
+          },
+          {
+            "songID": 14,
+            "title": "Let\u0027s Groovy",
+            "artist": "Earth, Wind, \u0026 Fire",
+            "album": "Greatest Hits",
+            "duration": 3.55
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistID": 11,
+    "name": "ABBA",
+    "albums": [
+      {
+        "albumID": 11,
+        "name": "Arrival",
+        "songs": [
+          {
+            "songID": 11,
+            "title": "Dancing Queen",
+            "artist": "ABBA",
+            "album": "Arrival",
+            "duration": 3.51
+          }
+        ]
+      },
+      {
+        "albumID": 13,
+        "name": "Abba",
+        "songs": [
+          {
+            "songID": 13,
+            "title": "Mamma Mia",
+            "artist": "ABBA",
+            "album": "Abba",
+            "duration": 3.31
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistID": 12,
+    "name": "Queen",
+    "albums": [
+      {
+        "albumID": 12,
+        "name": "Stone Cold Classics",
+        "songs": [
+          {
+            "songID": 12,
             "title": "Bohemian Rhapsody",
-            "duration": 6.07
+            "artist": "Queen",
+            "album": "Stone Cold Classics",
+            "duration": 5.53
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistID": 11,
+    "name": "ABBA",
+    "albums": [
+      {
+        "albumID": 11,
+        "name": "Arrival",
+        "songs": [
+          {
+            "songID": 11,
+            "title": "Dancing Queen",
+            "artist": "ABBA",
+            "album": "Arrival",
+            "duration": 3.51
+          }
+        ]
+      },
+      {
+        "albumID": 13,
+        "name": "Abba",
+        "songs": [
+          {
+            "songID": 13,
+            "title": "Mamma Mia",
+            "artist": "ABBA",
+            "album": "Abba",
+            "duration": 3.31
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistID": 10,
+    "name": "Earth, Wind, \u0026 Fire",
+    "albums": [
+      {
+        "albumID": 10,
+        "name": "Greatest Hits",
+        "songs": [
+          {
+            "songID": 10,
+            "title": "September",
+            "artist": "Earth, Wind, \u0026 Fire",
+            "album": "Greatest Hits",
+            "duration": 3.35
+          },
+          {
+            "songID": 14,
+            "title": "Let\u0027s Groovy",
+            "artist": "Earth, Wind, \u0026 Fire",
+            "album": "Greatest Hits",
+            "duration": 3.55
+          }
+        ]
+      },
+      {
+        "albumID": 10,
+        "name": "Greatest Hits",
+        "songs": [
+          {
+            "songID": 10,
+            "title": "September",
+            "artist": "Earth, Wind, \u0026 Fire",
+            "album": "Greatest Hits",
+            "duration": 3.35
+          },
+          {
+            "songID": 14,
+            "title": "Let\u0027s Groovy",
+            "artist": "Earth, Wind, \u0026 Fire",
+            "album": "Greatest Hits",
+            "duration": 3.55
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistID": 13,
+    "name": "When In Rome",
+    "albums": [
+      {
+        "albumID": 14,
+        "name": "When In Rome",
+        "songs": [
+          {
+            "songID": 15,
+            "title": "The Promise",
+            "artist": "When In Rome",
+            "album": "When In Rome",
+            "duration": 3.39
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistID": 14,
+    "name": "Ed Sheeran",
+    "albums": [
+      {
+        "albumID": 15,
+        "name": "÷",
+        "songs": [
+          {
+            "songID": 16,
+            "title": "Perfect",
+            "artist": "Ed Sheeran",
+            "album": "÷",
+            "duration": 4.4
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "artistID": 15,
+    "name": "Charlie Puth",
+    "albums": [
+      {
+        "albumID": 16,
+        "name": "How Long",
+        "songs": [
+          {
+            "songID": 17,
+            "title": "How Long",
+            "artist": "Charlie Puth",
+            "album": "How Long",
+            "duration": 3.3
           }
         ]
       }

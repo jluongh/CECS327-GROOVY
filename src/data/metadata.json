@@ -1,76 +1,85 @@
 [
   {
-    "name": "song.txt",
-    "size": "329",
+    "indexName": "album.idx",
+    "totalSize": 370,
     "chunks": [
       {
-        "guid": 2636
+        "guid": "0x2c6c7df967546e4e2183ba3146fbfdf96b34f5b1",
+        "firstLine": "Abba;13",
+        "lastLine": "Can\u0027t Get Enough;5"
       },
       {
-        "guid": 8166
+        "guid": "0x544f1ee3303306889a9512824c6e6e8a54d259f7",
+        "firstLine": "Greatest Hits;10",
+        "lastLine": "I Like It When You Sleep, for You Are So Beautiful Yet So Unaware Of It;3"
       },
       {
-        "guid": 2103
-      },
-      {
-        "guid": 1428
-      },
-      {
-        "guid": 5075
-      },
-      {
-        "guid": 3454
+        "guid": "0x6c9cfc2a0bb62022d8cc9f3b033ec6bb47c9f504",
+        "firstLine": "Songs From The Big Chair;1",
+        "lastLine": "�;15"
       }
     ]
   },
   {
-    "name": "album.txt",
-    "size": "107",
+    "indexName": "artist.idx",
+    "totalSize": 199,
     "chunks": [
       {
-        "guid": 4672
+        "guid": "0xf6bffbeb351fa536b913ba0553d5bc3a811b8914",
+        "firstLine": "ABBA;11",
+        "lastLine": "Ed Sheeran;14"
       },
       {
-        "guid": 8358
+        "guid": "0xefcec2b20daa2b96563e893a1811aec776f47eb7",
+        "firstLine": "Haley Reinhart;2",
+        "lastLine": "Haley Reinhart;2"
       },
       {
-        "guid": 4237
-      },
-      {
-        "guid": 1192
-      },
-      {
-        "guid": 8671
+        "guid": "0x6f5cdbc062e6166e710aa4ca3da173a5453dace2",
+        "firstLine": "Queen;12",
+        "lastLine": "When In Rome;13"
       }
     ]
   },
   {
-    "name": "artist.txt",
-    "size": "75",
+    "indexName": "song.idx",
+    "totalSize": 962,
     "chunks": [
       {
-        "guid": 5760
+        "guid": "0x5bea7b17b2bdb2bec8b31c7de290e67e70ff8d78",
+        "firstLine": "Airplanes (feat. Hayley Williams);4;B.o.B.;B.o.B Presents: The Adventures of Bobby Ray;3.01",
+        "lastLine": "Everybody Wants To Rule The World;1;Tears For Fears;Songs From The Big Chair;4.13"
       },
       {
-        "guid": 3534
+        "guid": "0x3dbc22f627192fa9c0456b5eea3ccbb4fc60f1e4",
+        "firstLine": "How Long;17;Charlie Puth;How Long;3.3",
+        "lastLine": "Mamma Mia;13;ABBA;Abba;3.31"
       },
       {
-        "guid": 4174
-      },
-      {
-        "guid": 3938
+        "guid": "0x6a28507a7c3a833d0872a05fabb558bec527880c",
+        "firstLine": "Perfect;16;Ed Sheeran;�;4.4",
+        "lastLine": "Too Many;9;Russ;Too Many;2.41"
       }
     ]
   },
   {
-    "name": "users.txt",
-    "size": "42",
+    "indexName": "users.idx",
+    "totalSize": 98,
     "chunks": [
       {
-        "guid": 9493
+        "guid": "0xc934b167db066c3f3a23f0fb4b2d610cb73e2171",
+        "firstLine": "caitlin;2;1234",
+        "lastLine": "caitlin;2;1234"
       },
       {
-        "guid": 4924
+        "guid": "0x9344940ca370b8b115f0fec3e617d149aacbaeff",
+        "firstLine": "jen;3;1234",
+        "lastLine": "jen;3;1234"
+      },
+      {
+        "guid": "0x3f5cff88e6d826273ebb8e6755e3bc762911aa0d",
+        "firstLine": "nasser;5;1234",
+        "lastLine": "xinyi;6;1234"
       }
     ]
   }

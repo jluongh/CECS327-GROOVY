@@ -1,39 +1,119 @@
 package data.index;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
-import services.HashService;
+import net.tomp2p.peers.Number160;
 
 public class MetadataFile {
-	private String name;
-	private String size;
+
+	private String indexName;
+	private long totalSize;
 	private List<Chunk> chunks = new ArrayList<Chunk>();
-	private HashService hs = new HashService();
-	public String getName() {
-		return name;
+	
+	public MetadataFile() {
+		
 	}
-	public void setName(String name) {
-		this.name = name;
+	
+	public MetadataFile(File file1, File file2, File file3) {
+		if (file1.exists() && file2.exists() && file3.exists()) {
+			this.indexName = getIndexName(file1, file2, file3);
+			this.totalSize = getIndexSize(file1, file2, file3);
+			this.chunks = populateChunks(file1, file2, file3);
+		}
 	}
-	public String getSize() {
-		return size;
+	
+	public String getIndexName() {
+		return indexName;
 	}
-	public void setSize(String size) {
-		this.size = size;
+
+	public long getTotalSize() {
+		return totalSize;
 	}
+
 	public List<Chunk> getChunks() {
 		return chunks;
 	}
+
 	public void setChunks(List<Chunk> chunks) {
 		this.chunks = chunks;
 	}
-	public void append(String content)
-	{
-		String guid = hs.sha1(content);
-		Chunk c = new Chunk();
-		c.setGuid(guid);
-		chunks.add(c);
-		//find peer and put guid and content
+
+	/**
+	 * 
+	 * @param file1
+	 * @param file2
+	 * @param file3
+	 * @return
+	 */
+	private String getIndexName(File file1, File file2, File file3) {
+		String[] files = new String[] {file1.getName(),file2.getName(),file3.getName()};
+		List<String> index = new ArrayList<String>();
+		
+		for (int i = 0; i < files.length; i++) {
+			String[] names = files[i].split("\\.");
+			index.add(names[0].replaceAll("[0-9]", ""));
+		}
+		
+		if (index.stream().distinct().limit(2).count() <= 1)
+			return index.get(0)+".idx";
+		
+		return "";
+	}
+	
+	/**
+	 * 
+	 * @param file1
+	 * @param file2
+	 * @param file3
+	 * @return
+	 */
+	private long getIndexSize(File file1, File file2, File file3) {
+		return file1.length() + file2.length() + file3.length();
+	}
+
+	/**
+	 * 
+	 * @param file1
+	 * @param file2
+	 * @param file3
+	 * @return
+	 */
+	private List<Chunk> populateChunks(File file1, File file2, File file3) {
+		List<Chunk> chunks = new ArrayList<Chunk>();
+		
+		List<File> files = new ArrayList<File>();
+		files.add(file1);
+		files.add(file2);
+		files.add(file3);
+		
+		for (File f : files) {
+			boolean isFirst = true;
+			String content = "";
+			String first = "";
+			String last = "";
+			
+			try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+				String line;
+				while ((line = br.readLine()) != null) {
+					if (isFirst) {
+						first = line;
+						isFirst = false;
+					}
+					content = content + line + System.lineSeparator();
+					last = line;
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			Chunk chunk = new Chunk(Number160.createHash(content).toString());
+			chunk.setFirstLine(first);
+			chunk.setLastLine(last);
+			
+			chunks.add(chunk);
+		}
+		
+		return chunks;
 	}
 }

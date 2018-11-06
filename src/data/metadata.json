@@ -1,31 +1,31 @@
 [
   {
-    "name": "album.txt",
-    "size": 450,
+    "indexName": "album.idx",
+    "totalSize": 370,
     "chunks": [
       {
-        "guid": "0x1a1021ddb63a8466811481e9984418efeb98c111",
+        "guid": "0x4d5809310de74c91f8722b184199efb7cbd8acf9",
         "firstLine": "Abba;13",
         "lastLine": "Can\u0027t Get Enough;5"
       },
       {
-        "guid": "0xc2ca81ae14f8ce86892f905f5c7f8fbfafb078eb",
+        "guid": "0x19495dea6ece1f783b1e3e66f8ac8f64d9ce3784",
         "firstLine": "Greatest Hits;10",
         "lastLine": "I Like It When You Sleep, for You Are So Beautiful Yet So Unaware Of It;3"
       },
       {
-        "guid": "0x912856ece1e12c5e9efcbbdf15ee0a1fb38a6fe7",
+        "guid": "0x45344f8e7b097987a5daecc4227b4bbd5168b9d2",
         "firstLine": "Songs From The Big Chair;1",
         "lastLine": "�;15"
       }
     ]
   },
   {
-    "name": "artist.txt",
-    "size": 274,
+    "indexName": "artist.idx",
+    "totalSize": 199,
     "chunks": [
       {
-        "guid": "0x74e17f7eb2fa8cd06e21834fb319004dea291747",
+        "guid": "0xc0a2f7552d36741abb164264ec8862c10d6a1a67",
         "firstLine": "ABBA;11",
         "lastLine": "Ed Sheeran;14"
       },
@@ -35,43 +35,51 @@
         "lastLine": "Haley Reinhart;2"
       },
       {
-        "guid": "0xf6d4b3564b9ac84a89504193ffcfafa440590ebd",
+        "guid": "0x50ae1dbd3d9db6b827d1d58d76160d8f5bf319e0",
         "firstLine": "Queen;12",
         "lastLine": "When In Rome;13"
       }
     ]
   },
   {
-    "name": "song.txt",
-    "size": 1047,
+    "indexName": "song.idx",
+    "totalSize": 962,
     "chunks": [
       {
-        "guid": "0x5c35765b6b38751751dc1a2ddcd3cf305bda753",
+        "guid": "0x1900ca005e07b147ee8f7ab2a96be663a83f4120",
         "firstLine": "Airplanes (feat. Hayley Williams);4;B.o.B.;B.o.B Presents: The Adventures of Bobby Ray;3.01",
         "lastLine": "Everybody Wants To Rule The World;1;Tears For Fears;Songs From The Big Chair;4.13"
       },
       {
-        "guid": "0x16b2ed2612a48c8beb32c1bdebe8a6152e8bb5b5",
+        "guid": "0x445a88b8f0c5be47add2c6c31a18194df4c2a31a",
         "firstLine": "How Long;17;Charlie Puth;How Long;3.3",
         "lastLine": "Mamma Mia;13;ABBA;Abba;3.31"
       },
       {
-        "guid": "0xba959e9171dd081ee68af636e004b7b4da308177",
+        "guid": "0x63fbb9cac8c5f8f5eb076d5e689e8ca62a590d0",
         "firstLine": "Perfect;16;Ed Sheeran;�;4.4",
         "lastLine": "Too Many;9;Russ;Too Many;2.41"
       }
     ]
   },
   {
-    "name": "users.txt",
-    "size": 42,
+    "indexName": "users.idx",
+    "totalSize": 98,
     "chunks": [
-      {},
-      {},
       {
-        "guid": "0xbd9d6a1ed7f81f20d18a75de55e1550ef75b7635",
-        "firstLine": "user1;0;cecs327",
-        "lastLine": "user2;1;cecs327"
+        "guid": "0xdbe9ab16b3b7c26843d159a21c4d10fecac0d6a2",
+        "firstLine": "caitlin;2;1234",
+        "lastLine": "caitlin;2;1234"
+      },
+      {
+        "guid": "0xb55ded12ec68918713cdff900e94705ddb1d1f8a",
+        "firstLine": "jen;3;1234",
+        "lastLine": "jen;3;1234"
+      },
+      {
+        "guid": "0xeb1089277e6983251932ddc29e921b4608e7d333",
+        "firstLine": "nasser;5;1234",
+        "lastLine": "xinyi;6;1234"
       }
     ]
   }

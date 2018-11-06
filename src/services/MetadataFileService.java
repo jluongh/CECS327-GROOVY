@@ -11,6 +11,11 @@ import data.constants.Files;
 import data.index.Chunk;
 import data.index.MetadataFile;
 
+/**
+ * DONT USEEEEEEEEEEEEEEEEEEEEEEEEEEE
+ * @author trishaechual
+ *
+ */
 public class MetadataFileService {
 
 	public MetadataFileService() {

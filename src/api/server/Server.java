@@ -20,7 +20,7 @@ public class Server {
 	 */
 	public static void main(String[] args) throws IOException {
 		
-		PeerService ps = new PeerService();
+		//PeerService ps = new PeerService();
 		
 		// socket = null;
 		DatagramSocket socket = new DatagramSocket(Net.PORT);

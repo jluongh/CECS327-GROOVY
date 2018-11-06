@@ -57,6 +57,13 @@ public class PeerService {
 	public void put(Chunk chunk) throws IOException {
 		peer.put(new Number160(chunk.getGuid())).data(new Data(chunk)).start().awaitUninterruptibly();
 	}
-
+  
+	/**
+	 * Delete chunk from dht //not tested yet
+	 * @param deletePeer
+	 */
+	public void delete(Chunk chunk) throws IOException{
+		peer.remove(new Number160(chunk.getGuid()));
+	}
 }
 

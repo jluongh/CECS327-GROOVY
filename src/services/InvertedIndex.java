@@ -66,28 +66,28 @@ public class InvertedIndex {
 		}
 	}
  
-	public static void main(String[] args) {
-		try {
-			InvertedIndex idx = new InvertedIndex();
-			List<File> files = new ArrayList<File>();
-			
-			File albums = new File(Files.ALBUMS);
-			files.add(albums);
-			File artists = new File(Files.ARTISTS);
-			files.add(artists);
-			File songs = new File(Files.SONGS);
-			files.add(songs);
-			File users = new File(Files.USERS);
-			files.add(users);
-			
-			for (File file : files) {
-				idx.indexFile(file);
-			}
-			idx.search(Arrays.asList("abba".split(";")));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+//	public static void main(String[] args) {
+//		try {
+//			InvertedIndex idx = new InvertedIndex();
+//			List<File> files = new ArrayList<File>();
+//			
+//			File albums = new File(Files.ALBUMS);
+//			files.add(albums);
+//			File artists = new File(Files.ARTISTS);
+//			files.add(artists);
+//			File songs = new File(Files.SONGS);
+//			files.add(songs);
+//			File users = new File(Files.USERS);
+//			files.add(users);
+//			
+//			for (File file : files) {
+//				idx.indexFile(file);
+//			}
+//			idx.search(Arrays.asList("abba".split(";")));
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
  
 	private class Tuple {
 		private int fileno;

@@ -7,7 +7,6 @@ import api.p2p.PeerService;
 import data.constants.Net;
 import net.tomp2p.p2p.Peer;
 import net.tomp2p.p2p.PeerBuilder;
-import services.HashService;
 
 public class Server {
 

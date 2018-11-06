@@ -13,7 +13,6 @@ import net.tomp2p.futures.FutureBootstrap;
 import net.tomp2p.p2p.PeerBuilder;
 import net.tomp2p.peers.Number160;
 import net.tomp2p.storage.Data;
-import services.JenService;
 
 public class PeerService {
 	
@@ -48,22 +47,6 @@ public class PeerService {
 		}
 		return null;
 	}
-
-//	/**
-//	 * 
-//	 * @param guid
-//	 * @return
-//	 * @throws IOException
-//	 * @throws ClassNotFoundException
-//	 */
-//	public Data get(String guid) throws IOException, ClassNotFoundException {
-//		FutureGet futureGet = peer.get(new Number160(guid)).start();
-//		futureGet.awaitUninterruptibly();
-//		if (futureGet.isSuccess()) {
-//			return futureGet.dataMap().values().iterator().next();
-//		}
-//		return null;
-//	}
 	
 	/**
 	 * 
@@ -74,14 +57,6 @@ public class PeerService {
 	public void put(Chunk chunk) throws IOException {
 		peer.put(new Number160(chunk.getGuid())).data(new Data(chunk)).start().awaitUninterruptibly();
 	}
-	
-//	/**
-//	 * 
-//	 * @param chunkLine
-//	 * @throws IOException
-//	 */
-//	public void put(String chunkLine) throws IOException {
-//		peer.put(Number160.createHash(chunkLine)).data(new Data(chunkLine)).start().awaitUninterruptibly();
-//	}
+
 }
 

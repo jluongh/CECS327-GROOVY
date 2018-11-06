@@ -100,7 +100,7 @@ public class MetadataFile {
 						first = line;
 						isFirst = false;
 					}
-					content += line;
+					content = content + line + System.lineSeparator();
 					last = line;
 				}
 			} catch (IOException e) {

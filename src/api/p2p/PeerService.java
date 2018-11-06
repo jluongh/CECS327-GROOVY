@@ -13,12 +13,13 @@ import net.tomp2p.futures.FutureBootstrap;
 import net.tomp2p.p2p.PeerBuilder;
 import net.tomp2p.peers.Number160;
 import net.tomp2p.storage.Data;
+import services.JenService;
 
 public class PeerService {
 	
 	private final PeerDHT peer;
 //	private final int port = 4001; //change
-	private final int port = Net.PORT; //change
+	private final int port = Net.PORT; //change?
 	
 	public PeerService() throws IOException {
 		
@@ -70,8 +71,8 @@ public class PeerService {
 	 * @param chunk
 	 * @throws IOException
 	 */
-	public void put(String guid, Chunk chunk) throws IOException {
-		peer.put(new Number160(guid)).data(new Data(chunk)).start().awaitUninterruptibly();
+	public void put(Chunk chunk) throws IOException {
+		peer.put(new Number160(chunk.getGuid())).data(new Data(chunk)).start().awaitUninterruptibly();
 	}
 	
 //	/**

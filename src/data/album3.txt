@@ -1,8 +1,8 @@
-Songs From The Big Chair;1
-Stone Cold Classics;12
-Supertramp- The Very Best Of;6
-The Grand Illusion;8
-Too Many;9
-Wheels Are Turnin';7
-When In Rome;14
-�;15
+Songs From The Big Chair;4.13;Everybody Wants To Rule The World;1;Tears For Fears
+Stone Cold Classics;5.53;Bohemian Rhapsody;12;Queen
+Supertramp- The Very Best Of;2.4;Breakfast In America;6;Supertramp
+The Grand Illusion;4.29;Come Sail Away;8;Styx;
+Too Many;2.41;Too Many;9;Russ
+Wheels Are Turnin';4.54;Can't Fight This Feeling;7;REO Speedwagon
+When In Rome;3.39;The Promise;15;When In Rome
+�;4.4;Perfect;16;Ed Sheeran

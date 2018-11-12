@@ -54,8 +54,8 @@ public class PeerService {
 	 * @param chunk
 	 * @throws IOException
 	 */
-	public void put(Chunk chunk) throws IOException {
-		peer.put(new Number160(chunk.getGuid())).data(new Data(chunk)).start().awaitUninterruptibly();
+	public void put(Number160 guid, String content) throws IOException {
+		peer.put(guid).data(new Data(content)).start().awaitUninterruptibly();
 	}
   
 	/**

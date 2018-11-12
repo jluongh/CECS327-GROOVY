@@ -19,7 +19,21 @@ public class Files {
 	public final static String USERS_IDX = "users.idx";
 	
 	
+	/* ---------- Song Information Index ---------- */
+	public final static int [] TITLE = {0, 2, 3};
+	public final static int [] SONGID = {1, 3, 4};
+	public final static int [] ARTIST = {2, 4, 0};
+	public final static int [] ALBUM = {3, 0, 1};
+	public final static int [] DURATION = {4, 1, 2};
+	
+	public final static int SONG_INDEX = 0;
+	public final static int ALBUM_INDEX = 1;
+	public final static int ARTIST_INDEX = 2;
+
+	
 	/* ---------- Misc. ---------- */
 	public final static char[] limits = {'a','f','g','m','n','z'};
+	
+
 	
 }

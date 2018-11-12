@@ -22,8 +22,12 @@ public class ChunkService {
 
 	private PeerService ps;
 
-	public ChunkService() throws IOException {
-		ps = new PeerService();
+	public ChunkService() {
+		try {
+			ps = new PeerService();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -72,56 +76,56 @@ public class ChunkService {
 		return content;
 	}
 
-	/**
-	 * 
-	 * @param indexName
-	 * @param query
-	 * @return
-	 */
-	public List<Song> search(String indexName, String query) {
-		List<Song> songs = new ArrayList<Song>();
-		query = query.toLowerCase();
-
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(Files.MDF));
-			Type listType = new TypeToken<List<MetadataFile>>() {
-			}.getType();
-			List<MetadataFile> fileList = new Gson().fromJson(br, listType);
-
-			for (MetadataFile f : fileList) {
-				if (f.getIndexName().equals(indexName)) {
-					for (int partitionNo = 1; partitionNo <= f.getChunks().size(); partitionNo++) {
-						String fileName = Files.ROOT + indexName.split("\\.")[0] + partitionNo + ".txt";
-						try (BufferedReader br2 = new BufferedReader(new FileReader(new File(fileName)))) {
-							String chunkLine;
-							while ((chunkLine = br2.readLine()) != null) {
-								if ((chunkLine.split(";")[0]).toLowerCase().contains(query)) {
-									String[] songInfo = chunkLine.split(";");
-
-									Song song = new Song();
-									song.setSongID(Integer.parseInt(songInfo[data.constants.Files.SONGID]));
-									song.setTitle(songInfo[data.constants.Files.TITLE]);
-									song.setArtist(songInfo[data.constants.Files.ARTIST]);
-									song.setAlbum(songInfo[data.constants.Files.ALBUM]);
-									song.setDuration(Double.parseDouble(songInfo[data.constants.Files.DURATION]));
-
-									songs.add(song);
-								}
-							}
-						}
-					}
-				}
-			}
-
-			br.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return songs;
-	}
+//	/**
+//	 * 
+//	 * @param indexName
+//	 * @param query
+//	 * @return
+//	 */
+//	public List<Song> search(String indexName, String query) {
+//		List<Song> songs = new ArrayList<Song>();
+//		query = query.toLowerCase();
+//
+//		try {
+//			BufferedReader br = new BufferedReader(new FileReader(Files.MDF));
+//			Type listType = new TypeToken<List<MetadataFile>>() {
+//			}.getType();
+//			List<MetadataFile> fileList = new Gson().fromJson(br, listType);
+//
+//			for (MetadataFile f : fileList) {
+//				if (f.getIndexName().equals(indexName)) {
+//					for (int partitionNo = 1; partitionNo <= f.getChunks().size(); partitionNo++) {
+//						String fileName = Files.ROOT + indexName.split("\\.")[0] + partitionNo + ".txt";
+//						try (BufferedReader br2 = new BufferedReader(new FileReader(new File(fileName)))) {
+//							String chunkLine;
+//							while ((chunkLine = br2.readLine()) != null) {
+//								if ((chunkLine.split(";")[0]).toLowerCase().contains(query)) {
+//									String[] songInfo = chunkLine.split(";");
+//
+//									Song song = new Song();
+//									song.setSongID(Integer.parseInt(songInfo[data.constants.Files.SONGID]));
+//									song.setTitle(songInfo[data.constants.Files.TITLE]);
+//									song.setArtist(songInfo[data.constants.Files.ARTIST]);
+//									song.setAlbum(songInfo[data.constants.Files.ALBUM]);
+//									song.setDuration(Double.parseDouble(songInfo[data.constants.Files.DURATION]));
+//
+//									songs.add(song);
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}
+//
+//			br.close();
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return songs;
+//	}
 
 	/**
 	 * 
@@ -130,10 +134,22 @@ public class ChunkService {
 	 * @return
 	 * @throws ClassNotFoundException
 	 */
-	public List<Song> search1(int index, String query) throws ClassNotFoundException {
+	public List<Song> search(int index, String query) {
 		List<Song> songs = new ArrayList<Song>();
 		query = query.toLowerCase();
 
+		String indexName = "";
+		switch(index) {
+		case Files.SONG_INDEX:
+			indexName = Files.SONG_IDX;
+			break;
+		case Files.ALBUM_INDEX:
+			indexName = Files.ALBUM_IDX;
+			break;
+		case Files.ARTIST_INDEX:
+			indexName = Files.ARTIST_IDX;
+			break;
+		}
 		
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(Files.MDF));
@@ -159,11 +175,11 @@ public class ChunkService {
 									String[] songInfo = line.split(";");
 
 									Song song = new Song();
-									song.setSongID(Integer.parseInt(songInfo[data.constants.Files.SONGID]));
-									song.setTitle(songInfo[data.constants.Files.TITLE]);
-									song.setArtist(songInfo[data.constants.Files.ARTIST]);
-									song.setAlbum(songInfo[data.constants.Files.ALBUM]);
-									song.setDuration(Double.parseDouble(songInfo[data.constants.Files.DURATION]));
+									song.setSongID(Integer.parseInt(songInfo[Files.SONGID[index]]));
+									song.setTitle(songInfo[Files.TITLE[index]]);
+									song.setArtist(songInfo[Files.ARTIST[index]]);
+									song.setAlbum(songInfo[Files.ALBUM[index]]);
+									song.setDuration(Double.parseDouble(songInfo[Files.DURATION[index]]));
 
 									songs.add(song);
 								}
@@ -178,6 +194,9 @@ public class ChunkService {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

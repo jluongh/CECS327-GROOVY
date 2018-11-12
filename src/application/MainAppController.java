@@ -488,7 +488,7 @@ public class MainAppController implements Initializable {
 					
 				});
 			}
-			else if(table==0 && table ==3) //playlist display in the center if clicked happens
+			else if(table==0 || table ==3) //playlist display in the center if clicked happens
 			{
 				SongInfo userChoose = (SongInfo) Result.getSelectionModel().getSelectedItem();
 				MenuItem delete = new MenuItem("Delete");

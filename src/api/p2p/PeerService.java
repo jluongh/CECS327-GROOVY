@@ -39,11 +39,11 @@ public class PeerService {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public Chunk get(String guid) throws IOException, ClassNotFoundException {
+	public String get(String guid) throws IOException, ClassNotFoundException {
 		FutureGet futureGet = peer.get(new Number160(guid)).start();
 		futureGet.awaitUninterruptibly();
 		if (futureGet.isSuccess()) {
-			return (Chunk) futureGet.dataMap().values().iterator().next().object();
+            return futureGet.dataMap().values().iterator().next().object().toString();
 		}
 		return null;
 	}

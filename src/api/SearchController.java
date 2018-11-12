@@ -120,7 +120,6 @@ public class SearchController {
 	 * @throws IOException
 	 */
 	public List<Song> SearchBySong(String query) throws IOException {
-
 		// construct message
 		Message requestMsg = new Message();
 		requestMsg.messageType = Packet.REQUEST;

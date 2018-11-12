@@ -71,14 +71,6 @@
       "songInfos": [
         {
           "song": {
-            "songID": 1,
-            "title": "Everybody Wants To Rule The World",
-            "duration": 4.13
-          },
-          "addedDate": "Oct 8, 2018 9:48:17 PM"
-        },
-        {
-          "song": {
             "songID": 6,
             "title": "Let\u0027s Groovy",
             "duration": 3.55
@@ -87,11 +79,33 @@
         },
         {
           "song": {
-            "songID": 1,
-            "title": "Everybody Wants To Rule The World",
-            "duration": 4.13
+            "songID": 5,
+            "title": "Can\u0027t Get Enough Of Your Love, Babe",
+            "artist": "Barry White",
+            "album": "Can\u0027t Get Enough",
+            "duration": 4.35
           },
-          "addedDate": "Oct 13, 2018 6:55:51 PM"
+          "addedDate": "Nov 11, 2018 6:32:27 PM"
+        },
+        {
+          "song": {
+            "songID": 7,
+            "title": "Can\u0027t Fight This Feeling",
+            "artist": "REO Speedwagon",
+            "album": "Wheels Are Turnin\u0027",
+            "duration": 4.54
+          },
+          "addedDate": "Nov 11, 2018 6:49:59 PM"
+        },
+        {
+          "song": {
+            "songID": 3,
+            "title": "Somebody Else",
+            "artist": "The 1975",
+            "album": "I Like It When You Sleep, for You Are So Beautiful Yet So Unaware Of It",
+            "duration": 5.11
+          },
+          "addedDate": "Nov 11, 2018 6:50:06 PM"
         }
       ],
       "songCount": 0,

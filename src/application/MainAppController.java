@@ -488,7 +488,7 @@ public class MainAppController implements Initializable {
 					
 				});
 			}
-			else if(table==0) //playlist display in the center if clicked happens
+			else if(table==0 && table ==3) //playlist display in the center if clicked happens
 			{
 				SongInfo userChoose = (SongInfo) Result.getSelectionModel().getSelectedItem();
 				MenuItem delete = new MenuItem("Delete");
@@ -600,6 +600,7 @@ public class MainAppController implements Initializable {
 			Result.getItems().clear();
 		}
 		Result.refresh();
+		songs.clear();
 		for (int i = 0; i< song.size();i++)
 		{
 			songs.add(song.get(i));
@@ -648,6 +649,7 @@ public class MainAppController implements Initializable {
 			Result.getItems().clear();
 		}
 		Result.refresh();
+		albumSong.clear();
 		for (int i = 0; i< album.size();i++)
 		{
 			for (int j = 0; j<album.get(i).getSongs().size();j++)
@@ -668,7 +670,7 @@ public class MainAppController implements Initializable {
 			try {
 				return new ReadOnlyStringWrapper(sc.GetArtistBySongID(((Song) cellData.getValue()).getSongID()).getName());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 			}
 			return null;
@@ -677,7 +679,7 @@ public class MainAppController implements Initializable {
 			try {
 				return new ReadOnlyStringWrapper(sc.GetAlbumBySongID(((Song) cellData.getValue()).getSongID()).getName());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 			}
 			return null;
@@ -701,6 +703,7 @@ public class MainAppController implements Initializable {
 			Result.getItems().clear();
 		}
 		Result.refresh();
+		artistSong.clear();
 		for (int i = 0; i< artist.size();i++)
 		{
 			for(int j = 0; j < artist.get(i).getAlbums().size();j++)
@@ -755,7 +758,21 @@ public class MainAppController implements Initializable {
 		isSearch=true;
 		table=3;
         txtResult.setText("Queue");
-
+        col1.setText("Song");
+		col2.setText("Artist");
+		col3.setText("Album");
+		col4.setText("Duration");
+		queueSong.clear();
+		for(int i = 0; i<queues.size();i++)
+		{
+			queueSong.add(queues.get(i));
+		}
+		
+		for(int i = 0; i<Result.getItems().size();i++)
+		{
+			Result.getItems().clear();
+		}
+		Result.refresh();
         col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
         col2.setCellValueFactory(cellData -> {
 			try {

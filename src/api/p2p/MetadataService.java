@@ -27,14 +27,14 @@ public class MetadataService {
 	/**
 	 * 
 	 */
-	public void init() {
+	public void init(PeerService ps) {
 		File mdfjson = new File(Files.MDF);
 		if (!mdfjson.exists()) {
 			String[][] indices = {Files.ALBUMS, Files.ARTISTS, Files.SONGS, Files.USERS};
 			List<MetadataFile> globalMdf = new ArrayList<MetadataFile>();
 			
 			for (String[] index : indices) {
-				MetadataFile mdf = new MetadataFile(new File(index[0]), new File(index[1]), new File(index[2]));
+				MetadataFile mdf = new MetadataFile(new File(index[0]), new File(index[1]), new File(index[2]), ps);
 				globalMdf.add(mdf);
 			}
 			

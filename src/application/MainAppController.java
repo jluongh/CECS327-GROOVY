@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 
-//import api.AudioPlayer;
 import api.PlayerController;
 import api.SearchController;
 import api.SongController;
@@ -134,6 +133,16 @@ public class MainAppController implements Initializable {
 	Image pic2 = new Image(getClass().getResourceAsStream("resources/if-play.png"));
 	Image pic3 = new Image(getClass().getResourceAsStream("resources/play-button.png"));
 	Image pic4 = new Image(getClass().getResourceAsStream("resources/pause-button.png"));
+	
+	Image pic7 = new Image(getClass().getResourceAsStream("resources/shuffle2.png"));
+	Image pic8 = new Image(getClass().getResourceAsStream("resources/repeat2.png"));
+	Image pic77 = new Image(getClass().getResourceAsStream("resources/1082440.png"));
+	Image pic88 = new Image(getClass().getResourceAsStream("resources/repeat.png"));
+	
+
+	boolean shuffleClicked = false;
+	boolean repeatClicked = false;
+	
 	private boolean isSearch = false;
 	private int table = 0; //0 for playlist table, 1 for search table 
 	private boolean isPlaying = false;
@@ -978,29 +987,49 @@ public class MainAppController implements Initializable {
 
 
 	
-	
 	@FXML
 	public void shuffleClicked(MouseEvent event)
 	{
-		//call the shuffle function
-		player.shuffle();
-		lbMode.setText("Mode: Shuffle");
+
+		//lbMode.setText("Mode: Shuffle");
+		
+		
+		if(shuffleClicked == false) {
+			//call the shuffle function
+			player.shuffle();
+		
+			btnShuffle.setImage(pic7);
+			shuffleClicked = true;
+			
+		}else if(shuffleClicked == true) {
+			// unshuffle 
+			
+			btnShuffle.setImage(pic77);
+			shuffleClicked = false;
+		}
 		
 	}
 	@FXML
 	public void repeatClicked(MouseEvent event)
 	{
-		//call the repeat function
+
+		//lbMode.setText("Mode: Repeat");
 		
-		player.repeat(true);
-		lbMode.setText("Mode: Repeat");
+		
+		if(repeatClicked == false) {
+			//call the repeat function
+			player.repeat(true);
+			
+			btnRepeat.setImage(pic8);
+			repeatClicked = true;
+		}else if(repeatClicked == true) {
+			
+			btnShuffle.setImage(pic88);
+			repeatClicked = false;
+		}
 	}
 
-	public boolean refreash(boolean x) {
-		
-		//x=
-		return  false;
-	}
+	
 	
 	/**
 	 * The volume slider is not working yet

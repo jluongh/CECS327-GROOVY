@@ -22,12 +22,8 @@ public class ChunkService {
 
 	private PeerService ps;
 
-	public ChunkService() {
-		try {
-			ps = new PeerService();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public ChunkService(PeerService ps) {
+		this.ps = ps;
 	}
 
 	/**
@@ -160,18 +156,19 @@ public class ChunkService {
 			for (MetadataFile f : fileList) {
 				if (f.getIndexName().equals(indexName)) {
 					for (Chunk chunk : f.getChunks()) {
-						char firstLetter = chunk.getFirstLine().charAt(0);
-						char lastLetter = chunk.getLastLine().charAt(0);
-						char queryLetter = query.charAt(0);
+						char firstLetter = chunk.getFirstLine().toLowerCase().charAt(0);
+						char lastLetter = chunk.getLastLine().toLowerCase().charAt(0);
+						char queryLetter = query.toLowerCase().charAt(0);
 
-						if (queryLetter > firstLetter && queryLetter < lastLetter) {
+						if ((int)queryLetter >= (int)firstLetter && (int)queryLetter <= (int)lastLetter) {
+
 							String guid = chunk.getGuid();
 							String content = ps.get(guid);
 
 							Scanner scanner = new Scanner(content);
 							while (scanner.hasNextLine()) {
 								String line = scanner.nextLine();
-								if ((line.split(";")[0]).toLowerCase().contains(query)) {
+								if ((line.split(";")[0]).toLowerCase().startsWith(query)) {
 									String[] songInfo = line.split(";");
 
 									Song song = new Song();

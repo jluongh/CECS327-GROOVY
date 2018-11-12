@@ -1,64 +1,64 @@
 [
   {
     "indexName": "album.idx",
-    "totalSize": 370,
+    "totalSize": 961,
     "chunks": [
       {
-        "guid": "0x2c6c7df967546e4e2183ba3146fbfdf96b34f5b1",
-        "firstLine": "Abba",
-        "lastLine": "Can\u0027t Get Enough"
+        "guid": "0x8f4bc9e2eadee6d831983a22157b31f174434c69",
+        "firstLine": "Abba;3.31;Mamma Mia;13;ABBA",
+        "lastLine": "Can\u0027t Get Enough;4.35;Can\u0027t Get Enough Of Your Love, Babe;5;Barry White"
       },
       {
-        "guid": "0x544f1ee3303306889a9512824c6e6e8a54d259f7",
-        "firstLine": "Greatest Hits",
-        "lastLine": "I Like It When You Sleep, for You Are So Beautiful Yet So Unaware Of It"
+        "guid": "0xfdf509dc1e289f42a25af1a71ff52d19c0b215c",
+        "firstLine": "Greatest Hits;3.55;Let\u0027s Groovy;14;Earth, Wind, \u0026 Fire",
+        "lastLine": "I Like It When You Sleep, for You Are So Beautiful Yet So Unaware Of It;5.11;Somebody Else;3;The 1975"
       },
       {
-        "guid": "0x6c9cfc2a0bb62022d8cc9f3b033ec6bb47c9f504",
-        "firstLine": "Songs From The Big Chair",
-        "lastLine": "�"
+        "guid": "0x77ff931fb3fba288b9cb4a1cb473fc2d82edac5e",
+        "firstLine": "Songs From The Big Chair;4.13;Everybody Wants To Rule The World;1;Tears For Fears",
+        "lastLine": "�;4.4;Perfect;16;Ed Sheeran"
       }
     ]
   },
   {
     "indexName": "artist.idx",
-    "totalSize": 199,
+    "totalSize": 960,
     "chunks": [
       {
-        "guid": "0xf6bffbeb351fa536b913ba0553d5bc3a811b8914",
-        "firstLine": "ABBA",
-        "lastLine": "Ed Sheeran"
+        "guid": "0x8a12513132b44b4ac259e2e221e279fc564af023",
+        "firstLine": "ABBA;Abba;3.31;Mamma Mia;13",
+        "lastLine": "Ed Sheeran;�;4.4;Perfect;16;"
       },
       {
-        "guid": "0xefcec2b20daa2b96563e893a1811aec776f47eb7",
-        "firstLine": "Haley Reinhart",
-        "lastLine": "Haley Reinhart"
+        "guid": "0xe18e3b9e0dcc3581fa73c7fcf74d6c3730e524a0",
+        "firstLine": "Haley Reinhart;Bennie \u0026 The Jets Cover;1.3;Bennie \u0026 The Jets Cover;2",
+        "lastLine": "Haley Reinhart;Bennie \u0026 The Jets Cover;1.3;Bennie \u0026 The Jets Cover;2"
       },
       {
-        "guid": "0x6f5cdbc062e6166e710aa4ca3da173a5453dace2",
-        "firstLine": "Queen",
-        "lastLine": "When In Rome"
+        "guid": "0xa757ed059df56735cd61c9e47d80ecea17c27853",
+        "firstLine": "Queen;Stone Cold Classics;5.53;Bohemian Rhapsody;12",
+        "lastLine": "When In Rome;When In Rome;3.39;The Promise;15"
       }
     ]
   },
   {
     "indexName": "song.idx",
-    "totalSize": 962,
+    "totalSize": 961,
     "chunks": [
       {
         "guid": "0x5bea7b17b2bdb2bec8b31c7de290e67e70ff8d78",
-        "firstLine": "Airplanes (feat. Hayley Williams)",
-        "lastLine": "Everybody Wants To Rule The World"
+        "firstLine": "Airplanes (feat. Hayley Williams);4;B.o.B.;B.o.B Presents: The Adventures of Bobby Ray;3.01",
+        "lastLine": "Everybody Wants To Rule The World;1;Tears For Fears;Songs From The Big Chair;4.13"
       },
       {
         "guid": "0x3dbc22f627192fa9c0456b5eea3ccbb4fc60f1e4",
-        "firstLine": "How Long",
-        "lastLine": "Mamma Mia"
+        "firstLine": "How Long;17;Charlie Puth;How Long;3.3",
+        "lastLine": "Mamma Mia;13;ABBA;Abba;3.31"
       },
       {
         "guid": "0x6a28507a7c3a833d0872a05fabb558bec527880c",
-        "firstLine": "Perfect",
-        "lastLine": "Too Many"
+        "firstLine": "Perfect;16;Ed Sheeran;�;4.4",
+        "lastLine": "Too Many;9;Russ;Too Many;2.41"
       }
     ]
   },
@@ -68,18 +68,18 @@
     "chunks": [
       {
         "guid": "0xc934b167db066c3f3a23f0fb4b2d610cb73e2171",
-        "firstLine": "caitlin",
-        "lastLine": "caitlin"
+        "firstLine": "caitlin;2;1234",
+        "lastLine": "caitlin;2;1234"
       },
       {
         "guid": "0x9344940ca370b8b115f0fec3e617d149aacbaeff",
-        "firstLine": "jen",
-        "lastLine": "jen"
+        "firstLine": "jen;3;1234",
+        "lastLine": "jen;3;1234"
       },
       {
         "guid": "0x3f5cff88e6d826273ebb8e6755e3bc762911aa0d",
-        "firstLine": "nasser",
-        "lastLine": "xinyi"
+        "firstLine": "nasser;5;1234",
+        "lastLine": "xinyi;6;1234"
       }
     ]
   }

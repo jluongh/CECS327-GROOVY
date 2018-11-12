@@ -302,7 +302,6 @@ public class MainAppController implements Initializable {
 				try {
 					return new ReadOnlyStringWrapper(sc.GetArtistBySongID(((SongInfo) cellData.getValue()).getSong().getSongID()).getName());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					return null;
 				}
@@ -312,7 +311,6 @@ public class MainAppController implements Initializable {
 				try {
 					return new ReadOnlyStringWrapper(sc.GetAlbumBySongID(((SongInfo) cellData.getValue()).getSong().getSongID()).getName());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				return null;
@@ -370,6 +368,21 @@ public class MainAppController implements Initializable {
 	@FXML
 	public void btnPlayListClicked(MouseEvent event)
 	{			
+		//add playlist to queue, todo
+		queues.clear();
+		if(currentPlaylist!=null)
+		{
+			if(queues==null&&queues.isEmpty())
+			{
+				queues.add(0, currentPlaylist.getSongInfos().get(0).getSong());
+			}
+			for(int i = 1; i<currentPlaylist.getSongCount();i++)
+			{
+				queues.add(currentPlaylist.getSongInfos().get(i).getSong());
+			}
+		}
+		
+		
 		
 		if(isPlaying == false) {
 			btnPlayList.setImage(pic1);
@@ -539,7 +552,8 @@ public class MainAppController implements Initializable {
 					player.thread.stop();
 				}
 				player.playQueue();
-				
+				queues.clear();
+				queues.add(song);
 //				ap.stop();
 //				ap.play(songId, false);
 //				songName.setText(userSong.getTitle());
@@ -548,6 +562,7 @@ public class MainAppController implements Initializable {
 			}
 			else
 			{
+				
 				SongInfo song = (SongInfo) Result.getSelectionModel().getSelectedItem();
 				List<Song> songs = new ArrayList <Song>();
 				songs.add(song.getSong());
@@ -556,6 +571,18 @@ public class MainAppController implements Initializable {
 					player.thread.stop();
 				}
 				player.playQueue();
+				if(table==0)//if playlist is on screen
+				{
+					queues.clear();
+					if(queues==null&&queues.isEmpty())
+					{
+						queues.add(0, song.getSong());
+					}
+					else
+					{
+						queues.add(song.getSong());
+					}
+				}
 				//				ap.stop();
 //				ap.play(songId, false);
 //				songName.setText(userSong.getSong().getTitle());
@@ -773,6 +800,7 @@ public class MainAppController implements Initializable {
 			Result.getItems().clear();
 		}
 		Result.refresh();
+		
         col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
         col2.setCellValueFactory(cellData -> {
 			try {

@@ -75,11 +75,6 @@
                   <Image url="@resources/repeat.png" />
                </image>
             </ImageView>
-            <Text fx:id="lbMode" fill="#223a44" layoutX="1.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mode:" wrappingWidth="127.99999380111694">
-               <font>
-                  <Font name="Arial" size="15.0" />
-               </font>
-            </Text>
             <Slider layoutX="542.0" layoutY="21.0" prefHeight="14.0" prefWidth="119.0" value="100.0" />
             <Text fx:id="songName" layoutX="-261.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="246.00000163912773">
                <font>

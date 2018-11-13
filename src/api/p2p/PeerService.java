@@ -18,7 +18,7 @@ public class PeerService {
 	
 	private final PeerDHT peer;
 //	private final int port = 4001; //change
-	private final int port = Net.PORT; //change?
+	private final int port = Net.P2P_PORT; //change?
 	
 	public PeerService() throws IOException {
 		
@@ -58,6 +58,7 @@ public class PeerService {
 		peer.put(guid).data(new Data(content)).start().awaitUninterruptibly();
 	}
   
+	
 	/**
 	 * Delete chunk from dht //not tested yet
 	 * @param deletePeer

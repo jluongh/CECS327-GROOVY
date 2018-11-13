@@ -3,7 +3,6 @@ package application;
 import java.io.*;
 import java.util.*;
 
-import api.p2p.ChunkService;
 import api.p2p.MetadataService;
 import api.p2p.PeerService;
 import data.constants.Files;
@@ -22,10 +21,9 @@ public class Client {
 		
 		try {
 			PeerService ps = new PeerService();
-			MetadataService ms = new MetadataService();
-			ms.init(ps);
-			ChunkService cs = new ChunkService(ps);
-			List<Song> lists = cs.search(Files.SONG_INDEX, "s");
+			MetadataService ms = new MetadataService(ps);
+			ms.init();
+			List<Song> lists = ms.search(Files.SONG_INDEX, "s");
 			
 			for (Song s : lists) {
 				System.out.println(s.getTitle());

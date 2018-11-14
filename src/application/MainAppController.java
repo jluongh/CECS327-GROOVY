@@ -20,6 +20,7 @@ import api.PlayerController;
 import api.SearchController;
 import api.SongController;
 import api.UserProfileController;
+import api.p2p.PeerService;
 import data.models.Album;
 import data.models.Artist;
 import data.models.Playlist;
@@ -156,7 +157,7 @@ public class MainAppController implements Initializable {
 	private PlayerController player;
 	api.audio.AudioPlayer ap = new api.audio.AudioPlayer();
 	private SearchController search;
-
+	
 	/**
 	 * Initializing server/client sockets
 	 * Initializing the display for the user based on the username
@@ -174,7 +175,7 @@ public class MainAppController implements Initializable {
 			socket.setReceiveBufferSize(60011 * 30 * 100);
 			player= new PlayerController(socket);
 			upc = new UserProfileController(socket);
-			search = new SearchController(socket);
+			search = new SearchController();
 			user = upc.GetUserProfile(currentUser.getUserID());
 			playlist = user.getPlaylists();
 			sc = new SongController(socket);
@@ -606,12 +607,12 @@ public class MainAppController implements Initializable {
 			setSearchSong(song);
 		} else if(type == "album") {
 			//update result page to search for that album
-			List<Album> album=search.SearchByAlbum(query);
-			setSearchAlbum(album);
+			List<Song> album=search.SearchByAlbum(query);
+			setSearchSong(album);
 		} else if(type == "artist") {
 			//update result page to search for that artist
-			List<Artist> artist=search.SearchByArtist(query);
-			setSearchArtist(artist);
+			List<Song> artist=search.SearchByArtist(query);
+			setSearchSong(artist);
 		}
 	}
 

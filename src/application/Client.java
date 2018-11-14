@@ -3,13 +3,11 @@ package application;
 import java.io.*;
 import java.util.*;
 
-
-import api.*;
-import api.audio.AudioPlayer;
-import api.p2p.ChunkService;
+import api.p2p.MetadataService;
+import api.p2p.PeerService;
 import data.constants.Files;
 import data.models.*;
-import services.LibraryService;
+
 
 public class Client {
 
@@ -21,12 +19,21 @@ public class Client {
 	 */
 	public static void main(String[] args) {
 		
-		ChunkService cs = new ChunkService();
-		List<Song> lists = cs.search(Files.SONG_INDEX, "s");
-		
-		for (Song s : lists) {
-			System.out.println(s.getTitle());
+		try {
+			PeerService ps = new PeerService();
+			MetadataService ms = new MetadataService(ps);
+			ms.init();
+			List<Song> lists = ms.search(Files.SONG_INDEX, "s");
+			
+			for (Song s : lists) {
+				System.out.println(s.getTitle());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
+
 	}
 
 }

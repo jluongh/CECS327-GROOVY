@@ -282,7 +282,7 @@ public class MainAppController implements Initializable {
 	public void updatePlayTable(Playlist userChoose)
 	{
 		List<Song> songPlay = new ArrayList<Song>();
-		
+		System.out.println("Hellooo: " + userChoose.getSongInfos().size());
         ArrayList<SongInfo> songin = (ArrayList<SongInfo>) userChoose.getSongInfos();
         userSong.removeAll(userSong);
         
@@ -299,19 +299,20 @@ public class MainAppController implements Initializable {
         	txtResult.setText(userChoose.getName());
 
 	        col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
-			col2.setCellValueFactory(cellData -> {
+	        col2.setCellValueFactory(cellData -> {
 				try {
-					return new ReadOnlyStringWrapper(sc.GetArtistBySongID(((SongInfo) cellData.getValue()).getSong().getSongID()).getName());
+					return new ReadOnlyStringWrapper(sc.GetSongBySongID((((SongInfo) cellData.getValue()).getSong().getSongID())).getArtist());
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
-					return null;
 				}
+				return null;
 			});
-			
-			col3.setCellValueFactory(cellData -> {
+	        col2.setCellValueFactory(cellData -> {
 				try {
-					return new ReadOnlyStringWrapper(sc.GetAlbumBySongID(((SongInfo) cellData.getValue()).getSong().getSongID()).getName());
+					return new ReadOnlyStringWrapper(sc.GetSongBySongID((((SongInfo) cellData.getValue()).getSong().getSongID())).getAlbum());
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				return null;
@@ -642,7 +643,7 @@ public class MainAppController implements Initializable {
 		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
 		col2.setCellValueFactory(cellData -> {
 			try {
-				return new ReadOnlyStringWrapper(sc.GetArtistBySongID(((Song) cellData.getValue()).getSongID()).getName());
+				return new ReadOnlyStringWrapper(sc.GetSongBySongID((((Song) cellData.getValue()).getSongID())).getArtist());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -651,7 +652,7 @@ public class MainAppController implements Initializable {
 		});
 		col3.setCellValueFactory(cellData -> {
 			try {
-				return new ReadOnlyStringWrapper(sc.GetAlbumBySongID(((Song) cellData.getValue()).getSongID()).getName());
+				return new ReadOnlyStringWrapper(sc.GetSongBySongID((((Song) cellData.getValue()).getSongID())).getAlbum());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -696,7 +697,7 @@ public class MainAppController implements Initializable {
 		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
 		col2.setCellValueFactory(cellData -> {
 			try {
-				return new ReadOnlyStringWrapper(sc.GetArtistBySongID(((Song) cellData.getValue()).getSongID()).getName());
+				return new ReadOnlyStringWrapper(sc.GetSongBySongID((((Song) cellData.getValue()).getSongID())).getArtist());
 			} catch (IOException e) {
 
 				e.printStackTrace();
@@ -705,7 +706,7 @@ public class MainAppController implements Initializable {
 		});
 		col3.setCellValueFactory(cellData -> {
 			try {
-				return new ReadOnlyStringWrapper(sc.GetAlbumBySongID(((Song) cellData.getValue()).getSongID()).getName());
+				return new ReadOnlyStringWrapper(sc.GetSongBySongID((((Song) cellData.getValue()).getSongID())).getAlbum());
 			} catch (IOException e) {
 
 				e.printStackTrace();
@@ -805,7 +806,7 @@ public class MainAppController implements Initializable {
         col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
         col2.setCellValueFactory(cellData -> {
 			try {
-				return new ReadOnlyStringWrapper(sc.GetArtistBySongID(((Song) cellData.getValue()).getSongID()).getName());
+				return new ReadOnlyStringWrapper(sc.GetSongBySongID((((Song) cellData.getValue()).getSongID())).getArtist());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -813,7 +814,7 @@ public class MainAppController implements Initializable {
 		});
 		col3.setCellValueFactory(cellData -> {
 			try {
-				return new ReadOnlyStringWrapper(sc.GetAlbumBySongID(((Song) cellData.getValue()).getSongID()).getName());
+				return new ReadOnlyStringWrapper(sc.GetSongBySongID((((Song) cellData.getValue()).getSongID())).getAlbum());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

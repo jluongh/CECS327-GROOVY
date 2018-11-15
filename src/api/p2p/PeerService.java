@@ -18,7 +18,7 @@ public class PeerService {
 	
 	private final PeerDHT peer;
 //	private final int port = 4001; //change
-	private final int port = Net.PORT; //change?
+	private final int port = Net.P2P_PORT; //change?
 	
 	public PeerService() throws IOException {
 		
@@ -39,11 +39,11 @@ public class PeerService {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public Chunk get(String guid) throws IOException, ClassNotFoundException {
+	public String get(String guid) throws IOException, ClassNotFoundException {
 		FutureGet futureGet = peer.get(new Number160(guid)).start();
 		futureGet.awaitUninterruptibly();
 		if (futureGet.isSuccess()) {
-			return (Chunk) futureGet.dataMap().values().iterator().next().object();
+            return futureGet.dataMap().values().iterator().next().object().toString();
 		}
 		return null;
 	}
@@ -54,10 +54,11 @@ public class PeerService {
 	 * @param chunk
 	 * @throws IOException
 	 */
-	public void put(Chunk chunk) throws IOException {
-		peer.put(new Number160(chunk.getGuid())).data(new Data(chunk)).start().awaitUninterruptibly();
+	public void put(Number160 guid, String content) throws IOException {
+		peer.put(guid).data(new Data(content)).start().awaitUninterruptibly();
 	}
   
+	
 	/**
 	 * Delete chunk from dht //not tested yet
 	 * @param deletePeer

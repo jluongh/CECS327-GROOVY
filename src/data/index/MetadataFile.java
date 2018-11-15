@@ -3,6 +3,7 @@ package data.index;
 import java.io.*;
 import java.util.*;
 
+import api.p2p.PeerService;
 import net.tomp2p.peers.Number160;
 
 public class MetadataFile {
@@ -15,11 +16,11 @@ public class MetadataFile {
 		
 	}
 	
-	public MetadataFile(File file1, File file2, File file3) {
+	public MetadataFile(File file1, File file2, File file3, PeerService ps) {
 		if (file1.exists() && file2.exists() && file3.exists()) {
 			this.indexName = getIndexName(file1, file2, file3);
 			this.totalSize = getIndexSize(file1, file2, file3);
-			this.chunks = populateChunks(file1, file2, file3);
+			this.chunks = populateChunks(file1, file2, file3, ps);
 		}
 	}
 	
@@ -79,7 +80,7 @@ public class MetadataFile {
 	 * @param file3
 	 * @return
 	 */
-	private List<Chunk> populateChunks(File file1, File file2, File file3) {
+	private List<Chunk> populateChunks(File file1, File file2, File file3, PeerService ps) {
 		List<Chunk> chunks = new ArrayList<Chunk>();
 		
 		List<File> files = new ArrayList<File>();
@@ -92,6 +93,7 @@ public class MetadataFile {
 			String content = "";
 			String first = "";
 			String last = "";
+			Number160 guid = null;
 			
 			try (BufferedReader br = new BufferedReader(new FileReader(f))) {
 				String line;
@@ -103,11 +105,15 @@ public class MetadataFile {
 					content = content + line + System.lineSeparator();
 					last = line;
 				}
+				
+				guid = Number160.createHash(content);
+				ps.put(guid, content);
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			
-			Chunk chunk = new Chunk(Number160.createHash(content).toString());
+			Chunk chunk = new Chunk(guid.toString());
 			chunk.setFirstLine(first);
 			chunk.setLastLine(last);
 			

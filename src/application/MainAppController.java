@@ -373,6 +373,7 @@ public class MainAppController implements Initializable {
 				queues.add(s.getSong());
 			}
 		}
+		
 //		if(currentPlaylist!=null)
 //		{
 //			if(queues==null&&queues.isEmpty())

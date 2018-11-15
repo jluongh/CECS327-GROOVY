@@ -41,13 +41,13 @@ public class SongController {
 	 * @return
 	 * @throws IOException
 	 */
-	public Artist GetArtistBySongID(int songID) throws IOException {
+	public Song GetSongBySongID(int songID) throws IOException {
 		
-		Artist artist = null;
+		Song song = null;
 		
 		Message requestMsg = new Message();
 		requestMsg.messageType = Packet.REQUEST;
-		requestMsg.requestID = Packet.REQUEST_ID_GETARTISTBYSONGID;
+		requestMsg.requestID = Packet.REQUEST_ID_GETSONGBYSONGID;
 		requestMsg.objectID = songID;
 
 		String requestString = new Gson().toJson(requestMsg);
@@ -67,57 +67,16 @@ public class SongController {
 		Message replyMsg = new Gson().fromJson(replyString, Message.class);
 		if (replyMsg.messageType == Packet.REPLY) {
 			switch (replyMsg.requestID) {
-			case Packet.REQUEST_ID_GETARTISTBYSONGID:
+			case Packet.REQUEST_ID_GETSONGBYSONGID:
 				String data = new String(replyMsg.fragment);
-				artist = new Gson().fromJson(data, Artist.class);
+				song = new Gson().fromJson(data, Song.class);
 				break;
 
 			}
 
 		}
-		return artist;
+		return song;
 	}
 	
-	/**
-	 * 
-	 * @param songID
-	 * @return
-	 * @throws IOException
-	 */
-	public Album GetAlbumBySongID(int songID) throws IOException {
-		
-		Album album = null;
-		
-		Message requestMsg = new Message();
-		requestMsg.messageType = Packet.REQUEST;
-		requestMsg.requestID = Packet.REQUEST_ID_GETALBUMBYSONGID;
-		requestMsg.objectID = songID;
-
-		String requestString = new Gson().toJson(requestMsg);
-		byte[] requestBytes = requestString.getBytes();
-
-		// send request
-		InetAddress address = InetAddress.getByName(Net.HOST);
-		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
-		socket.send(request);
-
-		// get reply
-		byte[] buffer = new byte[1024 * 1000];
-		DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
-		socket.receive(reply);
-
-		String replyString = new String(reply.getData(), 0, reply.getLength());
-		Message replyMsg = new Gson().fromJson(replyString, Message.class);
-		if (replyMsg.messageType == Packet.REPLY) {
-			switch (replyMsg.requestID) {
-			case Packet.REQUEST_ID_GETALBUMBYSONGID:
-				String data = new String(replyMsg.fragment);
-				album = new Gson().fromJson(data, Album.class);
-				break;
-
-			}
-
-		}
-		return album;
-	}
+	
 }

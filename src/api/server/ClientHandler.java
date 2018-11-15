@@ -148,39 +148,11 @@ public class ClientHandler extends Thread {
 						fragment = CreateLog(log);
 						sendMsg.fragment = fragment;
 						break;
-					case Packet.REQUEST_ID_SEARCHBYARTIST:
+					case Packet.REQUEST_ID_GETSONGBYSONGID:
 						sendMsg = new Message();
 						sendMsg.messageType = Packet.REPLY;
-						sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYARTIST;
-						userID = receivedMsg.objectID;
-						sendMsg.fragment = SearchByArtist(new String(receivedMsg.fragment));
-						break;
-					case Packet.REQUEST_ID_SEARCHBYALBUM:
-						sendMsg = new Message();
-						sendMsg.messageType = Packet.REPLY;
-						sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYALBUM;
-						userID = receivedMsg.objectID;
-						sendMsg.fragment = SearchByAlbum(new String(receivedMsg.fragment));
-						break;
-					case Packet.REQUEST_ID_SEARCHBYSONG:
-						sendMsg = new Message();
-						sendMsg.messageType = Packet.REPLY;
-						sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYSONG;
-						userID = receivedMsg.objectID;
-						System.out.println(new String(receivedMsg.fragment));
-						sendMsg.fragment = SearchBySong(new String(receivedMsg.fragment));
-						break;
-					case Packet.REQUEST_ID_GETARTISTBYSONGID:
-						sendMsg = new Message();
-						sendMsg.messageType = Packet.REPLY;
-						sendMsg.requestID = Packet.REQUEST_ID_GETARTISTBYSONGID;
-						sendMsg.fragment = GetArtistBySongID(receivedMsg.objectID);
-						break;
-					case Packet.REQUEST_ID_GETALBUMBYSONGID:
-						sendMsg = new Message();
-						sendMsg.messageType = Packet.REPLY;
-						sendMsg.requestID = Packet.REQUEST_ID_GETALBUMBYSONGID;
-						sendMsg.fragment = GetAlbumBySongID(receivedMsg.objectID);
+						sendMsg.requestID = Packet.REQUEST_ID_GETSONGBYSONGID;
+						sendMsg.fragment = GetSongBySongID(receivedMsg.objectID);
 						break;
 					}
 
@@ -352,101 +324,20 @@ public class ClientHandler extends Thread {
 		return null;
 	}
 
-	/**
-	 * 
-	 * @param query
-	 * @return
-	 */
-	private byte[] SearchByArtist(String query) {
-		SearchService ss = new SearchService();
 
-		List<Artist> artists = ss.GetArtistsByQuery(query);
-		Type listType = new TypeToken<List<Artist>>() {
-		}.getType();
-		String send = new Gson().toJson(artists, listType);
 
-		return send.getBytes();
-	}
-
-	/**
-	 * 
-	 * @param query
-	 * @return
-	 */
-	private byte[] SearchByAlbum(String query) {
-		SearchService ss = new SearchService();
-
-		List<Album> albums = ss.GetAlbumsByQuery(query);
-		Type listType = new TypeToken<List<Album>>() {
-		}.getType();
-		String send = new Gson().toJson(albums, listType);
-
-		return send.getBytes();
-	}
-
-	/**
-	 * 
-	 * @param query
-	 * @return
-	 */
-	private byte[] SearchBySong(String query) {
-		SearchService ss = new SearchService();
-
-		List<Song> songs = ss.GetSongsByQuery(query);
-		Type listType = new TypeToken<List<Song>>() {
-		}.getType();
-		String send = new Gson().toJson(songs, listType);
-
-		return send.getBytes();
-	}
-
+	
 	/**
 	 * 
 	 * @return
 	 */
-	private byte[] GetArtistBySongID(int songID) {
+	private byte[] GetSongBySongID(int songID) {
 		LibraryService ls = new LibraryService();
 
-		List<Artist> artists = ls.getAllArtists();
-		Artist artist = null;
+		Song song = ls.getSong(songID);
 
-		for (Artist ar : artists) {
-			List<Album> albums = ar.getAlbums();
-			for (Album al : albums) {
-				List<Song> songs = al.getSongs();
-				for (Song s : songs) {
-					if (s.getSongID() == songID)
-						artist = ar;
-				}
-			}
-		}
-
-		String artistJson = new Gson().toJson(artist, Artist.class);
-		return artistJson.getBytes();
+		String songJson = new Gson().toJson(song, Song.class);
+		return songJson.getBytes();
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	private byte[] GetAlbumBySongID(int songID) {
-		LibraryService ls = new LibraryService();
-
-		List<Artist> artists = ls.getAllArtists();
-		Album album = null;
-
-		for (Artist ar : artists) {
-			List<Album> albums = ar.getAlbums();
-			for (Album al : albums) {
-				List<Song> songs = al.getSongs();
-				for (Song s : songs) {
-					if (s.getSongID() == songID)
-						album = al;
-				}
-			}
-		}
-
-		String albumJson = new Gson().toJson(album, Album.class);
-		return albumJson.getBytes();
-	}
 }

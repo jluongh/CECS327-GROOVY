@@ -1,12 +1,11 @@
 package application;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import api.p2p.MetadataService;
-import api.p2p.PeerService;
-import data.constants.Files;
-import data.models.*;
+import api.p2p.Peer;
 
 
 public class Client {
@@ -20,14 +19,16 @@ public class Client {
 	public static void main(String[] args) {
 		
 		try {
-			PeerService ps = new PeerService();
-			MetadataService ms = new MetadataService(ps);
-			ms.init();
-			List<Song> lists = ms.search(Files.SONG_INDEX, "s");
-			
-			for (Song s : lists) {
-				System.out.println(s.getTitle());
+			List<Peer> peers = new ArrayList<Peer>();
+			for(int i = 0; i < 5; i++) {
+				Peer peer = new Peer();
+				peers.add(peer);
 			}
+			
+			MetadataService ms = new MetadataService(peers.get(0));
+			ms.init();
+
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

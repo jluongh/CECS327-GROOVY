@@ -10,6 +10,8 @@ import java.nio.file.Paths;
 import java.util.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import api.p2p.MetadataService;
 import data.constants.Packet;
 import data.models.*;
 import services.LibraryService;
@@ -27,16 +29,18 @@ public class ClientHandler extends Thread {
 	final private DatagramSocket socket;
 	private DatagramPacket request;
 	final private LogService ls = new LogService();
-
+	private MetadataService ms;
+	
 	/**
 	 * Setter for socket for ClientHandler
 	 * 
 	 * @param socket
 	 *                   - {DatagramSocket}
 	 */
-	public ClientHandler(DatagramSocket socket, DatagramPacket request) {
+	public ClientHandler(DatagramSocket socket, DatagramPacket request, MetadataService ms) {
 		this.socket = socket;
 		this.request = request;
+		this.ms = ms;
 	}
 
 	/**
@@ -148,11 +152,27 @@ public class ClientHandler extends Thread {
 						fragment = CreateLog(log);
 						sendMsg.fragment = fragment;
 						break;
-					case Packet.REQUEST_ID_GETSONGBYSONGID:
+					case Packet.REQUEST_ID_SEARCHBYARTIST:
 						sendMsg = new Message();
 						sendMsg.messageType = Packet.REPLY;
-						sendMsg.requestID = Packet.REQUEST_ID_GETSONGBYSONGID;
-						sendMsg.fragment = GetSongBySongID(receivedMsg.objectID);
+						sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYARTIST;
+						userID = receivedMsg.objectID;
+						sendMsg.fragment = SearchByArtist(new String(receivedMsg.fragment));
+						break;
+					case Packet.REQUEST_ID_SEARCHBYALBUM:
+						sendMsg = new Message();
+						sendMsg.messageType = Packet.REPLY;
+						sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYALBUM;
+						userID = receivedMsg.objectID;
+						sendMsg.fragment = SearchByAlbum(new String(receivedMsg.fragment));
+						break;
+					case Packet.REQUEST_ID_SEARCHBYSONG:
+						sendMsg = new Message();
+						sendMsg.messageType = Packet.REPLY;
+						sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYSONG;
+						userID = receivedMsg.objectID;
+						System.out.println(new String(receivedMsg.fragment));
+						sendMsg.fragment = SearchBySong(new String(receivedMsg.fragment));
 						break;
 					}
 
@@ -324,20 +344,48 @@ public class ClientHandler extends Thread {
 		return null;
 	}
 
-
-
-	
 	/**
 	 * 
+	 * @param query
 	 * @return
 	 */
-	private byte[] GetSongBySongID(int songID) {
-		LibraryService ls = new LibraryService();
+	private byte[] SearchByArtist(String query) {
+		List<Song> songs = ms.search(data.constants.Files.ARTIST_INDEX, query);
+		Type listType = new TypeToken<List<Artist>>() {
+		}.getType();
+		String send = new Gson().toJson(songs, listType);
 
-		Song song = ls.getSong(songID);
+		return send.getBytes();
+	}
 
-		String songJson = new Gson().toJson(song, Song.class);
-		return songJson.getBytes();
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 */
+	private byte[] SearchByAlbum(String query) {
+
+		List<Song> songs = ms.search(data.constants.Files.ALBUM_INDEX, query);
+		Type listType = new TypeToken<List<Album>>() {
+		}.getType();
+		String send = new Gson().toJson(songs, listType);
+
+		return send.getBytes();
+	}
+
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 */
+	private byte[] SearchBySong(String query) {
+
+		List<Song> songs = ms.search(data.constants.Files.SONG_INDEX, query);
+		Type listType = new TypeToken<List<Song>>() {
+		}.getType();
+		String send = new Gson().toJson(songs, listType);
+
+		return send.getBytes();
 	}
 
 }

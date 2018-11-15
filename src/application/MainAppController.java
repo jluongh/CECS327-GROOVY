@@ -175,7 +175,7 @@ public class MainAppController implements Initializable {
 			socket.setReceiveBufferSize(60011 * 30 * 100);
 			player= new PlayerController(socket);
 			upc = new UserProfileController(socket);
-			search = new SearchController();
+			search = new SearchController(socket);
 			user = upc.GetUserProfile(currentUser.getUserID());
 			playlist = user.getPlaylists();
 			sc = new SongController(socket);
@@ -369,23 +369,43 @@ public class MainAppController implements Initializable {
 		
 		//add playlist to queue, todo
 		queues.clear();
-//		if(currentPlaylist!=null)
-//		{
-//			if(queues==null&&queues.isEmpty())
-//			{
-//				queues.add(0, currentPlaylist.getSongInfos().get(0).getSong());
+		if(currentPlaylist!=null)
+		{
+			if(queues==null&&queues.isEmpty())
+			{
+				queues.add(0, currentPlaylist.getSongInfos().get(0).getSong());
+			}
+			for(int i = 1; i<currentPlaylist.getSongCount();i++)
+			{
+				queues.add(currentPlaylist.getSongInfos().get(i).getSong());
+			}
+		}
+//		if(currentPlaylist!=null && isPlaying == false) {
+//			btnPlayList.setImage(pic1);
+//			isPlaying = true;
+//			playMusic.setImage(pic4);
+//			List<Song> songs = new ArrayList<Song>();
+//			for (SongInfo info : currentPlaylist.getSongInfos()) {
+//				songs.add(info.getSong());
 //			}
-//			for(int i = 1; i<currentPlaylist.getSongCount();i++)
-//			{
-//				queues.add(currentPlaylist.getSongInfos().get(i).getSong());
+//			player.loadSongs(songs);
+//			if (player.thread != null && player.thread.isAlive()) {
+//				player.thread.stop();
 //			}
+//			player.playQueue();
+//			
 //		}
-		if(currentPlaylist!=null && isPlaying == false) {
+		
+		
+		if(isPlaying == false) {
 			btnPlayList.setImage(pic1);
 			isPlaying = true;
 			playMusic.setImage(pic4);
+			// Should be List<Song>
+			Playlist playlist = upc.GetPlaylists().get(0);
 			List<Song> songs = new ArrayList<Song>();
-			for (SongInfo info : currentPlaylist.getSongInfos()) {
+			
+			for (SongInfo info : playlist.getSongInfos()) {
 				songs.add(info.getSong());
 			}
 			player.loadSongs(songs);
@@ -394,29 +414,9 @@ public class MainAppController implements Initializable {
 			}
 			player.playQueue();
 			
-		}
-		
-		
-//		if(isPlaying == false) {
-//			btnPlayList.setImage(pic1);
-//			isPlaying = true;
-//			playMusic.setImage(pic4);
-//			// Should be List<Song>
-//			Playlist playlist = upc.GetPlaylists().get(0);
-//			List<Song> songs = new ArrayList<Song>();
-//			
-//			for (SongInfo info : playlist.getSongInfos()) {
-//				songs.add(info.getSong());
-//			}
-//			player.loadSongs(songs);
-//			if (player.thread != null && player.thread.isAlive()) {
-//				player.thread.stop();
-//			}
-//			player.playQueue();
-			
 
-			//isPlayListClicked= true;
-		//}
+//			isPlayListClicked= true;
+		}
 		else if(isPlaying == true) {
 			btnPlayList.setImage(pic2);
 			playMusic.setImage(pic3);

@@ -3,7 +3,7 @@ package data.index;
 import java.io.*;
 import java.util.*;
 
-import api.p2p.PeerService;
+import api.p2p.Peer;
 import net.tomp2p.peers.Number160;
 
 public class MetadataFile {
@@ -16,7 +16,7 @@ public class MetadataFile {
 		
 	}
 	
-	public MetadataFile(File file1, File file2, File file3, PeerService ps) {
+	public MetadataFile(File file1, File file2, File file3, Peer ps) {
 		if (file1.exists() && file2.exists() && file3.exists()) {
 			this.indexName = getIndexName(file1, file2, file3);
 			this.totalSize = getIndexSize(file1, file2, file3);
@@ -80,7 +80,7 @@ public class MetadataFile {
 	 * @param file3
 	 * @return
 	 */
-	private List<Chunk> populateChunks(File file1, File file2, File file3, PeerService ps) {
+	private List<Chunk> populateChunks(File file1, File file2, File file3, Peer ps) {
 		List<Chunk> chunks = new ArrayList<Chunk>();
 		
 		List<File> files = new ArrayList<File>();

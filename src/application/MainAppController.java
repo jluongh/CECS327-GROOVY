@@ -20,7 +20,6 @@ import api.PlayerController;
 import api.SearchController;
 import api.SongController;
 import api.UserProfileController;
-import api.p2p.PeerService;
 import data.models.Album;
 import data.models.Artist;
 import data.models.Playlist;

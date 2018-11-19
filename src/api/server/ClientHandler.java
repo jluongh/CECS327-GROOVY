@@ -55,6 +55,7 @@ public class ClientHandler extends Thread {
 			Message receivedMsg = new Gson().fromJson(received, Message.class);
 			Message sendMsg = null;
 
+			System.out.println("received message");
 			if (received != null) {
 				if (receivedMsg.messageType == Packet.REQUEST) {
 					Log log = new Log();
@@ -171,11 +172,19 @@ public class ClientHandler extends Thread {
 						sendMsg.messageType = Packet.REPLY;
 						sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYSONG;
 						userID = receivedMsg.objectID;
-						System.out.println(new String(receivedMsg.fragment));
 						sendMsg.fragment = SearchBySong(new String(receivedMsg.fragment));
+						break;
+					case Packet.REQUEST_ID_GETSONGBYSONGID:
+						System.out.println("Hihihihihi");
+						sendMsg = new Message();
+						sendMsg.messageType = Packet.REPLY;
+						sendMsg.requestID = Packet.REQUEST_ID_GETSONGBYSONGID;
+						userID = receivedMsg.objectID;
+						sendMsg.fragment = GetSongBySongId(receivedMsg.objectID);
 						break;
 					}
 
+					
 					if (sendMsg != null) {
 						InetAddress address = request.getAddress();
 						int port = request.getPort();
@@ -384,6 +393,20 @@ public class ClientHandler extends Thread {
 		Type listType = new TypeToken<List<Song>>() {
 		}.getType();
 		String send = new Gson().toJson(songs, listType);
+
+		return send.getBytes();
+	}
+	
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 */
+	private byte[] GetSongBySongId(int id) {
+		LibraryService ls = new LibraryService();
+		
+		Song song = ls.getSong(id);
+		String send = new Gson().toJson(song);
 
 		return send.getBytes();
 	}

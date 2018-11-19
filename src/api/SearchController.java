@@ -59,7 +59,7 @@ public class SearchController {
 			case Packet.REQUEST_ID_SEARCHBYARTIST:
 				String artistsString = new String(replyMsg.fragment, 0, replyMsg.fragment.length);
 				
-				Type listType = new TypeToken<List<Artist>>() {
+				Type listType = new TypeToken<List<Song>>() {
 				}.getType();
 				List<Song> songs = new Gson().fromJson(artistsString, listType);
 				
@@ -106,7 +106,7 @@ public class SearchController {
 			case Packet.REQUEST_ID_SEARCHBYALBUM:
 				String albumsString = new String(replyMsg.fragment, 0, replyMsg.fragment.length);
 				
-				Type listType = new TypeToken<List<Album>>() {
+				Type listType = new TypeToken<List<Song>>() {
 				}.getType();
 				List<Song> songs = new Gson().fromJson(albumsString, listType);
 				

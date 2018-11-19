@@ -360,7 +360,7 @@ public class ClientHandler extends Thread {
 	 */
 	private byte[] SearchByArtist(String query) {
 		List<Song> songs = ms.search(data.constants.Files.ARTIST_INDEX, query);
-		Type listType = new TypeToken<List<Artist>>() {
+		Type listType = new TypeToken<List<Song>>() {
 		}.getType();
 		String send = new Gson().toJson(songs, listType);
 
@@ -375,7 +375,7 @@ public class ClientHandler extends Thread {
 	private byte[] SearchByAlbum(String query) {
 
 		List<Song> songs = ms.search(data.constants.Files.ALBUM_INDEX, query);
-		Type listType = new TypeToken<List<Album>>() {
+		Type listType = new TypeToken<List<Song>>() {
 		}.getType();
 		String send = new Gson().toJson(songs, listType);
 

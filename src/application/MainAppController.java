@@ -20,7 +20,6 @@ import api.PlayerController;
 import api.SearchController;
 import api.SongController;
 import api.UserProfileController;
-import api.p2p.PeerService;
 import data.models.Album;
 import data.models.Artist;
 import data.models.Playlist;
@@ -175,7 +174,7 @@ public class MainAppController implements Initializable {
 			socket.setReceiveBufferSize(60011 * 30 * 100);
 			player= new PlayerController(socket);
 			upc = new UserProfileController(socket);
-			search = new SearchController();
+			search = new SearchController(socket);
 			user = upc.GetUserProfile(currentUser.getUserID());
 			playlist = user.getPlaylists();
 			sc = new SongController(socket);
@@ -275,14 +274,10 @@ public class MainAppController implements Initializable {
 	    }
 	}
 
-	/**
-	 * update the playlist table
-	 * @param userChoose the playlist user selected
-	 */
 	public void updatePlayTable(Playlist userChoose)
 	{
 		List<Song> songPlay = new ArrayList<Song>();
-		System.out.println("Hellooo: " + userChoose.getSongInfos().size());
+		
         ArrayList<SongInfo> songin = (ArrayList<SongInfo>) userChoose.getSongInfos();
         userSong.removeAll(userSong);
         
@@ -294,25 +289,23 @@ public class MainAppController implements Initializable {
 	        	userSong.add(userChoose.getSongInfos().get(i));
 
 	        }
-        	// _________________** this should work but its not **__________________
 
         	txtResult.setText(userChoose.getName());
 
 	        col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
-	        col2.setCellValueFactory(cellData -> {
+			col2.setCellValueFactory(cellData -> {
 				try {
 					return new ReadOnlyStringWrapper(sc.GetSongBySongID((((SongInfo) cellData.getValue()).getSong().getSongID())).getArtist());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
+					return null;
 				}
-				return null;
 			});
-	        col2.setCellValueFactory(cellData -> {
+			
+			col3.setCellValueFactory(cellData -> {
 				try {
 					return new ReadOnlyStringWrapper(sc.GetSongBySongID((((SongInfo) cellData.getValue()).getSong().getSongID())).getAlbum());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				return null;
@@ -323,6 +316,7 @@ public class MainAppController implements Initializable {
 
         }
 	}
+	
 	/**
 	 * Search if song button is clicked then
 	 * @param event - {MouseEvent} the action
@@ -363,30 +357,39 @@ public class MainAppController implements Initializable {
 	// ____________________________________________________________ HERE ______________________________________________________________
 	//boolean isPlayListClicked = false;
 	
-	@FXML
+		@FXML
 	public void btnPlayListClicked(MouseEvent event)
 	{	
 		
 		//add playlist to queue, todo
 		queues.clear();
-		if(currentPlaylist!=null && queues.isEmpty())
+		if(currentPlaylist!=null)
 		{
-			for(SongInfo s : currentPlaylist.getSongInfos()) {
-				queues.add(s.getSong());
+			if(queues==null&&queues.isEmpty())
+			{
+				queues.add(0, currentPlaylist.getSongInfos().get(0).getSong());
+			}
+			for(int i = 1; i<currentPlaylist.getSongCount();i++)
+			{
+				queues.add(currentPlaylist.getSongInfos().get(i).getSong());
 			}
 		}
-		
-//		if(currentPlaylist!=null)
-//		{
-//			if(queues==null&&queues.isEmpty())
-//			{
-//				queues.add(0, currentPlaylist.getSongInfos().get(0).getSong());
+//		if(currentPlaylist!=null && isPlaying == false) {
+//			btnPlayList.setImage(pic1);
+//			isPlaying = true;
+//			playMusic.setImage(pic4);
+//			List<Song> songs = new ArrayList<Song>();
+//			for (SongInfo info : currentPlaylist.getSongInfos()) {
+//				songs.add(info.getSong());
 //			}
-//			for(int i = 1; i<currentPlaylist.getSongCount();i++)
-//			{
-//				queues.add(currentPlaylist.getSongInfos().get(i).getSong());
+//			player.loadSongs(songs);
+//			if (player.thread != null && player.thread.isAlive()) {
+//				player.thread.stop();
 //			}
+//			player.playQueue();
+//			
 //		}
+		
 		
 		if(isPlaying == false) {
 			btnPlayList.setImage(pic1);
@@ -405,7 +408,8 @@ public class MainAppController implements Initializable {
 			}
 			player.playQueue();
 			
-			//isPlayListClicked= true;
+
+//			isPlayListClicked= true;
 		}
 		else if(isPlaying == true) {
 			btnPlayList.setImage(pic2);
@@ -664,100 +668,6 @@ public class MainAppController implements Initializable {
 
 
 		Result.setItems(songs);
-		Result.refresh();
-	}
-
-	/**
-	 * Search album according to album name
-	 * Displaying the album results based on the user's search
-	 * @param album - {List} list of album objects
-	 */
-	public void setSearchAlbum(List<Album> album)
-	{
-		for(int i = 0; i<Result.getItems().size();i++)
-		{
-			Result.getItems().clear();
-		}
-		Result.refresh();
-		albumSong.clear();
-		for (int i = 0; i< album.size();i++)
-		{
-			for (int j = 0; j<album.get(i).getSongs().size();j++)
-			{
-				albumSong.add(album.get(i).getSongs().get(j));
-			}
-		}
-		col1.setText("Song");
-		col2.setText("Artist");
-		col3.setText("Album");
-		
-		col4.setText("Duration");
-		txtResult.setText("Search Result");
-		//display object to the table
-
-		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
-		col2.setCellValueFactory(cellData -> {
-			try {
-				return new ReadOnlyStringWrapper(sc.GetSongBySongID((((Song) cellData.getValue()).getSongID())).getArtist());
-			} catch (IOException e) {
-
-				e.printStackTrace();
-			}
-			return null;
-		});
-		col3.setCellValueFactory(cellData -> {
-			try {
-				return new ReadOnlyStringWrapper(sc.GetSongBySongID((((Song) cellData.getValue()).getSongID())).getAlbum());
-			} catch (IOException e) {
-
-				e.printStackTrace();
-			}
-			return null;
-		});
-		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
-
-
-		Result.setItems(albumSong);
-		Result.refresh();
-	}
-
-	/**
-	 * Search artist according to artist name
-	 * Displaying the artist results based on the user's search
-	 * @param artist - {List} list of artist objects
-	 */
-	public void setSearchArtist(List<Artist> artist)
-	{
-		for(int i = 0; i<Result.getItems().size();i++)
-		{
-			Result.getItems().clear();
-		}
-		Result.refresh();
-		artistSong.clear();
-		for (int i = 0; i< artist.size();i++)
-		{
-			for(int j = 0; j < artist.get(i).getAlbums().size();j++)
-			{
-				for(int k = 0; k< artist.get(i).getAlbums().get(j).getSongs().size();k++)
-				{
-					artistSong.add(artist.get(i).getAlbums().get(j).getSongs().get(k));
-				}
-			}
-		}
-		col2.setText("Song");
-		col1.setText("Artist");
-		col3.setText("Album");
-		col4.setText("Duration");
-		txtResult.setText("Search Result");
-		//display object to the table
-		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
-//		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-//		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-//		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
-		
-		System.out.print(sc.FormatDuration(artist.get(0).getAlbums().get(0).getSongs().get(0).getDuration()));
-
-		Result.setItems(artistSong);
 		Result.refresh();
 	}
 

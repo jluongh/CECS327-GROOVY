@@ -1,6 +1,5 @@
 package api;
 
-import data.constants.Files;
 import data.constants.Net;
 import data.constants.Packet;
 import data.models.*;
@@ -9,7 +8,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import api.p2p.MetadataService;
-import api.p2p.PeerService;
 
 import java.lang.reflect.*;
 import java.io.*;
@@ -18,19 +16,10 @@ import java.nio.ByteBuffer;
 
 public class SearchController {
 
-	private MetadataService ms;
-
-	public SearchController() {
-		PeerService ps;
-		try {
-			ps = new PeerService();
-			ms = new MetadataService(ps);
-			ms.init();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+	private DatagramSocket socket;
+	
+	public SearchController(DatagramSocket socket) {
+		this.socket = socket;
 	}
 
 	/**
@@ -40,9 +29,46 @@ public class SearchController {
 	 * @throws IOException
 	 */
 	public List<Song> SearchByArtist(String query) throws IOException {
-		return ms.search(Files.ARTIST_INDEX, query);
-	}
 
+		// construct message
+		Message requestMsg = new Message();
+		requestMsg.messageType = Packet.REQUEST;
+		requestMsg.requestID = Packet.REQUEST_ID_SEARCHBYARTIST;
+		requestMsg.fragment = query.getBytes();
+		
+		String requestString = new Gson().toJson(requestMsg);
+		byte[] requestBytes = requestString.getBytes();
+		
+		// Send request
+		InetAddress address = InetAddress.getByName(Net.HOST);
+		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
+		socket.send(request);
+					
+		// Receive reply 
+		byte[] buffer = new byte[1024 * 1000];
+		DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
+		socket.receive(reply);
+
+		String replyString = new String(reply.getData(), 0, reply.getLength());
+		
+		// Deserialize message string 
+		Message replyMsg = new Gson().fromJson(replyString, Message.class);
+		
+		if (replyMsg.messageType == Packet.REPLY) {
+			switch (replyMsg.requestID) {
+			case Packet.REQUEST_ID_SEARCHBYARTIST:
+				String artistsString = new String(replyMsg.fragment, 0, replyMsg.fragment.length);
+				
+				Type listType = new TypeToken<List<Song>>() {
+				}.getType();
+				List<Song> songs = new Gson().fromJson(artistsString, listType);
+				
+				return songs;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * 
 	 * @param query
@@ -50,9 +76,46 @@ public class SearchController {
 	 * @throws IOException
 	 */
 	public List<Song> SearchByAlbum(String query) throws IOException {
-		return ms.search(Files.ALBUM_INDEX, query);
-	}
 
+		// construct message
+		Message requestMsg = new Message();
+		requestMsg.messageType = Packet.REQUEST;
+		requestMsg.requestID = Packet.REQUEST_ID_SEARCHBYALBUM;
+		requestMsg.fragment = query.getBytes();
+		
+		String requestString = new Gson().toJson(requestMsg);
+		byte[] requestBytes = requestString.getBytes();
+		
+		// Send request
+		InetAddress address = InetAddress.getByName(Net.HOST);
+		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
+		socket.send(request);
+					
+		// Receive reply 
+		byte[] buffer = new byte[1024 * 1000];
+		DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
+		socket.receive(reply);
+
+		String replyString = new String(reply.getData(), 0, reply.getLength());
+		
+		// Deserialize message string 
+		Message replyMsg = new Gson().fromJson(replyString, Message.class);
+		
+		if (replyMsg.messageType == Packet.REPLY) {
+			switch (replyMsg.requestID) {
+			case Packet.REQUEST_ID_SEARCHBYALBUM:
+				String albumsString = new String(replyMsg.fragment, 0, replyMsg.fragment.length);
+				
+				Type listType = new TypeToken<List<Song>>() {
+				}.getType();
+				List<Song> songs = new Gson().fromJson(albumsString, listType);
+				
+				return songs;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * 
 	 * @param query
@@ -60,7 +123,43 @@ public class SearchController {
 	 * @throws IOException
 	 */
 	public List<Song> SearchBySong(String query) throws IOException {
-		return ms.search(Files.SONG_INDEX, query);
 
+		// construct message
+		Message requestMsg = new Message();
+		requestMsg.messageType = Packet.REQUEST;
+		requestMsg.requestID = Packet.REQUEST_ID_SEARCHBYSONG;
+		requestMsg.fragment = query.getBytes();
+		
+		String requestString = new Gson().toJson(requestMsg);
+		byte[] requestBytes = requestString.getBytes();
+		
+		// Send request
+		InetAddress address = InetAddress.getByName(Net.HOST);
+		DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length, address, Net.PORT);
+		socket.send(request);
+					
+		// Receive reply 
+		byte[] buffer = new byte[1024 * 1000];
+		DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
+		socket.receive(reply);
+
+		String replyString = new String(reply.getData(), 0, reply.getLength());
+		
+		// Deserialize message string 
+		Message replyMsg = new Gson().fromJson(replyString, Message.class);
+		
+		if (replyMsg.messageType == Packet.REPLY) {
+			switch (replyMsg.requestID) {
+			case Packet.REQUEST_ID_SEARCHBYSONG:
+				String songsString = new String(replyMsg.fragment, 0, replyMsg.fragment.length);
+				
+				Type listType = new TypeToken<List<Song>>() {
+				}.getType();
+				List<Song> songs = new Gson().fromJson(songsString, listType);
+				
+				return songs;
+			}
+		}
+		return null;
 	}
 }

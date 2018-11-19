@@ -23,9 +23,9 @@ import data.models.Song;
 
 public class MetadataService {
 
-	PeerService ps;
+	Peer ps;
 
-	public MetadataService(PeerService ps) {
+	public MetadataService(Peer ps) {
 		this.ps = ps;
 	}
 

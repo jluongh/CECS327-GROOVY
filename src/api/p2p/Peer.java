@@ -14,13 +14,12 @@ import net.tomp2p.p2p.PeerBuilder;
 import net.tomp2p.peers.Number160;
 import net.tomp2p.storage.Data;
 
-public class PeerService {
+public class Peer {
 	
 	private final PeerDHT peer;
-//	private final int port = 4001; //change
 	private final int port = Net.P2P_PORT; //change?
 	
-	public PeerService() throws IOException {
+	public Peer() throws IOException {
 		
 		Random rnd = new Random();
         peer = new PeerBuilderDHT(new PeerBuilder(new Number160(rnd)).ports(port).start()).start();

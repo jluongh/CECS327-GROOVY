@@ -140,7 +140,7 @@ public class MainAppController implements Initializable {
 	Image pic88 = new Image(getClass().getResourceAsStream("resources/repeat.png"));
 	
 
-	boolean shuffleClicked = false;
+	boolean shuffleIsClicked = false;
 	boolean repeatClicked = false;
 	
 	private boolean isSearch = false;
@@ -993,19 +993,18 @@ public class MainAppController implements Initializable {
 
 		//lbMode.setText("Mode: Shuffle");
 		
-		
-		if(shuffleClicked == false) {
+		if(shuffleIsClicked == false) {
 			//call the shuffle function
 			player.shuffle();
 		
 			btnShuffle.setImage(pic7);
-			shuffleClicked = true;
+			shuffleIsClicked = true;
 			
-		}else if(shuffleClicked == true) {
+		}else if(shuffleIsClicked == true) {
 			// unshuffle 
 			
 			btnShuffle.setImage(pic77);
-			shuffleClicked = false;
+			shuffleIsClicked = false;
 		}
 		
 	}
@@ -1024,7 +1023,8 @@ public class MainAppController implements Initializable {
 			repeatClicked = true;
 		}else if(repeatClicked == true) {
 			
-			btnShuffle.setImage(pic88);
+			btnRepeat.setImage(pic88);
+			player.repeat(false);
 			repeatClicked = false;
 		}
 	}

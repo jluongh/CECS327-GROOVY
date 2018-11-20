@@ -275,7 +275,7 @@ public class MainAppController implements Initializable {
 	}
 
 	public void updatePlayTable(Playlist userChoose)
-	{
+	{		
 		List<Song> songPlay = new ArrayList<Song>();
 		
         ArrayList<SongInfo> songin = (ArrayList<SongInfo>) userChoose.getSongInfos();
@@ -283,6 +283,7 @@ public class MainAppController implements Initializable {
         
         if (songin!=null && !songin.isEmpty())
         {
+        	
         	for (int i = 0; i<userChoose.getSongInfos().size();i++)
 	        {
 	        	songPlay.add(userChoose.getSongInfos().get(i).getSong());
@@ -293,23 +294,8 @@ public class MainAppController implements Initializable {
         	txtResult.setText(userChoose.getName());
 
 	        col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
-			col2.setCellValueFactory(cellData -> {
-				try {
-					return new ReadOnlyStringWrapper(sc.GetSongBySongID((((SongInfo) cellData.getValue()).getSong().getSongID())).getArtist());
-				} catch (IOException e) {
-					e.printStackTrace();
-					return null;
-				}
-			});
-			
-			col3.setCellValueFactory(cellData -> {
-				try {
-					return new ReadOnlyStringWrapper(sc.GetSongBySongID((((SongInfo) cellData.getValue()).getSong().getSongID())).getAlbum());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return null;
-			});
+	        col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getArtist()));
+	        col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getAlbum()));
 			col4.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getAddedDate().toString()));
 			Result.setItems(userSong);
 			Result.refresh();
@@ -353,9 +339,7 @@ public class MainAppController implements Initializable {
 		search(txtSearch.getText(), "artist");
 	}
 	
-	
-	// ____________________________________________________________ HERE ______________________________________________________________
-	//boolean isPlayListClicked = false;
+
 	
 		@FXML
 	public void btnPlayListClicked(MouseEvent event)
@@ -646,24 +630,9 @@ public class MainAppController implements Initializable {
 		txtResult.setText("Search Result");
 		//display object to the table
 		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
-		col2.setCellValueFactory(cellData -> {
-			try {
-				return new ReadOnlyStringWrapper(sc.GetSongBySongID((((Song) cellData.getValue()).getSongID())).getArtist());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
-		});
-		col3.setCellValueFactory(cellData -> {
-			try {
-				return new ReadOnlyStringWrapper(sc.GetSongBySongID((((Song) cellData.getValue()).getSongID())).getAlbum());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
-		});
+		col2.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getArtist()));
+		col3.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getAlbum()));
+
 		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
 
 
@@ -715,22 +684,9 @@ public class MainAppController implements Initializable {
 		Result.refresh();
 		
         col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
-        col2.setCellValueFactory(cellData -> {
-			try {
-				return new ReadOnlyStringWrapper(sc.GetSongBySongID((((Song) cellData.getValue()).getSongID())).getArtist());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return null;
-		});
-		col3.setCellValueFactory(cellData -> {
-			try {
-				return new ReadOnlyStringWrapper(sc.GetSongBySongID((((Song) cellData.getValue()).getSongID())).getAlbum());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return null;
-		});
+        col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((Song) cellData.getValue()).getArtist()));
+        col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((Song) cellData.getValue()).getAlbum()));
+
 		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
 
 		Result.setItems(queueSong);

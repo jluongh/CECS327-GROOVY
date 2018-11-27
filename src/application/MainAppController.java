@@ -347,43 +347,23 @@ public class MainAppController implements Initializable {
 		
 		//add playlist to queue, todo
 		queues.clear();
-		if(currentPlaylist!=null)
+
+		if(currentPlaylist!=null && queues.isEmpty())
 		{
-			if(queues==null&&queues.isEmpty())
-			{
-				queues.add(0, currentPlaylist.getSongInfos().get(0).getSong());
-			}
-			for(int i = 1; i<currentPlaylist.getSongCount();i++)
-			{
-				queues.add(currentPlaylist.getSongInfos().get(i).getSong());
+			for(SongInfo s : currentPlaylist.getSongInfos()) {
+				queues.add(s.getSong());
 			}
 		}
-//		if(currentPlaylist!=null && isPlaying == false) {
-//			btnPlayList.setImage(pic1);
-//			isPlaying = true;
-//			playMusic.setImage(pic4);
-//			List<Song> songs = new ArrayList<Song>();
-//			for (SongInfo info : currentPlaylist.getSongInfos()) {
-//				songs.add(info.getSong());
-//			}
-//			player.loadSongs(songs);
-//			if (player.thread != null && player.thread.isAlive()) {
-//				player.thread.stop();
-//			}
-//			player.playQueue();
-//			
-//		}
-		
 		
 		if(isPlaying == false) {
 			btnPlayList.setImage(pic1);
 			isPlaying = true;
 			playMusic.setImage(pic4);
 			// Should be List<Song>
-			Playlist playlist = upc.GetPlaylists().get(0);
+			//Playlist playlist = upc.GetPlaylists().get(0);
 			List<Song> songs = new ArrayList<Song>();
 			
-			for (SongInfo info : playlist.getSongInfos()) {
+			for (SongInfo info : currentPlaylist.getSongInfos()) {
 				songs.add(info.getSong());
 			}
 			player.loadSongs(songs);

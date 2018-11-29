@@ -55,7 +55,6 @@ public class ClientHandler extends Thread {
 			Message receivedMsg = new Gson().fromJson(received, Message.class);
 			Message sendMsg = null;
 
-			System.out.println("received message");
 			if (received != null) {
 				if (receivedMsg.messageType == Packet.REQUEST) {
 					Log log = new Log();

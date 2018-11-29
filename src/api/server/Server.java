@@ -9,7 +9,6 @@ import api.p2p.MetadataService;
 import data.constants.Net;
 import api.p2p.Peer;
 
-
 public class Server {
 
 	/**
@@ -20,17 +19,22 @@ public class Server {
 	 * @throws IOException
 	 *                         if input or output is invalid.
 	 */
-	
-	
+
 	public static void main(String[] args) throws IOException {
+
+		
+		// Initialize counters
+		// MapCounter
+		
 		
 		try {
 			List<Peer> peers = new ArrayList<Peer>();
-			for(int i = 0; i < 5; i++) {
+			for (int i = 0; i < 5; i++) {
 				Peer peer = new Peer();
 				peers.add(peer);
 			}
-			
+
+			// Create MetadataService1 that passes in List<Peer>
 			MetadataService ms = new MetadataService(peers.get(0));
 			ms.init();
 
@@ -52,8 +56,6 @@ public class Server {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
 
 	}
 }

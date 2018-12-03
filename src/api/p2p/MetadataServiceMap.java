@@ -32,6 +32,9 @@ public class MetadataServiceMap extends Mapper<String, String, String, String>{
 		   
 		   // open page file 
 		   BufferedReader reader;
+		   
+		   //file?
+		   //reader =  new BufferedReader(new FileReader());
 		   String line = reader.readLine();
 		   
 			while (line != null) {

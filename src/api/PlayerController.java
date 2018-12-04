@@ -22,7 +22,8 @@ public class PlayerController {
 	private SourceDataLine sdl;
 	private AudioFormat audioFormat;
 	private DataLine.Info info;
-	private FloatControl gainControl;;
+	private FloatControl gainControl;
+
 	public boolean playing;
 	public boolean repeat;
 	public int current;
@@ -157,7 +158,7 @@ public class PlayerController {
 
 	/**
 	 * Plays the next song
-	 * 
+	 *
 	 */
 	public void next() {
 		if (!playing) {
@@ -168,7 +169,7 @@ public class PlayerController {
 
 	/**
 	 * Plays the previous song
-	 * 
+	 *
 	 */
 	public void previous() {
 		if (playing) {
@@ -184,7 +185,7 @@ public class PlayerController {
 
 	/**
 	 * Resets dataline
-	 * 
+	 *
 	 */
 	public void reset() {
 		sdl.stop();
@@ -196,7 +197,7 @@ public class PlayerController {
 
 	/**
 	 * Resets dataline
-	 * 
+	 *
 	 */
 	public void reset2() {
 		playing = false;
@@ -206,7 +207,7 @@ public class PlayerController {
 
 	/**
 	 * Pauses a song
-	 * 
+	 *
 	 */
 	public void pause() {
 //		System.out.println("2");
@@ -215,7 +216,7 @@ public class PlayerController {
 
 	/**
 	 * Resume song
-	 * 
+	 *
 	 */
 	public void resume() {
 		sdl.start();
@@ -223,7 +224,7 @@ public class PlayerController {
 
 	/**
 	 * Shuffle the songs in the queue
-	 * 
+	 *
 	 * @param songQ
 	 *                  - {SongQueue} the queue of songs
 	 */
@@ -236,7 +237,7 @@ public class PlayerController {
 
 	/**
 	 * Swapping queue positions for two songs
-	 * 
+	 *
 	 * @param songQ
 	 *                   - {SongQueue} the queue of songs
 	 * @param i
@@ -253,7 +254,7 @@ public class PlayerController {
 
 	/**
 	 * Repeat the current song
-	 * 
+	 *
 	 * @return current
 	 */
 	public void repeat(boolean flag) {
@@ -262,7 +263,7 @@ public class PlayerController {
 
 	/**
 	 * Get the volume
-	 * 
+	 *
 	 * @return gainControl
 	 */
 
@@ -273,7 +274,7 @@ public class PlayerController {
 
 	/**
 	 * Changing the volume
-	 * 
+	 *
 	 * @param volume
 	 *                   - {float} the sound
 	 */

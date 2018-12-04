@@ -74,5 +74,10 @@ public class Peer {
 	public Number160 getID() {
 		return guid;
 	}
+
+	public void emit(Number160 key, String string) {
+		// TODO Auto-generated method stub
+		
+	}
 }
 

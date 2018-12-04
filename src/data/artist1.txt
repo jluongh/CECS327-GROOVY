@@ -1,0 +1,8 @@
+ABBA;Abba;3.31;Mamma Mia;13
+ABBA;Arrival;3.51;Dancing Queen;11
+B.o.B.;B.o.B Presents: The Adventures of Bobby Ray;3.01;Airplanes (feat. Hayley Williams);4
+Barry White;Can't Get Enough;4.35;Can't Get Enough Of Your Love, Babe;5
+Charlie Puth;How Long;3.3;How Long;17
+Earth, Wind, & Fire;Greatest Hits;3.55;Let's Groovy;14
+Earth, Wind, & Fire;Greatest Hits;3.35;September;10
+Ed Sheeran;�;4.4;Perfect;16;

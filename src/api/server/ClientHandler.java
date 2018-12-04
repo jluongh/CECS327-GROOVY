@@ -10,6 +10,8 @@ import java.nio.file.Paths;
 import java.util.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import api.p2p.MetadataService;
 import data.constants.Packet;
 import data.models.*;
 import services.LibraryService;
@@ -25,16 +27,20 @@ public class ClientHandler extends Thread {
 
 	// global variables
 	final private DatagramSocket socket;
+	private DatagramPacket request;
 	final private LogService ls = new LogService();
-
+	private MetadataService ms;
+	
 	/**
 	 * Setter for socket for ClientHandler
 	 * 
 	 * @param socket
 	 *                   - {DatagramSocket}
 	 */
-	public ClientHandler(DatagramSocket socket) {
+	public ClientHandler(DatagramSocket socket, DatagramPacket request, MetadataService ms) {
 		this.socket = socket;
+		this.request = request;
+		this.ms = ms;
 	}
 
 	/**
@@ -42,181 +48,169 @@ public class ClientHandler extends Thread {
 	 * packets Divides the packets into smaller packet chunks
 	 */
 	public void run() {
-		while (true) {
-			byte[] message = new byte[1024 * 1000];
+		try {
 
-			// receive request
-			DatagramPacket request = new DatagramPacket(message, message.length);
-			try {
-				socket.receive(request);
-				
-				// display request
-				String received = new String(request.getData(), 0, request.getLength());
-				Message receivedMsg = new Gson().fromJson(received, Message.class);
-				Message sendMsg = null;
-				
-				if (received != null) {
-					if (receivedMsg.messageType == Packet.REQUEST) {
-						Log log = new Log();
-						log.setClientAddress(request.getAddress());
-						log.setPort(request.getPort());
-						
-						switch (receivedMsg.requestID) {
-						case Packet.REQUEST_ID_GETUSER:
-							sendMsg = new Message();
-							sendMsg.messageType = Packet.REPLY;
-							sendMsg.requestID = Packet.REQUEST_ID_GETUSER;
-							String userString = new String(receivedMsg.fragment, 0, receivedMsg.fragment.length);
-							User user = new Gson().fromJson(userString, User.class);
-							sendMsg.fragment = GetUser(user.getUsername(), user.getPassword());
-							break;
-						case Packet.REQUEST_ID_GETPROFILE:
-							sendMsg = new Message();
-							sendMsg.messageType = Packet.REPLY;
-							sendMsg.requestID = Packet.REQUEST_ID_GETPROFILE;
-							sendMsg.objectID = receivedMsg.objectID;
-							sendMsg.fragment = GetUserProfile(receivedMsg.objectID);
-							break;
-						case Packet.REQUEST_ID_BYTECOUNT:
-							sendMsg = new Message();
-							sendMsg.messageType = Packet.REPLY;
-							sendMsg.requestID = Packet.REQUEST_ID_BYTECOUNT;
-							byte[] bytes = GetFileBytes(receivedMsg.objectID);
-							int count = bytes.length / Packet.BYTESIZE;
-							sendMsg.count = count;
-							break;
-						case Packet.REQUEST_ID_LOADSONG:
-							sendMsg = new Message();
-							sendMsg.messageType = Packet.REPLY;
-							sendMsg.requestID = Packet.REQUEST_ID_LOADSONG;
-							sendMsg.objectID = receivedMsg.objectID;
-							sendMsg.offset = receivedMsg.offset;
-							sendMsg.count = receivedMsg.count;
-							int start = receivedMsg.offset * Packet.BYTESIZE;
-							int end = start + Packet.BYTESIZE;
-							bytes = GetFileBytes(receivedMsg.objectID, start, end);
-							sendMsg.fragment = bytes;
-							break;
-						case Packet.REQUEST_ID_CREATEPLAYLIST:
-							sendMsg = new Message();
-							sendMsg.messageType = Packet.REPLY;
-							sendMsg.requestID = Packet.REQUEST_ID_CREATEPLAYLIST;
-							int userID = receivedMsg.objectID;
-							String playlistString = new String(receivedMsg.fragment, 0, receivedMsg.fragment.length);
-							Playlist playlist = new Gson().fromJson(playlistString, Playlist.class);
-							boolean success = CreatePlaylist(userID, playlist.getName());
-							log.setRequestID(Packet.REQUEST_ID_CREATEPLAYLIST);
-							log.setSuccess(success);
-							byte[] fragment = CreateLog(log);
-							sendMsg.fragment = fragment;
-							break;
-						case Packet.REQUEST_ID_DELETEPLAYLIST:
-							sendMsg = new Message();
-							sendMsg.messageType = Packet.REPLY;
-							sendMsg.requestID = Packet.REQUEST_ID_DELETEPLAYLIST;
-							userID = receivedMsg.objectID;
-							ByteBuffer wrapped = ByteBuffer.wrap(receivedMsg.fragment, 0, 4);
-							int playlistId = wrapped.getInt();
-							success = DeletePlaylist(userID, playlistId);
-							log.setRequestID(Packet.REQUEST_ID_DELETEPLAYLIST);
-							log.setSuccess(success);
-							fragment = CreateLog(log);
-							sendMsg.fragment = fragment;
-							break;
-						case Packet.REQUEST_ID_ADDSONGTOPLAYLIST:
-							sendMsg = new Message();
-							sendMsg.messageType = Packet.REPLY;
-							sendMsg.requestID = Packet.REQUEST_ID_ADDSONGTOPLAYLIST;
-							userID = receivedMsg.objectID;
-							ByteArrayInputStream bais = new ByteArrayInputStream(receivedMsg.fragment);
-							playlistId = bais.read();
-							int songId = bais.read();
-							log.setRequestID(Packet.REQUEST_ID_ADDSONGTOPLAYLIST);
-							success = AddSongToPlaylist(userID, playlistId, songId);
-							log.setSuccess(success);
-							fragment = CreateLog(log);
-							sendMsg.fragment = fragment;
-							break;
-						case Packet.REQUEST_ID_DELETESONGFROMPLAYLIST:
-							sendMsg = new Message();
-							sendMsg.messageType = Packet.REPLY;
-							sendMsg.requestID = Packet.REQUEST_ID_DELETESONGFROMPLAYLIST;
-							userID = receivedMsg.objectID;
-							bais = new ByteArrayInputStream(receivedMsg.fragment);
-							playlistId = bais.read();
-							songId = bais.read();
-							log.setRequestID(Packet.REQUEST_ID_DELETESONGFROMPLAYLIST);
-							success = DeleteSongFromPlaylist(userID, playlistId, songId);
-							log = new Log();
-							log.setSuccess(success);
-							fragment = CreateLog(log);
-							sendMsg.fragment = fragment;
-							break;
-						case Packet.REQUEST_ID_SEARCHBYARTIST:
-							sendMsg = new Message();
-							sendMsg.messageType = Packet.REPLY;
-							sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYARTIST;
-							userID = receivedMsg.objectID;
-							sendMsg.fragment = SearchByArtist(new String(receivedMsg.fragment));
-							break;
-						case Packet.REQUEST_ID_SEARCHBYALBUM:
-							sendMsg = new Message();
-							sendMsg.messageType = Packet.REPLY;
-							sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYALBUM;
-							userID = receivedMsg.objectID;
-							sendMsg.fragment = SearchByAlbum(new String(receivedMsg.fragment));
-							break;
-						case Packet.REQUEST_ID_SEARCHBYSONG:
-							sendMsg = new Message();
-							sendMsg.messageType = Packet.REPLY;
-							sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYSONG;
-							userID = receivedMsg.objectID; 
-							System.out.println(new String(receivedMsg.fragment));
-							sendMsg.fragment = SearchBySong(new String(receivedMsg.fragment));
-							break;
-						case Packet.REQUEST_ID_GETARTISTBYSONGID:
-							sendMsg = new Message();
-							sendMsg.messageType = Packet.REPLY;
-							sendMsg.requestID = Packet.REQUEST_ID_GETARTISTBYSONGID;
-							sendMsg.fragment = GetArtistBySongID(receivedMsg.objectID);
-							break;
-						case Packet.REQUEST_ID_GETALBUMBYSONGID:
-							sendMsg = new Message();
-							sendMsg.messageType = Packet.REPLY;
-							sendMsg.requestID = Packet.REQUEST_ID_GETALBUMBYSONGID;
-							sendMsg.fragment = GetAlbumBySongID(receivedMsg.objectID);
-							break;
-						}
+			// display request
+			String received = new String(request.getData(), 0, request.getLength());
+			Message receivedMsg = new Gson().fromJson(received, Message.class);
+			Message sendMsg = null;
 
-						if (sendMsg != null) {
-							InetAddress address = request.getAddress();
-							int port = request.getPort();
+			if (received != null) {
+				if (receivedMsg.messageType == Packet.REQUEST) {
+					Log log = new Log();
+					log.setClientAddress(request.getAddress());
+					log.setPort(request.getPort());
 
-							String sendMsgS = new Gson().toJson(sendMsg);
-							byte[] send = sendMsgS.getBytes();
-
-							DatagramPacket packet = new DatagramPacket(send, send.length, address, port);
-							socket.send(packet);
-						}
+					switch (receivedMsg.requestID) {
+					case Packet.REQUEST_ID_GETUSER:
+						sendMsg = new Message();
+						sendMsg.messageType = Packet.REPLY;
+						sendMsg.requestID = Packet.REQUEST_ID_GETUSER;
+						String userString = new String(receivedMsg.fragment, 0, receivedMsg.fragment.length);
+						User user = new Gson().fromJson(userString, User.class);
+						sendMsg.fragment = GetUser(user.getUsername(), user.getPassword());
+						break;
+					case Packet.REQUEST_ID_GETPROFILE:
+						sendMsg = new Message();
+						sendMsg.messageType = Packet.REPLY;
+						sendMsg.requestID = Packet.REQUEST_ID_GETPROFILE;
+						sendMsg.objectID = receivedMsg.objectID;
+						sendMsg.fragment = GetUserProfile(receivedMsg.objectID);
+						break;
+					case Packet.REQUEST_ID_BYTECOUNT:
+						sendMsg = new Message();
+						sendMsg.messageType = Packet.REPLY;
+						sendMsg.requestID = Packet.REQUEST_ID_BYTECOUNT;
+						byte[] bytes = GetFileBytes(receivedMsg.objectID);
+						int count = bytes.length / Packet.BYTESIZE;
+						sendMsg.count = count;
+						break;
+					case Packet.REQUEST_ID_LOADSONG:
+						sendMsg = new Message();
+						sendMsg.messageType = Packet.REPLY;
+						sendMsg.requestID = Packet.REQUEST_ID_LOADSONG;
+						sendMsg.objectID = receivedMsg.objectID;
+						sendMsg.offset = receivedMsg.offset;
+						sendMsg.count = receivedMsg.count;
+						int start = receivedMsg.offset * Packet.BYTESIZE;
+						int end = start + Packet.BYTESIZE;
+						bytes = GetFileBytes(receivedMsg.objectID, start, end);
+						sendMsg.fragment = bytes;
+						break;
+					case Packet.REQUEST_ID_CREATEPLAYLIST:
+						sendMsg = new Message();
+						sendMsg.messageType = Packet.REPLY;
+						sendMsg.requestID = Packet.REQUEST_ID_CREATEPLAYLIST;
+						int userID = receivedMsg.objectID;
+						String playlistString = new String(receivedMsg.fragment, 0, receivedMsg.fragment.length);
+						Playlist playlist = new Gson().fromJson(playlistString, Playlist.class);
+						boolean success = CreatePlaylist(userID, playlist.getName());
+						log.setRequestID(Packet.REQUEST_ID_CREATEPLAYLIST);
+						log.setSuccess(success);
+						byte[] fragment = CreateLog(log);
+						sendMsg.fragment = fragment;
+						break;
+					case Packet.REQUEST_ID_DELETEPLAYLIST:
+						sendMsg = new Message();
+						sendMsg.messageType = Packet.REPLY;
+						sendMsg.requestID = Packet.REQUEST_ID_DELETEPLAYLIST;
+						userID = receivedMsg.objectID;
+						ByteBuffer wrapped = ByteBuffer.wrap(receivedMsg.fragment, 0, 4);
+						int playlistId = wrapped.getInt();
+						success = DeletePlaylist(userID, playlistId);
+						log.setRequestID(Packet.REQUEST_ID_DELETEPLAYLIST);
+						log.setSuccess(success);
+						fragment = CreateLog(log);
+						sendMsg.fragment = fragment;
+						break;
+					case Packet.REQUEST_ID_ADDSONGTOPLAYLIST:
+						sendMsg = new Message();
+						sendMsg.messageType = Packet.REPLY;
+						sendMsg.requestID = Packet.REQUEST_ID_ADDSONGTOPLAYLIST;
+						userID = receivedMsg.objectID;
+						ByteArrayInputStream bais = new ByteArrayInputStream(receivedMsg.fragment);
+						playlistId = bais.read();
+						int songId = bais.read();
+						log.setRequestID(Packet.REQUEST_ID_ADDSONGTOPLAYLIST);
+						success = AddSongToPlaylist(userID, playlistId, songId);
+						log.setSuccess(success);
+						fragment = CreateLog(log);
+						sendMsg.fragment = fragment;
+						break;
+					case Packet.REQUEST_ID_DELETESONGFROMPLAYLIST:
+						sendMsg = new Message();
+						sendMsg.messageType = Packet.REPLY;
+						sendMsg.requestID = Packet.REQUEST_ID_DELETESONGFROMPLAYLIST;
+						userID = receivedMsg.objectID;
+						bais = new ByteArrayInputStream(receivedMsg.fragment);
+						playlistId = bais.read();
+						songId = bais.read();
+						log.setRequestID(Packet.REQUEST_ID_DELETESONGFROMPLAYLIST);
+						success = DeleteSongFromPlaylist(userID, playlistId, songId);
+						log = new Log();
+						log.setSuccess(success);
+						fragment = CreateLog(log);
+						sendMsg.fragment = fragment;
+						break;
+					case Packet.REQUEST_ID_SEARCHBYARTIST:
+						sendMsg = new Message();
+						sendMsg.messageType = Packet.REPLY;
+						sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYARTIST;
+						userID = receivedMsg.objectID;
+						sendMsg.fragment = SearchByArtist(new String(receivedMsg.fragment));
+						break;
+					case Packet.REQUEST_ID_SEARCHBYALBUM:
+						sendMsg = new Message();
+						sendMsg.messageType = Packet.REPLY;
+						sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYALBUM;
+						userID = receivedMsg.objectID;
+						sendMsg.fragment = SearchByAlbum(new String(receivedMsg.fragment));
+						break;
+					case Packet.REQUEST_ID_SEARCHBYSONG:
+						sendMsg = new Message();
+						sendMsg.messageType = Packet.REPLY;
+						sendMsg.requestID = Packet.REQUEST_ID_SEARCHBYSONG;
+						userID = receivedMsg.objectID;
+						sendMsg.fragment = SearchBySong(new String(receivedMsg.fragment));
+						break;
+					case Packet.REQUEST_ID_GETSONGBYSONGID:
+						System.out.println("Hihihihihi");
+						sendMsg = new Message();
+						sendMsg.messageType = Packet.REPLY;
+						sendMsg.requestID = Packet.REQUEST_ID_GETSONGBYSONGID;
+						userID = receivedMsg.objectID;
+						sendMsg.fragment = GetSongBySongId(receivedMsg.objectID);
+						break;
 					}
-					else if (receivedMsg.messageType == Packet.ACKNOWLEDGEMENT) {
-						int logID = receivedMsg.objectID;
-						ls.DeleteLog(logID);
-						System.out.println("Deleted Log");
+
+					
+					if (sendMsg != null) {
+						InetAddress address = request.getAddress();
+						int port = request.getPort();
+
+						String sendMsgS = new Gson().toJson(sendMsg);
+						byte[] send = sendMsgS.getBytes();
+
+						DatagramPacket packet = new DatagramPacket(send, send.length, address, port);
+						socket.send(packet);
 					}
+				} else if (receivedMsg.messageType == Packet.ACKNOWLEDGEMENT) {
+					int logID = receivedMsg.objectID;
+					ls.DeleteLog(logID);
+					System.out.println("Deleted Log");
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
-	private byte[] CreateLog (Log log) {
+	private byte[] CreateLog(Log log) {
 		ls.CreateLog(log);
 		String logString = new Gson().toJson(log);
 		return logString.getBytes();
 	}
-	
+
 	private byte[] GetUser(String username, String password) {
 		UserService us = new UserService();
 		User user = us.getUser(username, password);
@@ -249,9 +243,9 @@ public class ClientHandler extends Thread {
 	 * Create a playlist with a specified name for a user
 	 * 
 	 * @param userID
-	 *                    - {int} userID
+	 *                   - {int} userID
 	 * @param name
-	 * 					  - {String} playlist name                   
+	 *                   - {String} playlist name
 	 * @return boolean
 	 * @throws IOException
 	 *                         if input or output was successful.
@@ -364,12 +358,10 @@ public class ClientHandler extends Thread {
 	 * @return
 	 */
 	private byte[] SearchByArtist(String query) {
-		SearchService ss = new SearchService();
-
-		List<Artist> artists = ss.GetArtistsByQuery(query);
-		Type listType = new TypeToken<List<Artist>>() {
+		List<Song> songs = ms.search(data.constants.Files.ARTIST_INDEX, query);
+		Type listType = new TypeToken<List<Song>>() {
 		}.getType();
-		String send = new Gson().toJson(artists, listType);
+		String send = new Gson().toJson(songs, listType);
 
 		return send.getBytes();
 	}
@@ -380,12 +372,11 @@ public class ClientHandler extends Thread {
 	 * @return
 	 */
 	private byte[] SearchByAlbum(String query) {
-		SearchService ss = new SearchService();
 
-		List<Album> albums = ss.GetAlbumsByQuery(query);
-		Type listType = new TypeToken<List<Album>>() {
+		List<Song> songs = ms.search(data.constants.Files.ALBUM_INDEX, query);
+		Type listType = new TypeToken<List<Song>>() {
 		}.getType();
-		String send = new Gson().toJson(albums, listType);
+		String send = new Gson().toJson(songs, listType);
 
 		return send.getBytes();
 	}
@@ -396,9 +387,8 @@ public class ClientHandler extends Thread {
 	 * @return
 	 */
 	private byte[] SearchBySong(String query) {
-		SearchService ss = new SearchService();
 
-		List<Song> songs = ss.GetSongsByQuery(query);
+		List<Song> songs = ms.search(data.constants.Files.SONG_INDEX, query);
 		Type listType = new TypeToken<List<Song>>() {
 		}.getType();
 		String send = new Gson().toJson(songs, listType);
@@ -408,51 +398,16 @@ public class ClientHandler extends Thread {
 	
 	/**
 	 * 
+	 * @param query
 	 * @return
 	 */
-	private byte[] GetArtistBySongID(int songID) {
+	private byte[] GetSongBySongId(int id) {
 		LibraryService ls = new LibraryService();
 		
-		List<Artist> artists = ls.getAllArtists();
-		Artist artist = null;
-		
-		for (Artist ar : artists) {
-			List<Album> albums = ar.getAlbums(); 
-			for (Album al : albums) {
-				List<Song> songs = al.getSongs();
-				for (Song s : songs) {
-					if (s.getSongID() == songID)
-						artist = ar;
-				}
-			}
-		}
-		
-		String artistJson = new Gson().toJson(artist, Artist.class);
-		return artistJson.getBytes();
+		Song song = ls.getSong(id);
+		String send = new Gson().toJson(song);
+
+		return send.getBytes();
 	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	private byte[] GetAlbumBySongID(int songID) {
-		LibraryService ls = new LibraryService();
-		
-		List<Artist> artists = ls.getAllArtists();
-		Album album = null;
-		
-		for (Artist ar : artists) {
-			List<Album> albums = ar.getAlbums(); 
-			for (Album al : albums) {
-				List<Song> songs = al.getSongs();
-				for (Song s : songs) {
-					if (s.getSongID() == songID)
-						album = al;
-				}
-			}
-		}
-		
-		String albumJson = new Gson().toJson(album, Album.class);
-		return albumJson.getBytes();
-	}
+
 }

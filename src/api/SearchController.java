@@ -6,6 +6,9 @@ import data.models.*;
 import java.util.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import api.p2p.MetadataService;
+
 import java.lang.reflect.*;
 import java.io.*;
 import java.net.*;
@@ -25,7 +28,7 @@ public class SearchController {
 	 * @return
 	 * @throws IOException
 	 */
-	public List<Artist> SearchByArtist(String query) throws IOException {
+	public List<Song> SearchByArtist(String query) throws IOException {
 
 		// construct message
 		Message requestMsg = new Message();
@@ -56,11 +59,11 @@ public class SearchController {
 			case Packet.REQUEST_ID_SEARCHBYARTIST:
 				String artistsString = new String(replyMsg.fragment, 0, replyMsg.fragment.length);
 				
-				Type listType = new TypeToken<List<Artist>>() {
+				Type listType = new TypeToken<List<Song>>() {
 				}.getType();
-				List<Artist> artists = new Gson().fromJson(artistsString, listType);
+				List<Song> songs = new Gson().fromJson(artistsString, listType);
 				
-				return artists;
+				return songs;
 			}
 		}
 		return null;
@@ -72,7 +75,7 @@ public class SearchController {
 	 * @return
 	 * @throws IOException
 	 */
-	public List<Album> SearchByAlbum(String query) throws IOException {
+	public List<Song> SearchByAlbum(String query) throws IOException {
 
 		// construct message
 		Message requestMsg = new Message();
@@ -103,11 +106,11 @@ public class SearchController {
 			case Packet.REQUEST_ID_SEARCHBYALBUM:
 				String albumsString = new String(replyMsg.fragment, 0, replyMsg.fragment.length);
 				
-				Type listType = new TypeToken<List<Album>>() {
+				Type listType = new TypeToken<List<Song>>() {
 				}.getType();
-				List<Album> albums = new Gson().fromJson(albumsString, listType);
+				List<Song> songs = new Gson().fromJson(albumsString, listType);
 				
-				return albums;
+				return songs;
 			}
 		}
 		return null;

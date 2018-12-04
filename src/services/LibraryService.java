@@ -1,6 +1,7 @@
 package services;
 
 import java.io.*;
+import java.lang.reflect.Array;
 
 import com.drew.imaging.riff.RiffProcessingException;
 import com.drew.imaging.wav.WavMetadataReader;
@@ -18,9 +19,12 @@ import data.models.*;
 public class LibraryService {
 
 	//global variables
-	private String fPath = "./src/data/library.json";
+	private String lPath = "./src/data/library.json";
+	private String alPath = "./src/data/album.txt";
+	private String arPath = "./src/data/artist.txt";
+	private String sPath = "./src/data/song.txt";
 
-	private String libraryPath = "./music/";
+	private static String libraryPath = "./music/";
 	private File[] library;
 	
 	private Artist artist;
@@ -38,17 +42,89 @@ public class LibraryService {
 	int albumID;
 	int artistID;
 	
+	public static void main (String[] args) {
+		
+		LibraryService lib = new LibraryService();
+		lib.library = lib.dir(libraryPath);
+//		for (File file : lib.library) {
+//			System.out.println(file.getName());
+//		}
+		lib.createLibrary();
+		lib.createSongFile(lib.sPath);
+		lib.createAlbumFile(lib.alPath);
+		lib.createArtistFile(lib.arPath);
+	}
 	/**
 	 * Creates library json file
 	 */
 	public LibraryService() {
-//		System.out.println(dir(libraryPath));
-		library = dir(libraryPath);
-		
-//		for (File file : library) {
-//			System.out.println(file.getName());
-//		}
-		//createLibrary();
+		//no initialization
+	}
+	
+	public void createSongFile(String dirName) {
+		try {
+			File file = new File("song.txt");
+			FileWriter fileWriter = new FileWriter(file);
+			ArrayList<String> soTitles = new ArrayList<String>();
+			for(Song song : getAllSongs()) {
+				String so = song.getTitle() + ";" + song.getSongID() + ";" + song.getArtist()+ ";" + song.getAlbum() + ";" + song.getDuration();
+				soTitles.add(so);
+			}	
+			Collections.sort(soTitles); // alphabetically sorts the songs
+			for (int i = 0; i < soTitles.size(); i++) {
+				fileWriter.write(soTitles.get(i));
+				System.out.println(soTitles.get(i));
+			}
+			fileWriter.close();	
+			System.out.println("********************************");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void createAlbumFile(String dirName) {
+		try {
+			File file = new File("artist.txt");
+			FileWriter fileWriter = new FileWriter(file);
+			ArrayList<String> alNames = new ArrayList<String>();
+			for(Album album  : getAllAlbums()) {
+				String al = album.getName() + ";" + album.getAlbumID();
+				alNames.add(al);
+			}	
+			Collections.sort(alNames); // alphabetically sorts the songs
+			for (int i = 0; i < alNames.size(); i++) {
+				fileWriter.write(alNames.get(i));
+				System.out.println(alNames.get(i));
+			}
+			fileWriter.close();
+			System.out.println("********************************");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void createArtistFile(String dirName) {
+		try {
+			File file = new File("album.txt");
+			FileWriter fileWriter = new FileWriter(file);
+			ArrayList<String> arNames = new ArrayList<String>();
+			for(Artist artist : getAllArtists()) {
+				String ar = artist.getName() + ";" + artist.getArtistID();
+				arNames.add(ar);
+			}	
+			Collections.sort(arNames);
+			for (int i = 0; i < arNames.size(); i++) {
+				fileWriter.write(arNames.get(i));
+				System.out.println(arNames.get(i));
+			}
+			fileWriter.close();
+			System.out.println("********************************");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -112,7 +188,7 @@ public class LibraryService {
 			}
 			
 			//Create new Song
-			Song so = createSong(songTitleDesc, minutes);
+			Song so = createSong(songTitleDesc, artistNameDesc, albumNameDesc, minutes);
 
 			//Creating new album and adding song or adding song to pre-existing album
 			Album al = createAlbum(albumNameDesc, so);
@@ -131,7 +207,7 @@ public class LibraryService {
 		}	
 
 		//Writing list of artists into library json file
-		try (Writer writer = new FileWriter(fPath)) {
+		try (Writer writer = new FileWriter(lPath)) {
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			gson.toJson(artists, writer);
 		} catch (IOException e) {
@@ -220,7 +296,7 @@ public class LibraryService {
 				}	
 			}
 		}	
-//		System.out.println(album.getAlbumID()+ " - "+ album.getName());
+	//	System.out.println(album.getAlbumID()+ " - "+ album.getName());
 		return album;
 	}
 	
@@ -231,13 +307,15 @@ public class LibraryService {
 	 * @param minutes - {double} Length of song
 	 * @return song
 	 */	
-	private Song createSong(String songTitle, double minutes) {
+	private Song createSong(String songTitle, String artistName, String albumName, double minutes) {
 		songID++;
 		song = new Song();
 		song.setSongID(songID);
 		song.setTitle(songTitle);
+		song.setArtist(artistName);
+		song.setAlbum(albumName);
 		song.setDuration(minutes);
-//		System.out.println(song.getSongID()+ " - "+ song.getTitle());
+		System.out.println(song.getSongID()+ " - "+ song.getTitle());
 		return song;
 	}
 
@@ -249,7 +327,7 @@ public class LibraryService {
 	public Artist getArtist(String artistName) {
 		Artist foundArtist = null;
 		// Create file object from library
-		File file = new File(fPath);
+		File file = new File(lPath);
 
 		String json = "";
 
@@ -286,7 +364,7 @@ public class LibraryService {
 	 */
 	public List<Artist> getAllArtists() {
 		// Create file object from store
-		File file = new File(fPath);
+		File file = new File(lPath);
 
 		String json = "";
 
@@ -335,7 +413,7 @@ public class LibraryService {
 	public Album getAlbum(String albumName) {
 		Album foundAlbum = null;
 		// Create file object from library
-		File file = new File(fPath);
+		File file = new File(lPath);
 
 		String json = "";
 
@@ -375,7 +453,7 @@ public class LibraryService {
 	 */
 	public List<Album> getAllAlbums() {
 		// Create file object from store
-		File file = new File(fPath);
+		File file = new File(lPath);
 
 		String json = "";
 
@@ -426,7 +504,7 @@ public class LibraryService {
 	public Song getSong(int songID) {
 		Song foundSong = null;
 		// Create file object from library
-		File file = new File(fPath);
+		File file = new File(lPath);
 
 		String json = "";
 
@@ -470,7 +548,7 @@ public class LibraryService {
 	public Song getSong(String songName) {
 		Song foundSong = null;
 		// Create file object from library
-		File file = new File(fPath);
+		File file = new File(lPath);
 
 		String json = "";
 
@@ -512,7 +590,7 @@ public class LibraryService {
 	 */
 	public List<Song> getAllSongs() {
 		// Create file object from store
-		File file = new File(fPath);
+		File file = new File(lPath);
 
 		String json = "";
 

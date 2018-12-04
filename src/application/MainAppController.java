@@ -79,8 +79,6 @@ public class MainAppController implements Initializable {
 	@FXML
 	private ImageView nextMusic;
 	@FXML
-	private ImageView stopMusic;
-	@FXML
 	private ImageView btnShuffle;
 	@FXML
 	private ImageView btnRepeat;
@@ -128,6 +126,14 @@ public class MainAppController implements Initializable {
 	private Text txtResult;
 	
 
+	
+	// images change 
+	// when btn is clicked > image
+	Image pic1 = new Image(getClass().getResourceAsStream("resources/if-close.png")); // THIS WORKSS!!!!!!!!
+	// when btn is unclicked > image
+	Image pic2 = new Image(getClass().getResourceAsStream("resources/if-play.png"));
+	Image pic3 = new Image(getClass().getResourceAsStream("resources/play-button.png"));
+	Image pic4 = new Image(getClass().getResourceAsStream("resources/pause-button.png"));
 	private boolean isSearch = false;
 	private int table = 0; //0 for playlist table, 1 for search table 
 	private boolean isPlaying = false;
@@ -150,7 +156,7 @@ public class MainAppController implements Initializable {
 	private PlayerController player;
 	api.audio.AudioPlayer ap = new api.audio.AudioPlayer();
 	private SearchController search;
-
+	
 	/**
 	 * Initializing server/client sockets
 	 * Initializing the display for the user based on the username
@@ -197,7 +203,6 @@ public class MainAppController implements Initializable {
 		
 	}
 
-	
 
 	
 	/**
@@ -269,12 +274,8 @@ public class MainAppController implements Initializable {
 	    }
 	}
 
-	/**
-	 * update the playlist table
-	 * @param userChoose the playlist user selected
-	 */
 	public void updatePlayTable(Playlist userChoose)
-	{
+	{		
 		List<Song> songPlay = new ArrayList<Song>();
 		
         ArrayList<SongInfo> songin = (ArrayList<SongInfo>) userChoose.getSongInfos();
@@ -282,41 +283,26 @@ public class MainAppController implements Initializable {
         
         if (songin!=null && !songin.isEmpty())
         {
+        	
         	for (int i = 0; i<userChoose.getSongInfos().size();i++)
 	        {
 	        	songPlay.add(userChoose.getSongInfos().get(i).getSong());
 	        	userSong.add(userChoose.getSongInfos().get(i));
 
 	        }
-        	// _________________** this should work but its not **__________________
 
         	txtResult.setText(userChoose.getName());
 
 	        col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
-			col2.setCellValueFactory(cellData -> {
-				try {
-					return new ReadOnlyStringWrapper(sc.GetArtistBySongID(((SongInfo) cellData.getValue()).getSong().getSongID()).getName());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return null;
-				}
-			});
-			col3.setCellValueFactory(cellData -> {
-				try {
-					return new ReadOnlyStringWrapper(sc.GetAlbumBySongID(((SongInfo) cellData.getValue()).getSong().getSongID()).getName());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return null;
-			});
+	        col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getArtist()));
+	        col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getAlbum()));
 			col4.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getAddedDate().toString()));
 			Result.setItems(userSong);
 			Result.refresh();
 
         }
 	}
+	
 	/**
 	 * Search if song button is clicked then
 	 * @param event - {MouseEvent} the action
@@ -353,47 +339,50 @@ public class MainAppController implements Initializable {
 		search(txtSearch.getText(), "artist");
 	}
 	
-	
-	// ____________________________________________________________ HERE ______________________________________________________________
-	
 
-
-	// when btn is clicked > image
-	//Image pic1 = new Image("if-close.png");
 	
-	// when btn is unclicked > image
-	//Image pic2 = new Image("if-play.png");
-
-	boolean isPlayListClicked = false;
-	
-	@FXML
+		@FXML
 	public void btnPlayListClicked(MouseEvent event)
-	{			
+	{	
 		
-		if(isPlayListClicked == false) {
-			//btnPlayList.setImage(pic1);
-			
+		//add playlist to queue, todo
+		queues.clear();
+
+		if(currentPlaylist!=null && queues.isEmpty())
+		{
+			for(SongInfo s : currentPlaylist.getSongInfos()) {
+				queues.add(s.getSong());
+			}
+		}
+		
+		if(isPlaying == false) {
+			btnPlayList.setImage(pic1);
+			isPlaying = true;
+			playMusic.setImage(pic4);
 			// Should be List<Song>
-			Playlist playlist = upc.GetPlaylists().get(0);
+			//Playlist playlist = upc.GetPlaylists().get(0);
 			List<Song> songs = new ArrayList<Song>();
 			
-			for (SongInfo info : playlist.getSongInfos()) {
+			for (SongInfo info : currentPlaylist.getSongInfos()) {
 				songs.add(info.getSong());
 			}
 			player.loadSongs(songs);
+			if (player.thread != null && player.thread.isAlive()) {
+				player.thread.stop();
+			}
 			player.playQueue();
 			
-			//btnPlayList.setStyle("-fx-background-color: transparent; -fx-padding: 6 4 4 6;");
-			btnPlayList.setStyle("-fx-background-color: BLACK");
-			
-		}else if(isPlayListClicked == true) {
-			//btnPlayList.setImage(pic2);
-			
+
+//			isPlayListClicked= true;
+		}
+		else if(isPlaying == true) {
+			btnPlayList.setImage(pic2);
+			playMusic.setImage(pic3);
+			player.pause();
+			isPlaying = false;
 		}
 		
 	}
-	
-	
 	
 	
 
@@ -407,6 +396,7 @@ public class MainAppController implements Initializable {
 	{
 		if (event.getButton()==MouseButton.SECONDARY)
 		{
+			
 			if (table==1)
 			{
 				Song userChoose = (Song) Result.getSelectionModel().getSelectedItem();
@@ -482,7 +472,7 @@ public class MainAppController implements Initializable {
 					
 				});
 			}
-			else if(table==0) //playlist display in the center if clicked happens
+			else if(table==0 || table ==3) //playlist display in the center if clicked happens
 			{
 				SongInfo userChoose = (SongInfo) Result.getSelectionModel().getSelectedItem();
 				MenuItem delete = new MenuItem("Delete");
@@ -529,8 +519,12 @@ public class MainAppController implements Initializable {
 				List<Song> songs = new ArrayList <Song>();
 				songs.add(song);
 				player.loadSongs(songs);
+				if (player.thread != null && player.thread.isAlive()) {
+					player.thread.stop();
+				}
 				player.playQueue();
-				
+				queues.clear();
+				queues.add(song);
 //				ap.stop();
 //				ap.play(songId, false);
 //				songName.setText(userSong.getTitle());
@@ -539,11 +533,27 @@ public class MainAppController implements Initializable {
 			}
 			else
 			{
+				
 				SongInfo song = (SongInfo) Result.getSelectionModel().getSelectedItem();
 				List<Song> songs = new ArrayList <Song>();
 				songs.add(song.getSong());
 				player.loadSongs(songs);
+				if (player.thread != null && player.thread.isAlive()) {
+					player.thread.stop();
+				}
 				player.playQueue();
+				if(table==0)//if playlist is on screen
+				{
+					queues.clear();
+					if(queues==null&&queues.isEmpty())
+					{
+						queues.add(0, song.getSong());
+					}
+					else
+					{
+						queues.add(song.getSong());
+					}
+				}
 				//				ap.stop();
 //				ap.play(songId, false);
 //				songName.setText(userSong.getSong().getTitle());
@@ -567,12 +577,12 @@ public class MainAppController implements Initializable {
 			setSearchSong(song);
 		} else if(type == "album") {
 			//update result page to search for that album
-			List<Album> album=search.SearchByAlbum(query);
-			setSearchAlbum(album);
+			List<Song> album=search.SearchByAlbum(query);
+			setSearchSong(album);
 		} else if(type == "artist") {
 			//update result page to search for that artist
-			List<Artist> artist=search.SearchByArtist(query);
-			setSearchArtist(artist);
+			List<Song> artist=search.SearchByArtist(query);
+			setSearchSong(artist);
 		}
 	}
 
@@ -588,6 +598,7 @@ public class MainAppController implements Initializable {
 			Result.getItems().clear();
 		}
 		Result.refresh();
+		songs.clear();
 		for (int i = 0; i< song.size();i++)
 		{
 			songs.add(song.get(i));
@@ -599,120 +610,13 @@ public class MainAppController implements Initializable {
 		txtResult.setText("Search Result");
 		//display object to the table
 		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
-		col2.setCellValueFactory(cellData -> {
-			try {
-				return new ReadOnlyStringWrapper(sc.GetArtistBySongID(((Song) cellData.getValue()).getSongID()).getName());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
-		});
-		col3.setCellValueFactory(cellData -> {
-			try {
-				return new ReadOnlyStringWrapper(sc.GetAlbumBySongID(((Song) cellData.getValue()).getSongID()).getName());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
-		});
+		col2.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getArtist()));
+		col3.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getAlbum()));
+
 		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
 
 
 		Result.setItems(songs);
-		Result.refresh();
-	}
-
-	/**
-	 * Search album according to album name
-	 * Displaying the album results based on the user's search
-	 * @param album - {List} list of album objects
-	 */
-	public void setSearchAlbum(List<Album> album)
-	{
-		for(int i = 0; i<Result.getItems().size();i++)
-		{
-			Result.getItems().clear();
-		}
-		Result.refresh();
-		for (int i = 0; i< album.size();i++)
-		{
-			for (int j = 0; j<album.get(i).getSongs().size();j++)
-			{
-				albumSong.add(album.get(i).getSongs().get(j));
-			}
-		}
-		col1.setText("Song");
-		col2.setText("Artist");
-		col3.setText("Album");
-		
-		col4.setText("Duration");
-		txtResult.setText("Search Result");
-		//display object to the table
-
-		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
-		col2.setCellValueFactory(cellData -> {
-			try {
-				return new ReadOnlyStringWrapper(sc.GetArtistBySongID(((Song) cellData.getValue()).getSongID()).getName());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
-		});
-		col3.setCellValueFactory(cellData -> {
-			try {
-				return new ReadOnlyStringWrapper(sc.GetAlbumBySongID(((Song) cellData.getValue()).getSongID()).getName());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
-		});
-		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
-
-
-		Result.setItems(albumSong);
-		Result.refresh();
-	}
-
-	/**
-	 * Search artist according to artist name
-	 * Displaying the artist results based on the user's search
-	 * @param artist - {List} list of artist objects
-	 */
-	public void setSearchArtist(List<Artist> artist)
-	{
-		for(int i = 0; i<Result.getItems().size();i++)
-		{
-			Result.getItems().clear();
-		}
-		Result.refresh();
-		for (int i = 0; i< artist.size();i++)
-		{
-			for(int j = 0; j < artist.get(i).getAlbums().size();j++)
-			{
-				for(int k = 0; k< artist.get(i).getAlbums().get(j).getSongs().size();k++)
-				{
-					artistSong.add(artist.get(i).getAlbums().get(j).getSongs().get(k));
-				}
-			}
-		}
-		col2.setText("Song");
-		col1.setText("Artist");
-		col3.setText("Album");
-		col4.setText("Duration");
-		txtResult.setText("Search Result");
-		//display object to the table
-		col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper (((Song) cellData.getValue()).getTitle()));
-//		col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(atc.GetArtistBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-//		col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(amc.GetAlbumBySongTitle(((Song) cellData.getValue()).getTitle()).getName()));
-//		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
-		
-		System.out.print(sc.FormatDuration(artist.get(0).getAlbums().get(0).getSongs().get(0).getDuration()));
-
-		Result.setItems(artistSong);
 		Result.refresh();
 	}
 
@@ -743,24 +647,26 @@ public class MainAppController implements Initializable {
 		isSearch=true;
 		table=3;
         txtResult.setText("Queue");
-
+        col1.setText("Song");
+		col2.setText("Artist");
+		col3.setText("Album");
+		col4.setText("Duration");
+		queueSong.clear();
+		for(int i = 0; i<queues.size();i++)
+		{
+			queueSong.add(queues.get(i));
+		}
+		
+		for(int i = 0; i<Result.getItems().size();i++)
+		{
+			Result.getItems().clear();
+		}
+		Result.refresh();
+		
         col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
-        col2.setCellValueFactory(cellData -> {
-			try {
-				return new ReadOnlyStringWrapper(sc.GetArtistBySongID(((Song) cellData.getValue()).getSongID()).getName());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return null;
-		});
-		col3.setCellValueFactory(cellData -> {
-			try {
-				return new ReadOnlyStringWrapper(sc.GetAlbumBySongID(((Song) cellData.getValue()).getSongID()).getName());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return null;
-		});
+        col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((Song) cellData.getValue()).getArtist()));
+        col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((Song) cellData.getValue()).getAlbum()));
+
 		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
 
 		Result.setItems(queueSong);
@@ -804,11 +710,29 @@ public class MainAppController implements Initializable {
 	 * Event Listener on ImageView[#playMusic].onMouseClicked to play the song at specific time
 	 * @param event - {MouseEvent} the action
 	 */
+	
+	
+	//player.isPlaying
+	// 
 	@FXML
 	public void playMusicClicked(MouseEvent event)
 	{
+		//boolean isPlayClicked = ap.isPlaying;
+		if(isPlaying == false) {
+			
 
-		player.resume();
+			player.resume();
+			
+			playMusic.setImage(pic4);
+			isPlaying = true;
+		}else if(isPlaying == true) {
+			
+
+			player.pause();
+			
+			playMusic.setImage(pic3);
+			isPlaying = false;
+		}
 	}
 
 	
@@ -870,15 +794,11 @@ public class MainAppController implements Initializable {
 		player.next();
 	}
 
-	/**
-	 * Event Listener on ImageView[#stopMusic].onMouseClicked to stop the song at the current time
-	 * @param event - {MouseEvent} the action
-	 */
-	@FXML
-	public void musicStopClicked(MouseEvent event)
-	{
-		player.pause();
-	}
+	
+
+	Image pic5 = new Image(getClass().getResourceAsStream("resources/volume-mute.png"));
+
+	Image pic6 = new Image(getClass().getResourceAsStream("resources/full-sound-button.png"));
 
 	/**
 	 * Event Listener on ImageView[#Mute].onMouseClicked to mute the song
@@ -892,10 +812,14 @@ public class MainAppController implements Initializable {
 		if(isMuteClicked == false) {
 			player.setVolume(0);
 			isMuteClicked = true;
+			Mute.setImage(pic5);
+			
 		
 		}else if(isMuteClicked == true) {
 			player.setVolume(1);
 			isMuteClicked = false;
+			Mute.setImage(pic6);
+			
 		}
 		
 	}
@@ -921,7 +845,11 @@ public class MainAppController implements Initializable {
 		lbMode.setText("Mode: Repeat");
 	}
 
-	
+	public boolean refreash(boolean x) {
+		
+		//x=
+		return  false;
+	}
 	
 	/**
 	 * The volume slider is not working yet

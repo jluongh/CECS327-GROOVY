@@ -1,0 +1,5 @@
+nasser;5;1234
+trish;4;1234
+user1;0;cecs327
+user2;1;cecs327
+xinyi;6;1234

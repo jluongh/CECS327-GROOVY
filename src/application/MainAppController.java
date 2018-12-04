@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.Set;
-import javax.sound.sampled.AudioInputStream;
+//import java.util.Set;
+//import javax.sound.sampled.AudioInputStream;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
+//import java.util.HashMap;
+//import java.util.Iterator;
 
 
 //import api.AudioPlayer;
@@ -37,33 +37,33 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
+//import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
+//import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.control.TableCell;
+//import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.control.TableView;
+//import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.cell.PropertyValueFactory;
+//import javafx.scene.control.TableColumn;
+//import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
+//import javafx.beans.property.SimpleBooleanProperty;
+//import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.util.Callback;
-import com.sun.prism.impl.Disposer;
+//import javafx.util.Callback;
+//import com.sun.prism.impl.Disposer;
 
 public class MainAppController implements Initializable {
 
@@ -108,9 +108,9 @@ public class MainAppController implements Initializable {
 	private TableColumn<Object, String> col4;
 	@FXML
 	private TableView<Playlist> playlistTable;
-	@FXML
-	private TableColumn<Disposer.Record,Boolean> delete;
-	@FXML
+//	@FXML
+//	private TableColumn<Disposer.Record,Boolean> delete;
+//	@FXML
 	private TableColumn<Playlist,String> playlistName;
 	@FXML
 	private ImageView btnAlbum;
@@ -275,7 +275,7 @@ public class MainAppController implements Initializable {
 	}
 
 	public void updatePlayTable(Playlist userChoose)
-	{
+	{		
 		List<Song> songPlay = new ArrayList<Song>();
 		
         ArrayList<SongInfo> songin = (ArrayList<SongInfo>) userChoose.getSongInfos();
@@ -283,6 +283,7 @@ public class MainAppController implements Initializable {
         
         if (songin!=null && !songin.isEmpty())
         {
+        	
         	for (int i = 0; i<userChoose.getSongInfos().size();i++)
 	        {
 	        	songPlay.add(userChoose.getSongInfos().get(i).getSong());
@@ -293,23 +294,8 @@ public class MainAppController implements Initializable {
         	txtResult.setText(userChoose.getName());
 
 	        col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getTitle()));
-			col2.setCellValueFactory(cellData -> {
-				try {
-					return new ReadOnlyStringWrapper(sc.GetSongBySongID((((SongInfo) cellData.getValue()).getSong().getSongID())).getArtist());
-				} catch (IOException e) {
-					e.printStackTrace();
-					return null;
-				}
-			});
-			
-			col3.setCellValueFactory(cellData -> {
-				try {
-					return new ReadOnlyStringWrapper(sc.GetSongBySongID((((SongInfo) cellData.getValue()).getSong().getSongID())).getAlbum());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return null;
-			});
+	        col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getArtist()));
+	        col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getSong().getAlbum()));
 			col4.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((SongInfo) cellData.getValue()).getAddedDate().toString()));
 			Result.setItems(userSong);
 			Result.refresh();
@@ -353,9 +339,7 @@ public class MainAppController implements Initializable {
 		search(txtSearch.getText(), "artist");
 	}
 	
-	
-	// ____________________________________________________________ HERE ______________________________________________________________
-	//boolean isPlayListClicked = false;
+
 	
 		@FXML
 	public void btnPlayListClicked(MouseEvent event)
@@ -363,43 +347,23 @@ public class MainAppController implements Initializable {
 		
 		//add playlist to queue, todo
 		queues.clear();
-		if(currentPlaylist!=null)
+
+		if(currentPlaylist!=null && queues.isEmpty())
 		{
-			if(queues==null&&queues.isEmpty())
-			{
-				queues.add(0, currentPlaylist.getSongInfos().get(0).getSong());
-			}
-			for(int i = 1; i<currentPlaylist.getSongCount();i++)
-			{
-				queues.add(currentPlaylist.getSongInfos().get(i).getSong());
+			for(SongInfo s : currentPlaylist.getSongInfos()) {
+				queues.add(s.getSong());
 			}
 		}
-//		if(currentPlaylist!=null && isPlaying == false) {
-//			btnPlayList.setImage(pic1);
-//			isPlaying = true;
-//			playMusic.setImage(pic4);
-//			List<Song> songs = new ArrayList<Song>();
-//			for (SongInfo info : currentPlaylist.getSongInfos()) {
-//				songs.add(info.getSong());
-//			}
-//			player.loadSongs(songs);
-//			if (player.thread != null && player.thread.isAlive()) {
-//				player.thread.stop();
-//			}
-//			player.playQueue();
-//			
-//		}
-		
 		
 		if(isPlaying == false) {
 			btnPlayList.setImage(pic1);
 			isPlaying = true;
 			playMusic.setImage(pic4);
 			// Should be List<Song>
-			Playlist playlist = upc.GetPlaylists().get(0);
+			//Playlist playlist = upc.GetPlaylists().get(0);
 			List<Song> songs = new ArrayList<Song>();
 			
-			for (SongInfo info : playlist.getSongInfos()) {
+			for (SongInfo info : currentPlaylist.getSongInfos()) {
 				songs.add(info.getSong());
 			}
 			player.loadSongs(songs);
@@ -646,24 +610,9 @@ public class MainAppController implements Initializable {
 		txtResult.setText("Search Result");
 		//display object to the table
 		col1.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
-		col2.setCellValueFactory(cellData -> {
-			try {
-				return new ReadOnlyStringWrapper(sc.GetSongBySongID((((Song) cellData.getValue()).getSongID())).getArtist());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
-		});
-		col3.setCellValueFactory(cellData -> {
-			try {
-				return new ReadOnlyStringWrapper(sc.GetSongBySongID((((Song) cellData.getValue()).getSongID())).getAlbum());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
-		});
+		col2.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getArtist()));
+		col3.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(((Song) cellData.getValue()).getAlbum()));
+
 		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
 
 
@@ -715,22 +664,9 @@ public class MainAppController implements Initializable {
 		Result.refresh();
 		
         col1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((Song) cellData.getValue()).getTitle()));
-        col2.setCellValueFactory(cellData -> {
-			try {
-				return new ReadOnlyStringWrapper(sc.GetSongBySongID((((Song) cellData.getValue()).getSongID())).getArtist());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return null;
-		});
-		col3.setCellValueFactory(cellData -> {
-			try {
-				return new ReadOnlyStringWrapper(sc.GetSongBySongID((((Song) cellData.getValue()).getSongID())).getAlbum());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return null;
-		});
+        col2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((Song) cellData.getValue()).getArtist()));
+        col3.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(((Song) cellData.getValue()).getAlbum()));
+
 		col4.setCellValueFactory(cellData ->  new ReadOnlyStringWrapper(sc.FormatDuration(((Song) cellData.getValue()).getDuration())));
 
 		Result.setItems(queueSong);

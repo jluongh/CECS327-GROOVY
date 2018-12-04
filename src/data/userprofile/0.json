@@ -7,35 +7,43 @@
       "songInfos": [
         {
           "song": {
-            "songID": 5,
+            "songID": 13,
             "title": "Mamma Mia",
-            "duration": 1.98E8
+            "artist": "ABBA",
+            "album": "Abba",
+            "duration": 3.31
           },
-          "addedDate": "Sep 17, 2018 1:26:49 PM"
+          "addedDate": "Nov 19, 2018 7:17:07 PM"
         },
         {
           "song": {
-            "songID": 4,
+            "songID": 12,
             "title": "Bohemian Rhapsody",
-            "duration": 3.636E8
+            "artist": "Queen",
+            "album": "Stone Cold Classics",
+            "duration": 5.53
           },
-          "addedDate": "Sep 17, 2018 8:24:01 PM"
+          "addedDate": "Nov 19, 2018 7:17:16 PM"
         },
         {
           "song": {
-            "songID": 1,
-            "title": "Everybody Wants To Rule The World",
-            "duration": 4.13
-          },
-          "addedDate": "Oct 8, 2018 5:00:58 PM"
-        },
-        {
-          "song": {
-            "songID": 2,
+            "songID": 10,
             "title": "September",
+            "artist": "Earth, Wind, \u0026 Fire",
+            "album": "Greatest Hits",
             "duration": 3.35
           },
-          "addedDate": "Oct 16, 2018 11:11:51 AM"
+          "addedDate": "Nov 19, 2018 7:17:31 PM"
+        },
+        {
+          "song": {
+            "songID": 13,
+            "title": "Mamma Mia",
+            "artist": "ABBA",
+            "album": "Abba",
+            "duration": 3.31
+          },
+          "addedDate": "Nov 19, 2018 7:17:41 PM"
         }
       ],
       "songCount": 0,
@@ -49,17 +57,11 @@
           "song": {
             "songID": 1,
             "title": "Everybody Wants To Rule The World",
+            "artist": "Tears For Fears",
+            "album": "Songs From The Big Chair",
             "duration": 4.13
           },
-          "addedDate": "Oct 7, 2018 6:58:13 PM"
-        },
-        {
-          "song": {
-            "songID": 1,
-            "title": "Everybody Wants To Rule The World",
-            "duration": 4.13
-          },
-          "addedDate": "Oct 13, 2018 7:02:06 PM"
+          "addedDate": "Nov 19, 2018 7:22:57 PM"
         }
       ],
       "songCount": 0,
@@ -69,14 +71,6 @@
       "playlistID": 2,
       "name": "test",
       "songInfos": [
-        {
-          "song": {
-            "songID": 6,
-            "title": "Let\u0027s Groovy",
-            "duration": 3.55
-          },
-          "addedDate": "Oct 8, 2018 9:48:47 PM"
-        },
         {
           "song": {
             "songID": 5,
@@ -106,6 +100,16 @@
             "duration": 5.11
           },
           "addedDate": "Nov 11, 2018 6:50:06 PM"
+        },
+        {
+          "song": {
+            "songID": 14,
+            "title": "Let\u0027s Groovy",
+            "artist": "Earth, Wind, \u0026 Fire",
+            "album": "Greatest Hits",
+            "duration": 3.55
+          },
+          "addedDate": "Nov 19, 2018 7:18:14 PM"
         }
       ],
       "songCount": 0,
@@ -117,35 +121,33 @@
       "songInfos": [
         {
           "song": {
-            "songID": 6,
+            "songID": 14,
             "title": "Let\u0027s Groovy",
+            "artist": "Earth, Wind, \u0026 Fire",
+            "album": "Greatest Hits",
             "duration": 3.55
           },
-          "addedDate": "Oct 15, 2018 8:50:08 PM"
+          "addedDate": "Nov 19, 2018 7:18:23 PM"
         },
         {
           "song": {
-            "songID": 2,
+            "songID": 10,
             "title": "September",
+            "artist": "Earth, Wind, \u0026 Fire",
+            "album": "Greatest Hits",
             "duration": 3.35
           },
-          "addedDate": "Oct 15, 2018 8:51:05 PM"
+          "addedDate": "Nov 19, 2018 7:18:32 PM"
         },
         {
           "song": {
-            "songID": 1,
-            "title": "Everybody Wants To Rule The World",
-            "duration": 4.13
-          },
-          "addedDate": "Oct 15, 2018 8:53:13 PM"
-        },
-        {
-          "song": {
-            "songID": 4,
+            "songID": 12,
             "title": "Bohemian Rhapsody",
-            "duration": 6.07
+            "artist": "Queen",
+            "album": "Stone Cold Classics",
+            "duration": 5.53
           },
-          "addedDate": "Oct 15, 2018 8:55:54 PM"
+          "addedDate": "Nov 19, 2018 7:18:52 PM"
         }
       ],
       "songCount": 0,

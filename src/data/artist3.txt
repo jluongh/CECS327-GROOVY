@@ -4,5 +4,6 @@ Russ;Too Many;2.41;Too Many;9
 Supertramp;Supertramp- The Very Best Of;2.4;Breakfast In America;6
 Styx;The Grand Illusion;4.29;Come Sail Away;8
 Tears For Fears;Songs From The Big Chair;4.13;Everybody Wants To Rule The World;1
+Tears For Fears;Merry Christmas;4.13;Everybody Wants To Rule The World;1
 The 1975;I Like It When You Sleep, for You Are So Beautiful Yet So Unaware Of It;5.11;Somebody Else;3
 When In Rome;When In Rome;3.39;The Promise;15

@@ -50,7 +50,7 @@ public class MetadataServiceMap extends Mapper<String, String, String, String>{
 		   // when its done complete file call counter increment(page n)
 		   counter.increment(page, 1);
 		   
-		   counter.hasCompleted = true;
+		   counter.hasCompleted();
 		   
 	   }
 	

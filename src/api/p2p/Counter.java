@@ -6,7 +6,6 @@ import java.util.Set;
 public class Counter implements CounterInterface {
 	Integer counter = 0;
 	Set<Integer> set;
-	boolean hasCompleted= false;
 
 	public void add(Integer Key) {
 		set.add(Key);

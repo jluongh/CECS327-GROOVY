@@ -1,7 +1,7 @@
 [
   {
     "indexName": "album.idx",
-    "totalSize": 976,
+    "totalSize": 1034,
     "chunks": [
       {
         "guid": "0x69d7adb76176ce074e52cbfff5de2a0afa356b21",
@@ -9,25 +9,25 @@
         "lastLine": "Can\u0027t Get Enough;4.35;Can\u0027t Get Enough Of Your Love, Babe;5;Barry White"
       },
       {
-        "guid": "0xe4dd6e9e0fed4000fb3a3652efefa6edf999603d",
+        "guid": "0x4d8c573f25d359dfb428f61404107828353c42e4",
         "firstLine": "Greatest Hits;3.55;Let\u0027s Groovy;14;Earth, Wind, \u0026 Fire",
-        "lastLine": "I Like It When You Sleep, for You Are So Beautiful Yet So Unaware Of It;5.11;Somebody Else;3;The 1975"
+        "lastLine": "Merry Christmas;4.13;Everybody Wants To Rule The World;1;Tears For Fears"
       },
       {
-        "guid": "0x4782d914fd26f5e5ad6c239e0c361811d6d02590",
+        "guid": "0xe108961c80a06b02f7a2498b4e6d39cdbef7745",
         "firstLine": "Songs From The Big Chair;4.13;Everybody Wants To Rule The World;1;Tears For Fears",
-        "lastLine": "ï¿?;4.4;Perfect;16;Ed Sheeran"
+        "lastLine": "ï¿½;4.4;Perfect;16;Ed Sheeran"
       }
     ]
   },
   {
     "indexName": "artist.idx",
-    "totalSize": 974,
+    "totalSize": 1033,
     "chunks": [
       {
-        "guid": "0x2332342b23a4fa7854138b28e1eab2a5b3fa6fc7",
+        "guid": "0x4ebb7a0f1268b8368c8629d954bde3e86a4eacab",
         "firstLine": "ABBA;Abba;3.31;Mamma Mia;13",
-        "lastLine": "Ed Sheeran;ï¿?;4.4;Perfect;16;"
+        "lastLine": "Ed Sheeran;ï¿½;4.4;Perfect;16;"
       },
       {
         "guid": "0x13356b04f978a57ebb429158bfc154a5b80093db",
@@ -35,7 +35,7 @@
         "lastLine": "Haley Reinhart;Bennie \u0026 The Jets Cover;1.3;Bennie \u0026 The Jets Cover;2"
       },
       {
-        "guid": "0xe36735bd7fdd3562b9278751a32a171a939b1706",
+        "guid": "0xdb9415d16d66ee7776b4e206168eecec0385ce59",
         "firstLine": "Queen;Stone Cold Classics;5.53;Bohemian Rhapsody;12",
         "lastLine": "When In Rome;When In Rome;3.39;The Promise;15"
       }
@@ -43,12 +43,12 @@
   },
   {
     "indexName": "song.idx",
-    "totalSize": 977,
+    "totalSize": 1034,
     "chunks": [
       {
-        "guid": "0x4b8c5d343b46d9020adfd0d72893b5a8bd1d6e0e",
+        "guid": "0x3e59c64e1c3842c47f8d7b98483a4e77b4c4b657",
         "firstLine": "Airplanes (feat. Hayley Williams);4;B.o.B.;B.o.B Presents: The Adventures of Bobby Ray;3.01",
-        "lastLine": "Everybody Wants To Rule The World;1;Tears For Fears;Songs From The Big Chair;4.13"
+        "lastLine": "Everybody Wants To Rule The World;1;Tears For Fears;Merry Christmas;4.13"
       },
       {
         "guid": "0xb2361471449e457440479da8bd0be35238b9749e",
@@ -56,15 +56,15 @@
         "lastLine": "Mamma Mia;13;ABBA;Abba;3.31"
       },
       {
-        "guid": "0xdbdc31dffa1b9774b6687d89bde617e9293b1ae3",
-        "firstLine": "Perfect;16;Ed Sheeran;ï¿?;4.4",
+        "guid": "0xfc7b710a827d1244a3ac09de73ff909f6e680174",
+        "firstLine": "Perfect;16;Ed Sheeran;ï¿½;4.4",
         "lastLine": "Too Many;9;Russ;Too Many;2.41"
       }
     ]
   },
   {
     "indexName": "users.idx",
-    "totalSize": 105,
+    "totalSize": 98,
     "chunks": [
       {
         "guid": "0x993dd334d5fcb1f946f95712bde71beb97f52980",

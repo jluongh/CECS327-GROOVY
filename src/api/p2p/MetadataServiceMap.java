@@ -1,5 +1,7 @@
 package api.p2p;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
@@ -11,8 +13,7 @@ import java.util.TreeMap;
 
 import net.tomp2p.peers.Number160;
 
-
-public class MetadataServiceMap {
+public class MetadataServiceMap extends Mapper<String, String, String, String>{
 
 	List<Peer> peers;
 	
@@ -23,6 +24,53 @@ public class MetadataServiceMap {
 		this.peers = peers;
 	}
 	
+	
+
+	   public void map(String key, String value, Context con) throws IOException, InterruptedException
+	    {
+	        String line = value.toString();
+	        String[] words=line.split(",");
+	        for(String word: words )
+	        {
+	            String outputKey = new String(word.toUpperCase().trim());
+	            String outputValue = new String();
+	            con.write(outputKey, outputValue);
+	        }
+	    }
+	   
+	   
+	   public void mapContext(int page, MapInterface mapper, Counter counter) {
+		   
+		   // open page file 
+		   BufferedReader reader;
+		   
+		   //file?
+		   //reader =  new BufferedReader(new FileReader());
+		   String line = reader.readLine();
+		   
+			while (line != null) {
+				
+				// read line by line execute mapper.map(key, value, counter)
+				mapper.map(key, value);
+				
+				// read next line
+				line = reader.readLine();
+			}
+			reader.close();
+		  
+		   // when its done complete file call counter increment(page n)
+		   counter.increment(page, 1);
+		   
+		   counter.hasCompleted();
+		   
+	   }
+	
+	   
+	   
+	   
+	   
+	   
+	   
 	Set<Number160> set = new HashSet<>();
 	
 	// -------- MAPPING -------- //
@@ -42,7 +90,7 @@ public class MetadataServiceMap {
 	// -------- REDUCING -------- //
 	// Basically sorts the inverted index files
 
-	// XINYI
+	// XINY
 	// void reduce()
 	// Calls reduceContext(), completed()
 	

@@ -18,11 +18,13 @@ public class Peer {
 	
 	private final PeerDHT peer;
 	private final int port = Net.P2P_PORT; //change?
+	Number160 guid;
 	
 	public Peer() throws IOException {
 		
 		Random rnd = new Random();
-        peer = new PeerBuilderDHT(new PeerBuilder(new Number160(rnd)).ports(port).start()).start();
+		guid = new Number160(rnd);
+        peer = new PeerBuilderDHT(new PeerBuilder(guid).ports(port).start()).start();
         
         FutureBootstrap fb = this.peer.peer().bootstrap().inetAddress(InetAddress.getByName(Net.HOST)).ports(port).start();
         fb.awaitUninterruptibly();
@@ -64,6 +66,13 @@ public class Peer {
 	 */
 	public void delete(Chunk chunk) throws IOException{
 		peer.remove(new Number160(chunk.getGuid()));
+	}
+	
+	/**
+	 * @return the guid
+	 */
+	public Number160 getID() {
+		return guid;
 	}
 }
 

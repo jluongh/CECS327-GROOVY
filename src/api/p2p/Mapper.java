@@ -1,6 +1,7 @@
 package api.p2p;
 
 import java.io.IOException;
+import java.util.List;
 
 public class Mapper implements MapInterface, ReduceInterface{
 	public void map(Integer key, String value) throws IOException{
@@ -9,8 +10,9 @@ public class Mapper implements MapInterface, ReduceInterface{
 		}
 	}
 	
-	public void reduce(Integer key, String values[]) throws IOException{
-		String word = values[0].split(":")[0];
-		emit(key, word +":"+ len(values));
+	public void reduce(String key, List<String> values, Peer p) throws IOException{
+		String word = values.get(0).split(":")[0];
+		p.emit(key, word +":"+ values.size());
 	}
+
 }

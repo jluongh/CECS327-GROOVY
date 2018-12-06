@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class MetadataServiceMap {
 	TreeMap<Number160, List<String>> maps;
 	TreeMap<Number160, String> reduce;
 
-	List<Mapper> mappers;
+	List<Mapper> mappers = new ArrayList<Mapper>();
 	
 	public MetadataServiceMap(List<Peer> peers) {
 		this.peers = peers;
@@ -36,7 +37,7 @@ public class MetadataServiceMap {
 //		}
 //	}
 
-	public void mapContext(int page, Mapper mapper, Counter counter) {
+	public void mapContext(File file, Mapper mapper, Counter counter) {
 
 		// open page file
 		BufferedReader reader;
@@ -148,30 +149,40 @@ public class MetadataServiceMap {
 		counter.increment(peers.get(0).getID(), 0);
 	}
 
-	public void runMapReduce(File file) {
+	public void runMapReduce(List<File> files) {
 		Counter mapCounter = new Counter();
-		Counter reduceCounter = new Counter();
-		Counter completedCounter = new Counter();
-		MapInterface mapper;
-		ReduceInterface reducer;
 
+		
+
+		int index = 0;
 		while (!mapCounter.hasCompleted()) {
 			// map Phases
 			// for each page in metafile.file
-			mapCounter.add(page);
-			// let peer = storing pages
-			peer.mapContext(page, mapper, mapCounter);
-			// wait till
+			for (File file : files) {
+				mapCounter.add(file.getName());
+				// let peer = storing pages
+				mapContext(file, mappers.get(index), mapCounter);
+				index++;
+			}
+
 		}
+
+	}
+
+	public void runReduce(String search) {
+		Counter reduceCounter = new Counter();
+		Counter completedCounter = new Counter();
+		
+		int index = 0;
 		while (!reduceCounter.hasCompleted()) {
-			reduceContext(guid, reducer, reduceCounter);
+			reduceContext(search, mappers.get(index), reduceCounter);
+			index++;
 		}
 
 		while (completedCounter.hasCompleted()) {
 			completed(guid, completedCounter);
 		}
 	}
-
 	// SAVE
 	// reduce into inverted index
 

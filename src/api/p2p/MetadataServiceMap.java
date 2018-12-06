@@ -3,6 +3,7 @@ package api.p2p;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,7 +19,7 @@ public class MetadataServiceMap {
 
 	List<Peer> peers;
 
-	TreeMap<Number160, List<String>> maps;
+	TreeMap<String, List<String>> maps;
 	TreeMap<Number160, String> reduce;
 
 	List<Mapper> mappers;
@@ -38,13 +39,13 @@ public class MetadataServiceMap {
 //		}
 //	}
 
-	public void mapContext(int page, Mapper mapper, Counter counter) {
+	public void mapContext(File F, Mapper mapper, Counter counter) {
 
 		// open page file
 		BufferedReader reader;
 
 		// file?
-		// reader = new BufferedReader(new FileReader());
+		reader = new BufferedReader(new FileReader(F));
 		String line = reader.readLine();
 
 		while (line != null) {
@@ -58,7 +59,8 @@ public class MetadataServiceMap {
 		reader.close();
 
 		// when its done complete file call counter increment(page n)
-		counter.increment(page, 1);
+		// what's the key here? 
+		counter.increment(key, 1);
 
 		counter.hasCompleted();
 
@@ -86,30 +88,26 @@ public class MetadataServiceMap {
 	// Calls reduceContext(), completed()
 
 	// CAITLIN
-	public void reduceContext(Number160 source, ReduceInterface reducer, Counter counter) {
+	public void reduceContext(String search, Mapper reducer, Counter counter) {
 //		if (source != peers.get(0).getID()) {
 //			counter.add(peers.get(0).getID());
 //			System.out.println("in reduceContext");
 //			peers.get(1).reduceContext(source, reducer, counter); // needs to be implemented for peer class
 //		}
-		
-		if (source != maps.firstKey()) {
-			counter.add(maps.firstKey());
-			System.out.println("in reduceContext");
-			maps.higherKey(source).reduceContext(source, reducer, counter); // needs to be implemented for peer successor
-		}
+//		if (source != maps.firstKey()) {
+//			counter.add(mappers..firstKey());
+//			System.out.println("in reduceContext");
+//			maps.higherKey(source).reduceContext(source, reducer, counter); // needs to be implemented for peer successor
+//		}
 		Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					// counter.setWorkingPeer(getID());
+					List<String> results = reducer.reduce(search);
+					counter.increment(reducer.id, results.size());
+
 				} catch (IOException e) {
 					e.printStackTrace();
-				}
-				for (Number160 s : maps.keySet()) {
-					int n = 0;
-					reducer.reduce(s, maps.get(n), counter);
-					n++;
 				}
 			}
 

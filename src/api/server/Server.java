@@ -29,7 +29,7 @@ public class Server {
 		
 		try {
 			List<Peer> peers = new ArrayList<Peer>();
-			for (int i = 0; i < 5; i++) {
+			for (int i = 0; i < Net.TOTAL_PEERS; i++) {
 				Peer peer = new Peer();
 				peers.add(peer);
 			}

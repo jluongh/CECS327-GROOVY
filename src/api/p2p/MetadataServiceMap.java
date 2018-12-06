@@ -3,6 +3,7 @@ package api.p2p;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -38,13 +39,13 @@ public class MetadataServiceMap {
 //		}
 //	}
 
-	public void mapContext(int page, Mapper mapper, Counter counter) {
+	public void mapContext(File F, Mapper mapper, Counter counter) {
 
 		// open page file
 		BufferedReader reader;
 
 		// file?
-		// reader = new BufferedReader(new FileReader());
+		reader = new BufferedReader(new FileReader(F));
 		String line = reader.readLine();
 
 		while (line != null) {
@@ -58,7 +59,8 @@ public class MetadataServiceMap {
 		reader.close();
 
 		// when its done complete file call counter increment(page n)
-		counter.increment(page, 1);
+		// what's the key here? 
+		counter.increment(key, 1);
 
 		counter.hasCompleted();
 

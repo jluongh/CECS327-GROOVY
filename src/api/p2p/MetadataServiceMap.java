@@ -87,15 +87,17 @@ public class MetadataServiceMap {
 
 	// CAITLIN
 	public void reduceContext(Number160 source, ReduceInterface reducer, Counter counter) {
-		if (source != peers.get(0).getID()) {
-			counter.add(peers.get(0).getID());
-		}
-
-		if (source != peers.get(0).getID()) {
+//		if (source != peers.get(0).getID()) {
+//			counter.add(peers.get(0).getID());
+//			System.out.println("in reduceContext");
+//			peers.get(1).reduceContext(source, reducer, counter); // needs to be implemented for peer class
+//		}
+		
+		if (source != maps.firstKey()) {
+			counter.add(maps.firstKey());
 			System.out.println("in reduceContext");
-			successor.reduceContext(source, reducer, counter); // need function to find successor
+			maps.higherKey(source).reduceContext(source, reducer, counter); // needs to be implemented for peer successor
 		}
-
 		Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -104,21 +106,11 @@ public class MetadataServiceMap {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				for (Entry<String, List<String>> entry : maps.entrySet()) {
-					String key = entry.getKey();
-					List<String> values = entry.getValue();
-					String strings[] = new String[values.size()];
-					values.toArray(strings);
-					try {
-						reducer.reduce(key, values);
-
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+				for (Number160 s : maps.keySet()) {
+					int n = 0;
+					reducer.reduce(s, maps.get(n), counter);
+					n++;
 				}
-
-				System.out.println("Finish mapReduce.");
-
 			}
 
 		});

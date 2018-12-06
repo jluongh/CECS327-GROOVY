@@ -1,22 +1,31 @@
 package api.p2p;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
-import net.tomp2p.peers.Number160;
 
 public abstract class Mapper implements MapInterface, ReduceInterface{
-	public void map(Integer key, String value) throws IOException{
-		//pseudo code:
-		for (word: value) {
-			emit(md5(word), word +":"+ 1);
-		}
+	
+	private TreeMap<String, String> map;
+	
+	public void map(String line) throws IOException{
+		String [] values = line.split(";");
+		
+		String key = values[0];
+		String value = line;
+		
+		map.put(key, value);
 	}
 	
-	public void reduce(Number160 key, List<String> values, Peer p) throws IOException{
-		String word = values.get(0).split(":")[0];
-		p.emit(key, word +":"+ values.size());
+	public List<String> reduce(String search) throws IOException{
+		List<String> values = new ArrayList<String>();
+		for (String s : map.keySet()) {
+			if (s.contains(search.toLowerCase())) {
+				values.add(map.get(s));
+			}
+		}
+		return values;
 	}
-
-
 }

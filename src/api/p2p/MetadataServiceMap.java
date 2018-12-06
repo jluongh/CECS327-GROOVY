@@ -29,9 +29,9 @@ public class MetadataServiceMap {
 		this.peers = peers;
 	}
 
-//	public void map(String key, String value, C con) throws IOException, InterruptedException {
+//	public void map(String key, String value, Context con) throws IOException, InterruptedException {
 //		String line = value.toString();
-//		String[] words = line.split(",");
+//		String[] words = line.split(";");
 //		for (String word : words) {
 //			String outputKey = new String(word.toUpperCase().trim());
 //			String outputValue = new String();
@@ -60,8 +60,7 @@ public class MetadataServiceMap {
 
 		// when its done complete file call counter increment(page n)
 		// what's the key here? 
-		counter.increment(key, 1);
-
+		counter.increment(1);
 		counter.hasCompleted();
 
 	}

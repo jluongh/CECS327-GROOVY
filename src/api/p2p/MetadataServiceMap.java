@@ -137,14 +137,25 @@ public class MetadataServiceMap {
 
 	}
 
-	public Boolean completed(Number160 source, Counter counter) {
-		if (source != peers.get(0).getID()) {
-			counter.add(peers.get(0).getID());
-		}
-		successor.completed(source, counter);
-		// create new file stores the tree in file output in page guid
-		counter.increment(peers.get(0).getID(), 0);
-	}
+//	public Boolean completed(String search, Mapper reducer, Counter counter) {
+//		boolean complete = false;
+//		for(String s : reducer.reduce(search)) {
+//			
+//		}
+//		if() {
+//			complete = true;
+//		}
+//		return complete;
+		
+		
+//		if (source != peers.get(0).getID()) {
+//			counter.add(peers.get(0).getID());
+//		}
+//		successor.completed(source, counter);
+//		// create new file stores the tree in file output in page guid
+//		counter.increment(peers.get(0).getID(), 0);
+		
+//	}
 
 	public void runMapReduce(File file) {
 		Counter mapCounter = new Counter();

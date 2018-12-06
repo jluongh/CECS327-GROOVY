@@ -28,5 +28,4 @@ public abstract class Mapper implements MapInterface, ReduceInterface{
 		}
 		return values;
 	}
-
 }

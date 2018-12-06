@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ public class MetadataServiceMap {
 	TreeMap<Number160, String> reduce;
 
 	List<Mapper> mappers;
+	List<String> results;
 	
 	public MetadataServiceMap(List<Peer> peers) {
 		this.peers = peers;
@@ -126,16 +128,23 @@ public class MetadataServiceMap {
 
 	// Calls emitReduce()
 
-	public void emitReduce(Number160 key, String value, Counter counter) {
-		if (isKeyBetween(key, predecessor.getID(), successor.getID())) // need to implement get predecessor and
-																		// successor
+	public void emitReduce(String key, String value, Counter counter) throws IOException {
+		//go to every mapper, do the reduce. 
+		results = new ArrayList<String>();
+		for(int i = 0; i<mappers.size();i++)
 		{
-			reduce.put(key, value);
-			counter.decrement();
-		} else {
-			Peer peer = this.locateSuccessor(key);
-			peer.emitReduce(key, value);
+			results.addAll(mappers.get(i).reduce(key));
 		}
+		
+//		if (isKeyBetween(key, predecessor.getID(), successor.getID())) 
+//		{
+//			mappers.emit(key, value);
+//			counter.decrement();
+//		} else {
+//			Peer peer = this.locateSuccessor(key);
+//			peer.emitReduce(key, value);
+//		}
+
 
 	}
 

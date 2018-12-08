@@ -29,9 +29,9 @@ public class MetadataServiceMap {
 		this.peers = peers;
 	}
 
-//	public void map(String key, String value, C con) throws IOException, InterruptedException {
+//	public void map(String key, String value, Context con) throws IOException, InterruptedException {
 //		String line = value.toString();
-//		String[] words = line.split(",");
+//		String[] words = line.split(";");
 //		for (String word : words) {
 //			String outputKey = new String(word.toUpperCase().trim());
 //			String outputValue = new String();
@@ -60,8 +60,7 @@ public class MetadataServiceMap {
 
 		// when its done complete file call counter increment(page n)
 		// what's the key here? 
-		counter.increment(key, 1);
-
+		counter.increment(1);
 		counter.hasCompleted();
 
 	}
@@ -138,14 +137,25 @@ public class MetadataServiceMap {
 
 	}
 
-	public Boolean completed(Number160 source, Counter counter) {
-		if (source != peers.get(0).getID()) {
-			counter.add(peers.get(0).getID());
-		}
-		successor.completed(source, counter);
-		// create new file stores the tree in file output in page guid
-		counter.increment(peers.get(0).getID(), 0);
-	}
+//	public Boolean completed(String search, Mapper reducer, Counter counter) {
+//		boolean complete = false;
+//		for(String s : reducer.reduce(search)) {
+//			
+//		}
+//		if() {
+//			complete = true;
+//		}
+//		return complete;
+		
+		
+//		if (source != peers.get(0).getID()) {
+//			counter.add(peers.get(0).getID());
+//		}
+//		successor.completed(source, counter);
+//		// create new file stores the tree in file output in page guid
+//		counter.increment(peers.get(0).getID(), 0);
+		
+//	}
 
 	public void runMapReduce(File file) {
 		Counter mapCounter = new Counter();

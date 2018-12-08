@@ -16,12 +16,24 @@ public abstract class Mapper implements MapInterface, ReduceInterface{
 	}
 	
 	public void map(String line) throws IOException{
+
 		String [] values = line.split(";");
 		
-		String key = values[0];
-		String value = line;
+		for (String value : values) {
+			String outputKey = new String(value.toUpperCase().trim());
+			String outputValue = new String();
+			map.put(outputKey, outputValue);
+		}
 		
-		map.put(key, value);
+		//1 
+//		String [] values = line.split(";");
+//		
+//		String key = values[0];
+//		String value = line;
+//		
+//		map.put(key, value);
+//		
+			
 	}
 	
 	public List<String> reduce(String search) throws IOException{

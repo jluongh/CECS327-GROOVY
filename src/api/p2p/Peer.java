@@ -2,7 +2,10 @@ package api.p2p;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.TreeMap;
 
 import data.constants.Net;
 import data.index.Chunk;
@@ -14,11 +17,12 @@ import net.tomp2p.p2p.PeerBuilder;
 import net.tomp2p.peers.Number160;
 import net.tomp2p.storage.Data;
 
-public class Peer {
+public class Peer implements MapInterface, ReduceInterface {
 	
 	private final PeerDHT peer;
 	private final int port = Net.P2P_PORT; //change?
 	Number160 guid;
+	private TreeMap<String, String> map;
 	
 	public Peer() throws IOException {
 		
@@ -75,9 +79,28 @@ public class Peer {
 		return guid;
 	}
 
-	public void emit(Number160 key, String string) {
-		// TODO Auto-generated method stub
+	public void map(String line) throws IOException{
+
+		String [] values = line.split(";");
 		
+		for (String value : values) {
+			String outputKey = new String(value.toUpperCase().trim());
+			String outputValue = new String();
+			map.put(outputKey, outputValue);
+		}
+			
 	}
+	
+	public List<String> reduce(String search) throws IOException{
+		List<String> values = new ArrayList<String>();
+		for (String s : map.keySet()) {
+			if (s.contains(search.toLowerCase())) {
+				values.add(map.get(s));
+			}
+		}
+		return values;
+	}
+
+	
 }
 

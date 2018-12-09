@@ -3,6 +3,7 @@ package api.p2p;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,12 +12,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import data.constants.Files;
+import data.index.MetadataFile;
 import data.models.Song;
 
 import java.util.Set;
 import java.util.TreeMap;
 
 import net.tomp2p.peers.Number160;
+import services.MetadataFileService;
 
 public class MetadataServiceMap {
 
@@ -26,6 +29,8 @@ public class MetadataServiceMap {
 	
 	public MetadataServiceMap(List<Peer> peers) {
 		this.peers = peers;
+		
+		runMap();
 	}
 
 	public List<String> search(String query, int type) throws IOException
@@ -54,29 +59,33 @@ public class MetadataServiceMap {
 		return values;
 	}
 
-	public void mapContext(File F, Peer peer, Counter counter) {
+	public void mapContext(File file, Peer peer, Counter counter) {
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			
+			String line = reader.readLine();
 
-		// open page file
-		BufferedReader reader;
+			while (line != null) {
 
-		// file?
-		reader = new BufferedReader(new FileReader(F));
-		String line = reader.readLine();
+				System.out.println("READING LINE: " + line);
+				// read line by line execute mapper.map(key, value, counter)
+				peer.map(line);
 
-		while (line != null) {
-
-			// read line by line execute mapper.map(key, value, counter)
-			peer.map(line);
-
-			// read next line
-			line = reader.readLine();
+				// read next line
+				line = reader.readLine();
+			}
+			reader.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		reader.close();
+
 
 		// when its done complete file call counter increment(page n)
 		// what's the key here? 
-		counter.increment(1);
-		counter.hasCompleted();
+//		counter.increment(1);
+
 
 	}
 
@@ -140,32 +149,52 @@ public class MetadataServiceMap {
 //		counter.increment(peers.get(0).getID(), 0);
 		
 //	}
-
-	public void runMapReduce(File file) {
+	
+	public void runMap() {
 		Counter mapCounter = new Counter();
-		Counter reduceCounter = new Counter();
-		Counter completedCounter = new Counter();
-		MapInterface mapper;
-		ReduceInterface reducer;
 
-		while (!mapCounter.hasCompleted()) {
-			// map Phases
-			// for each page in metafile.file
-			mapCounter.add(page);
-			// let peer = storing pages
-			peer.mapContext(page, mapper, mapCounter);
-			// wait till
-		}
-		while (!reduceCounter.hasCompleted()) {
-			reduceContext(guid, reducer, reduceCounter);
-		}
+		// Initialize service to deserialize metadata.json
+		MetadataFileService mfs = new MetadataFileService();
+		
+		// Deserialize metadata.json
+		List<MetadataFile> mdf = mfs.getMetadataFile();
 
-		while (completedCounter.hasCompleted()) {
-			completed(guid, completedCounter);
+		// Assign a peer to map each file in metadata
+		int index = 0;
+		for (int i = 0; i < Files.FILES.length; i++) {
+			File file = new File(Files.FILES[i]);
+			Peer mapper = peers.get(index);
+			mapContext(file, mapper, mapCounter);
 		}
+		
+		System.out.println("Complete");
 	}
 
-	// SAVE
-	// reduce into inverted index
+//	public void runMapReduce(File file) {
+//		Counter mapCounter = new Counter();
+//		Counter reduceCounter = new Counter();
+//		Counter completedCounter = new Counter();
+//		MapInterface mapper;
+//		ReduceInterface reducer;
+//
+//		while (!mapCounter.hasCompleted()) {
+//			// map Phases
+//			// for each page in metafile.file
+//			mapCounter.add(page);
+//			// let peer = storing pages
+//			peer.mapContext(page, mapper, mapCounter);
+//			// wait till
+//		}
+//		while (!reduceCounter.hasCompleted()) {
+//			reduceContext(guid, reducer, reduceCounter);
+//		}
+//
+//		while (completedCounter.hasCompleted()) {
+//			completed(guid, completedCounter);
+//		}
+//	}
+//
+//	// SAVE
+//	// reduce into inverted index
 	
 }

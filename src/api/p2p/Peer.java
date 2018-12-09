@@ -26,6 +26,8 @@ public class Peer implements MapInterface, ReduceInterface {
 	
 	public Peer() throws IOException {
 		
+		map = new TreeMap<String, String>();
+		
 		Random rnd = new Random();
 		guid = new Number160(rnd);
         peer = new PeerBuilderDHT(new PeerBuilder(guid).ports(port).start()).start();
@@ -35,6 +37,8 @@ public class Peer implements MapInterface, ReduceInterface {
         if(fb.isSuccess()) {
             peer.peer().discover().peerAddress(fb.bootstrapTo().iterator().next()).start().awaitUninterruptibly();
         }
+        
+        System.out.println("Peer created with guid:" + guid);
 	}
 	
 	/**

@@ -15,8 +15,8 @@ public class Files {
 	public final static String[] USERS = new String[] { "./src/data/users1.txt", "./src/data/users2.txt",
 			"./src/data/users3.txt" };
 
-	public final static String[] FILES = new String[] { "./src/data/artist1.txt", "./src/data/artist2.txt",
-			"./src/data/artist3.txt", "./src/data/album1.txt", "./src/data/album2.txt", "./src/data/album3.txt",
+	public final static String[] FILES = new String[] { "./src/data/album1.txt", "./src/data/album2.txt",
+			"./src/data/album3.txt", "./src/data/artist1.txt", "./src/data/artist2.txt", "./src/data/artist3.txt",
 			"./src/data/song1.txt", "./src/data/song2.txt", "./src/data/song3.txt" };
 
 	/* ---------- Logical Files Data ---------- */

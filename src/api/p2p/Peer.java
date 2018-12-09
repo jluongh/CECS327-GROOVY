@@ -18,29 +18,30 @@ import net.tomp2p.peers.Number160;
 import net.tomp2p.storage.Data;
 
 public class Peer implements MapInterface, ReduceInterface {
-	
+
 	private final PeerDHT peer;
-	private final int port = Net.P2P_PORT; //change?
+	private final int port = Net.P2P_PORT; // change?
 	Number160 guid;
-	private TreeMap<String, String> map;
-	
+	public TreeMap<String, List<String>> map;
+
 	public Peer() throws IOException {
-		
-		map = new TreeMap<String, String>();
-		
+
+		map = new TreeMap<String, List<String>>();
+
 		Random rnd = new Random();
 		guid = new Number160(rnd);
-        peer = new PeerBuilderDHT(new PeerBuilder(guid).ports(port).start()).start();
-        
-        FutureBootstrap fb = this.peer.peer().bootstrap().inetAddress(InetAddress.getByName(Net.HOST)).ports(port).start();
-        fb.awaitUninterruptibly();
-        if(fb.isSuccess()) {
-            peer.peer().discover().peerAddress(fb.bootstrapTo().iterator().next()).start().awaitUninterruptibly();
-        }
-        
-        System.out.println("Peer created with guid:" + guid);
+		peer = new PeerBuilderDHT(new PeerBuilder(guid).ports(port).start()).start();
+
+		FutureBootstrap fb = this.peer.peer().bootstrap().inetAddress(InetAddress.getByName(Net.HOST)).ports(port)
+				.start();
+		fb.awaitUninterruptibly();
+		if (fb.isSuccess()) {
+			peer.peer().discover().peerAddress(fb.bootstrapTo().iterator().next()).start().awaitUninterruptibly();
+		}
+
+		System.out.println("Peer created with guid:" + guid);
 	}
-	
+
 	/**
 	 * 
 	 * @param guid
@@ -52,11 +53,11 @@ public class Peer implements MapInterface, ReduceInterface {
 		FutureGet futureGet = peer.get(new Number160(guid)).start();
 		futureGet.awaitUninterruptibly();
 		if (futureGet.isSuccess()) {
-            return futureGet.dataMap().values().iterator().next().object().toString();
+			return futureGet.dataMap().values().iterator().next().object().toString();
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 
 	 * @param guid
@@ -66,16 +67,16 @@ public class Peer implements MapInterface, ReduceInterface {
 	public void put(Number160 guid, String content) throws IOException {
 		peer.put(guid).data(new Data(content)).start().awaitUninterruptibly();
 	}
-  
-	
+
 	/**
 	 * Delete chunk from dht //not tested yet
+	 * 
 	 * @param deletePeer
 	 */
-	public void delete(Chunk chunk) throws IOException{
+	public void delete(Chunk chunk) throws IOException {
 		peer.remove(new Number160(chunk.getGuid()));
 	}
-	
+
 	/**
 	 * @return the guid
 	 */
@@ -83,28 +84,37 @@ public class Peer implements MapInterface, ReduceInterface {
 		return guid;
 	}
 
-	public void map(String line) throws IOException{
+	public void map(String line) throws IOException {
 
-		String [] values = line.split(";");
-		
-		for (String value : values) {
-			String outputKey = new String(value.toUpperCase().trim());
-			String outputValue = new String();
-			map.put(outputKey, outputValue);
+		String[] values = line.split(";");
+
+		String outputKey = values[0].toLowerCase();
+		String outputValue = line;
+
+		List<String> outputValues = new ArrayList<String>();
+
+		if (map.containsKey(outputKey)) {
+			outputValues = map.get(outputKey);
+
 		}
-			
+		if (!outputValues.contains(outputValue)) {
+			outputValues.add(outputValue);
+			map.put(outputKey, outputValues);
+
+		}
+
 	}
-	
-	public List<String> reduce(String search) throws IOException{
+
+	public List<String> reduce(String search) throws IOException {
 		List<String> values = new ArrayList<String>();
 		for (String s : map.keySet()) {
-			if (s.contains(search.toLowerCase())) {
-				values.add(map.get(s));
+			System.out.println("SEARCHING: " + s);
+
+			if (s.startsWith((search.toLowerCase()))) {
+				values.addAll(map.get(s));
 			}
 		}
 		return values;
 	}
 
-	
 }
-

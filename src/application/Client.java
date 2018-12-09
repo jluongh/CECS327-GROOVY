@@ -10,6 +10,7 @@ import api.p2p.MetadataService;
 import api.p2p.MetadataServiceMap;
 import api.p2p.Peer;
 import api.server.ClientHandler;
+import data.constants.Files;
 import data.constants.Net;
 import data.index.MetadataFile;
 import services.MetadataFileService;
@@ -34,8 +35,14 @@ public class Client {
 			}
 
 			MetadataServiceMap msm = new MetadataServiceMap(peers);
+			msm.initMap();
 			
-			
+			List<String> results = msm.search(Files.SONGTYPE, "S");
+
+			System.out.println("-----------------");
+			for (String s : results) {
+				System.out.println("Result: " + s);
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import api.p2p.MetadataService;
+import api.p2p.MetadataServiceMap;
 import data.constants.Net;
 import api.p2p.Peer;
 
@@ -34,9 +35,13 @@ public class Server {
 				peers.add(peer);
 			}
 
-			// Create MetadataService1 that passes in List<Peer>
-			MetadataService ms = new MetadataService(peers.get(0));
-			ms.init();
+			
+//			// Create MetadataServiceMap that passes in List<Peer>
+			MetadataServiceMap msm = new MetadataServiceMap(peers);
+			msm.initMap();
+			
+//			MetadataService ms = new MetadataService(peers.get(0));
+//			ms.init();
 
 			// socket = null;
 			DatagramSocket socket = new DatagramSocket(Net.PORT);
@@ -48,7 +53,7 @@ public class Server {
 				DatagramPacket request = new DatagramPacket(message, message.length);
 				socket.receive(request);
 
-				Thread t = new ClientHandler(socket, request, ms);
+				Thread t = new ClientHandler(socket, request, msm);
 				t.start();
 
 			}

@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import api.p2p.MetadataService;
+import api.p2p.MetadataServiceMap;
 import data.constants.Packet;
 import data.models.*;
 import services.LibraryService;
@@ -29,7 +30,7 @@ public class ClientHandler extends Thread {
 	final private DatagramSocket socket;
 	private DatagramPacket request;
 	final private LogService ls = new LogService();
-	private MetadataService ms;
+	private MetadataServiceMap msm;
 	
 	/**
 	 * Setter for socket for ClientHandler
@@ -37,10 +38,10 @@ public class ClientHandler extends Thread {
 	 * @param socket
 	 *                   - {DatagramSocket}
 	 */
-	public ClientHandler(DatagramSocket socket, DatagramPacket request, MetadataService ms) {
+	public ClientHandler(DatagramSocket socket, DatagramPacket request, MetadataServiceMap msm) {
 		this.socket = socket;
 		this.request = request;
-		this.ms = ms;
+		this.msm = msm;
 	}
 
 	/**
@@ -358,7 +359,7 @@ public class ClientHandler extends Thread {
 	 * @return
 	 */
 	private byte[] SearchByArtist(String query) {
-		List<Song> songs = ms.search(data.constants.Files.ARTIST_INDEX, query);
+		List<Song> songs = msm.search(data.constants.Files.ARTISTTYPE, query);
 		Type listType = new TypeToken<List<Song>>() {
 		}.getType();
 		String send = new Gson().toJson(songs, listType);
@@ -373,7 +374,7 @@ public class ClientHandler extends Thread {
 	 */
 	private byte[] SearchByAlbum(String query) {
 
-		List<Song> songs = ms.search(data.constants.Files.ALBUM_INDEX, query);
+		List<Song> songs = msm.search(data.constants.Files.ALBUMTYPE, query);
 		Type listType = new TypeToken<List<Song>>() {
 		}.getType();
 		String send = new Gson().toJson(songs, listType);
@@ -388,7 +389,7 @@ public class ClientHandler extends Thread {
 	 */
 	private byte[] SearchBySong(String query) {
 
-		List<Song> songs = ms.search(data.constants.Files.SONG_INDEX, query);
+		List<Song> songs = msm.search(data.constants.Files.SONGTYPE, query);
 		Type listType = new TypeToken<List<Song>>() {
 		}.getType();
 		String send = new Gson().toJson(songs, listType);

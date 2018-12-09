@@ -9,6 +9,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import data.constants.Files;
+import data.models.Song;
+
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -24,6 +28,31 @@ public class MetadataServiceMap {
 		this.peers = peers;
 	}
 
+	public List<String> search(String query, int type) throws IOException
+	{
+		List<String> values = new ArrayList<String>();
+		//peer 0-2 has songs.txt peer 3-5 has artists.txt peer 6-8 has albums.txt
+		switch(type)
+		{
+			case Files.SONGTYPE:
+				for(int i = 0; i < 3; i++)
+				{
+					values.addAll(peers.get(i).reduce(query));
+				}
+			case Files.ARTISTTYPE:
+				for(int j = 3; j < 6; j++)
+				{
+					values.addAll(peers.get(j).reduce(query));
+				}
+			case Files.ALBUMTYPE:
+				for(int k = 6; k < 9; k++)
+				{
+					values.addAll(peers.get(k).reduce(query));
+				}
+		}
+		
+		return values;
+	}
 
 	public void mapContext(File F, Peer peer, Counter counter) {
 

@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 
 import data.constants.Files;
 import data.index.MetadataFile;
@@ -32,7 +33,7 @@ public class MetadataServiceMap {
 
 	}
 
-	public List<Song> search(int type, String query) {
+	public List<Song> search(int type, String query) throws IOException {
 		
 		List<String> values = new ArrayList<String>();
 		// peer 0-2 has songs.txt peer 3-5 has artists.txt peer 6-8 has albums.txt
@@ -61,10 +62,50 @@ public class MetadataServiceMap {
 			break;
 
 		}
-
+		List <Song> results= songSearch(type, values);
+		
 		// RETURN A LIST<SONG>
-		return values;
+		return results;
 	}
+	
+	//Taking list of strings and sets song according to the type
+	public List<Song> songSearch(int type, List <String> songList) {
+		List<Song> songs = new ArrayList<Song>();
+		for(String s: songList) {
+			String[] songInfo = s.split(";");
+			Song song = new Song();
+			switch(type){
+			case Files.ALBUMTYPE:
+				System.out.println("FIND ALBUM");
+				song.setSongID(Integer.parseInt(songInfo[Files.SONGID[Files.ALBUMTYPE]]));
+				song.setTitle(songInfo[Files.TITLE[Files.ALBUMTYPE]]);
+				song.setArtist(songInfo[Files.ARTIST[Files.ALBUMTYPE]]);
+				song.setAlbum(songInfo[Files.ALBUM[Files.ALBUMTYPE]]);
+				song.setDuration(Double.parseDouble(songInfo[Files.DURATION[Files.ALBUMTYPE]]));
+				break;
+
+			case Files.ARTISTTYPE:
+				System.out.println("FIND ARTIST");
+				song.setSongID(Integer.parseInt(songInfo[Files.SONGID[Files.ARTISTTYPE]]));
+				song.setTitle(songInfo[Files.TITLE[Files.ARTISTTYPE]]);
+				song.setArtist(songInfo[Files.ARTIST[Files.ARTISTTYPE]]);
+				song.setAlbum(songInfo[Files.ALBUM[Files.ARTISTTYPE]]);
+				song.setDuration(Double.parseDouble(songInfo[Files.DURATION[Files.ARTISTTYPE]]));
+				break;
+
+			case Files.SONGTYPE:
+				song.setSongID(Integer.parseInt(songInfo[Files.SONGID[Files.SONGTYPE]]));
+				song.setTitle(songInfo[Files.TITLE[Files.SONGTYPE]]);
+				song.setArtist(songInfo[Files.ARTIST[Files.SONGTYPE]]);
+				song.setAlbum(songInfo[Files.ALBUM[Files.SONGTYPE]]);
+				song.setDuration(Double.parseDouble(songInfo[Files.DURATION[Files.SONGTYPE]]));
+				break;
+			}
+			songs.add(song);
+		}
+		return songs;
+	}
+	
 
 	public void mapContext(File file, Peer peer, Counter counter) {
 		try {

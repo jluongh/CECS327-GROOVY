@@ -57,7 +57,7 @@ public class MetadataFile {
 		}
 		
 		if (index.stream().distinct().limit(2).count() <= 1)
-			return index.get(0)+".idx";
+			return index.get(0);
 		
 		return "";
 	}

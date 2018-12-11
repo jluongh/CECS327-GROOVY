@@ -1,5 +1,5 @@
-Perfect;16;Ed Sheeran;�;4.4
-September;10;Earth, Wind, & Fire;Greatest Hits;3.35
 Somebody Else;3;The 1975;I Like It When You Sleep, for You Are So Beautiful Yet So Unaware Of It;5.11
 The Promise;15;When In Rome;When In Rome;3.39
 Too Many;9;Russ;Too Many;2.41
+September;10;Earth, Wind, & Fire;Greatest Hits;3.35
+Perfect;16;Ed Sheeran;�;4.4

@@ -68,7 +68,7 @@ public class MetadataServiceMap {
 		return results;
 	}
 	
-	//Taking list of strings and sets song according to the type
+	//Converting list of strings to list of songs based on type
 	public List<Song> songSearch(int type, List <String> songList) {
 		List<Song> songs = new ArrayList<Song>();
 		for(String s: songList) {

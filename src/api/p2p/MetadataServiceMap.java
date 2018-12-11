@@ -32,22 +32,21 @@ public class MetadataServiceMap {
 
 	}
 
-	public List<String> search(int type, String query) throws IOException {
+	public List<Song> search(int type, String query) {
+		
 		List<String> values = new ArrayList<String>();
 		// peer 0-2 has songs.txt peer 3-5 has artists.txt peer 6-8 has albums.txt
 		switch (type) {
 		case Files.ALBUMTYPE:
+			System.out.println("SEARCHING ALBUM");
 			for (int i = 0; i < 3; i++) {
-				System.out.println("SEARCHING ALBUM");
 
 				values.addAll(peers.get(i).reduce(query));
 			}
 			break;
 
 		case Files.ARTISTTYPE:
-			// for (int j = 0; j < 3; j++) {
 			System.out.println("SEARCHING ARTIST");
-
 			for (int j = 3; j < 6; j++) {
 				values.addAll(peers.get(j).reduce(query));
 			}
@@ -63,6 +62,7 @@ public class MetadataServiceMap {
 
 		}
 
+		// RETURN A LIST<SONG>
 		return values;
 	}
 
@@ -79,7 +79,6 @@ public class MetadataServiceMap {
 				// read next line
 				line = reader.readLine();
 			}
-			System.out.println("ASDJKAL: " + peer.map.size());
 			reader.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

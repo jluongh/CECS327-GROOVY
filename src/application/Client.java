@@ -37,7 +37,7 @@ public class Client {
 			MetadataServiceMap msm = new MetadataServiceMap(peers);
 			msm.initMap();
 			
-			List<String> results = msm.search(Files.SONGTYPE, "S");
+			List<Song> results = msm.search(Files.SONGTYPE, "S");
 
 			System.out.println("-----------------");
 			for (String s : results) {

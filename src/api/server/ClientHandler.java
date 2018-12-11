@@ -357,8 +357,9 @@ public class ClientHandler extends Thread {
 	 * 
 	 * @param query
 	 * @return
+	 * @throws IOException 
 	 */
-	private byte[] SearchByArtist(String query) {
+	private byte[] SearchByArtist(String query) throws IOException {
 		List<Song> songs = msm.search(data.constants.Files.ARTISTTYPE, query);
 		Type listType = new TypeToken<List<Song>>() {
 		}.getType();
@@ -371,8 +372,9 @@ public class ClientHandler extends Thread {
 	 * 
 	 * @param query
 	 * @return
+	 * @throws IOException 
 	 */
-	private byte[] SearchByAlbum(String query) {
+	private byte[] SearchByAlbum(String query) throws IOException {
 
 		List<Song> songs = msm.search(data.constants.Files.ALBUMTYPE, query);
 		Type listType = new TypeToken<List<Song>>() {
@@ -386,8 +388,9 @@ public class ClientHandler extends Thread {
 	 * 
 	 * @param query
 	 * @return
+	 * @throws IOException 
 	 */
-	private byte[] SearchBySong(String query) {
+	private byte[] SearchBySong(String query) throws IOException {
 
 		List<Song> songs = msm.search(data.constants.Files.SONGTYPE, query);
 		Type listType = new TypeToken<List<Song>>() {

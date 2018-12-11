@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-//import java.util.Set;
-//import javax.sound.sampled.AudioInputStream;
+import java.util.Set;
+import javax.sound.sampled.AudioInputStream;
 import java.util.Date;
-//import java.util.HashMap;
-//import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Iterator;
 
 
 //import api.AudioPlayer;
@@ -37,33 +37,33 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Alert;
-//import javafx.scene.control.Button;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-//import javafx.scene.image.Image;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-//import javafx.scene.control.TableCell;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-//import javafx.scene.control.TableView;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
-//import javafx.scene.control.TableColumn;
-//import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.beans.property.ReadOnlyStringWrapper;
-//import javafx.beans.property.SimpleBooleanProperty;
-//import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-//import javafx.util.Callback;
-//import com.sun.prism.impl.Disposer;
+import javafx.util.Callback;
+import com.sun.prism.impl.Disposer;
 
 public class MainAppController implements Initializable {
 
@@ -108,9 +108,9 @@ public class MainAppController implements Initializable {
 	private TableColumn<Object, String> col4;
 	@FXML
 	private TableView<Playlist> playlistTable;
-//	@FXML
-//	private TableColumn<Disposer.Record,Boolean> delete;
-//	@FXML
+	@FXML
+	private TableColumn<Disposer.Record,Boolean> delete;
+	@FXML
 	private TableColumn<Playlist,String> playlistName;
 	@FXML
 	private ImageView btnAlbum;

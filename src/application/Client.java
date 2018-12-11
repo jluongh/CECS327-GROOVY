@@ -13,6 +13,7 @@ import api.server.ClientHandler;
 import data.constants.Files;
 import data.constants.Net;
 import data.index.MetadataFile;
+import data.models.Song;
 import services.MetadataFileService;
 
 
@@ -40,8 +41,8 @@ public class Client {
 			List<Song> results = msm.search(Files.SONGTYPE, "S");
 
 			System.out.println("-----------------");
-			for (String s : results) {
-				System.out.println("Result: " + s);
+			for (Song s : results) {
+				System.out.println("Result: " + s.getTitle());
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -59,13 +59,13 @@ public class MetadataService {
 
 		String indexName = "";
 		switch (index) {
-		case Files.SONG_INDEX:
+		case Files.SONGTYPE:
 			indexName = Files.SONG_IDX;
 			break;
-		case Files.ALBUM_INDEX:
+		case Files.ALBUMTYPE:
 			indexName = Files.ALBUM_IDX;
 			break;
-		case Files.ARTIST_INDEX:
+		case Files.ARTISTTYPE:
 			indexName = Files.ARTIST_IDX;
 			break;
 		}

@@ -19,7 +19,12 @@ public class Counter implements CounterInterface {
 	}
 
 	public Boolean hasCompleted() {
-		return (counter == 0 && set.isEmpty());
+		if (counter == 0 && set.isEmpty())
+		{
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public void decrement() throws RemoteException {

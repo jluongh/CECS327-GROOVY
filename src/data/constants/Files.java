@@ -32,14 +32,10 @@ public class Files {
 	public final static int[] ALBUM = { 3, 0, 1 };
 	public final static int[] DURATION = { 4, 1, 2 };
 
-	public final static int SONG_INDEX = 0;
-	public final static int ALBUM_INDEX = 1;
-	public final static int ARTIST_INDEX = 2;
-
 	/* ---------- Search Type --------- */
 	public final static int SONGTYPE = 0;
-	public final static int ARTISTTYPE = 1;
-	public final static int ALBUMTYPE = 2;
+	public final static int ALBUMTYPE = 1;
+	public final static int ARTISTTYPE = 2;
 
 	/* ---------- Misc. ---------- */
 	public final static char[] limits = { 'a', 'f', 'g', 'm', 'n', 'z' };
